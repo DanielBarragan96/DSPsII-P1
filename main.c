@@ -27,7 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- 
+
 /**
  * @file    P1-1.c
  * @brief   Application entry point.
@@ -39,7 +39,10 @@
 #include "clock_config.h"
 #include "MK64F12.h"
 #include "fsl_debug_console.h"
+
 #include "MCG.h"
+#include "init.h"
+#include "MEM24LC256.h"
 /* TODO: insert other include files here. */
 
 /* TODO: insert other definitions and declarations here. */
@@ -47,23 +50,33 @@
 /*
  * @brief   Application entry point.
  */
-int main(void) {
+int main (void)
+{
+    /* Init board hardware. */
+    BOARD_InitBootPins ();
+    BOARD_InitBootClocks ();
+    BOARD_InitBootPeripherals ();
+    /* Init FSL debug console. */
+    BOARD_InitDebugConsole ();
 
-  	/* Init board hardware. */
-    BOARD_InitBootPins();
-    BOARD_InitBootClocks();
-    BOARD_InitBootPeripherals();
-  	/* Init FSL debug console. */
-    BOARD_InitDebugConsole();
+    initMain ();
 
-    initMain();
-
+    uint16 address = 0x05;
+    uint8_t dataSize = 1;
+    uint8 val = 5;
+    uint8* data = &val;
+    MEM24LC256_setData (address, dataSize, data);
+    uint8_t bytes = 1;
+    uint8_t val2 = 0;
+    uint8* data2 = &val2;
+    MEM24LC256_getData (address, bytes, data2);
 
     /* Force the counter to be placed into memory. */
-    volatile static int i = 0 ;
+    volatile static int i = 0;
     /* Enter an infinite loop, just incrementing a counter. */
-    while(1) {
-        i++ ;
+    while (1)
+    {
+        i++;
     }
-    return 0 ;
+    return 0;
 }

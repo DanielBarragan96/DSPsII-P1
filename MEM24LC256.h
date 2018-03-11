@@ -10,6 +10,7 @@
 
 #include "DataTypeDefinitions.h"
 #include "GlobalFunctions.h"
+#include "stdint.h"
 
 #define MEM24LC256_WRITE_ADDRESS 0xA0 // Slave address with chip select bits on ground and w/r bit in 0
 #define MEM24LC256_READ_ADDRESS 0xA1 // Slave address with chip select bits on ground and w/r bit in 1
@@ -24,7 +25,7 @@
 	\param[in]  uint8 (HEX) data that is gonna be stored in the data address we get from the param.
 	\return void
  */
-void MEM24LC256_setData(uint16 address, uint8* data);
+void MEM24LC256_setData(uint16 address, uint8_t dataSize, uint8* data);
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
