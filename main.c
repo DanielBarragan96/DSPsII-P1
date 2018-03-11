@@ -66,10 +66,10 @@ int main (void)
     uint8 val = 5;
     uint8* data = &val;
     MEM24LC256_setData (address, dataSize, data);
-    uint8_t bytes = 1;
+
     uint8_t val2 = 0;
     uint8* data2 = &val2;
-    MEM24LC256_getData (address, bytes, data2);
+    MEM24LC256_getData (address, dataSize, data2);
 
     /* Force the counter to be placed into memory. */
     volatile static int i = 0;
