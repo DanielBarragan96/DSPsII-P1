@@ -200,7 +200,7 @@ int i2c_writes (uint8_t slaveAdress, uint32_t subaddress, uint8_t dataSize,
     masterXfer.slaveAddress = slaveAdress;
     masterXfer.direction = kI2C_Write;
     masterXfer.subaddress = subaddress;
-    masterXfer.subaddressSize = 1;
+    masterXfer.subaddressSize = 2;
     masterXfer.data = buffer;
     masterXfer.dataSize = dataSize;
     masterXfer.flags = kI2C_TransferDefaultFlag;
