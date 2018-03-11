@@ -16,6 +16,8 @@
 #include "fsl_gpio.h"
 #include "pin_mux.h"
 
+#include "I2C.h"
+
 /* I2C source clock */
 #define I2C_MASTER_CLK_SRC I2C0_CLK_SRC
 #define I2C_MASTER_CLK_FREQ CLOCK_GetFreq(I2C0_CLK_SRC)
@@ -41,66 +43,30 @@
 #define BUFFER_SIZE 8
 #define I2C_CLK 12000000U
 
+void initMain ()
+{
+    //Change the Kinetis clock speed
+    int mcg_clk_hz;
+    unsigned char modeMCG = 0;
 
-void initMain(){
-	//Change the Kinetis clock speed
-	 int mcg_clk_hz;
-		   unsigned char modeMCG = 0;
+#ifndef PLL_DIRECT_INIT
+    mcg_clk_hz = fei_fbi (SLOW_IRC_FREQ, SLOW_IRC); // 64 Hz ---> 32768
+    mcg_clk_hz = fbi_fbe (CLK_FREQ_HZ, LOW_POWER, EXTERNAL_CLOCK); // 97.656KHz ---> 50000000
+    mcg_clk_hz = fbe_pbe (CLK_FREQ_HZ, PLL0_PRDIV, PLL0_VDIV);// 97.656KHz ---> 50000000 and PLL is configured to generate 60000000
+    mcg_clk_hz = pbe_pee (CLK_FREQ_HZ);	// 117.18 KHz ---> 60000000
+#else
+    mcg_clk_hz = pll_init(CLK_FREQ_HZ, LOW_POWER, EXTERNAL_CLOCK, PLL0_PRDIV, PLL0_VDIV, PLL_ENABLE);
+#endif
 
-
-		#ifndef PLL_DIRECT_INIT
-		   mcg_clk_hz = fei_fbi(SLOW_IRC_FREQ,SLOW_IRC);// 64 Hz ---> 32768
-		   mcg_clk_hz = fbi_fbe(CLK_FREQ_HZ,LOW_POWER,EXTERNAL_CLOCK); // 97.656KHz ---> 50000000
-		   mcg_clk_hz = fbe_pbe(CLK_FREQ_HZ,PLL0_PRDIV,PLL0_VDIV);	// 97.656KHz ---> 50000000 and PLL is configured to generate 60000000
-		   mcg_clk_hz =  pbe_pee(CLK_FREQ_HZ);// 117.18 KHz ---> 60000000
-		#else
-		      mcg_clk_hz = pll_init(CLK_FREQ_HZ, LOW_POWER, EXTERNAL_CLOCK, PLL0_PRDIV, PLL0_VDIV, PLL_ENABLE);
-		#endif
-
-		   modeMCG = what_mcg_mode();
+    modeMCG = what_mcg_mode ();
 
 //		   I2C_init(I2C_0, 60000000, 100000);
+    init_i2c ();
 
-		   i2c_master_config_t masterConfig;
-		   i2c_slave_config_t slaveConfig;
+    CLOCK_EnableClock (kCLOCK_PortB);
 
-		   CLOCK_EnableClock(kCLOCK_PortB);
-//            /**configures both ptc1 and ptb18 in alt modes 3,4 respectively*/
-//            GPIO_pinControlRegisterType pinControlRegisterMux2 = GPIO_MUX2;
-//            GPIO_pinControlRegister(GPIO_B,BIT2,&pinControlRegisterMux2); //SCL
-//            GPIO_pinControlRegister(GPIO_B,BIT3,&pinControlRegisterMux2); //SDA
-
-           // Get default configuration for master.
-            I2C_MasterGetDefaultConfig(&masterConfig);
-            I2C_MasterInit(I2C0, &masterConfig, I2C_MASTER_CLK_FREQ);
-            I2C_SlaveGetDefaultConfig(&slaveConfig);
-            slaveConfig.addressingMode = kI2C_RangeMatch;
-
-            slaveConfig.slaveAddress = MEM24LC256_WRITE_ADDRESS;
-            I2C_SlaveInit(I2C0, &slaveConfig,I2C_CLK);
-            slaveConfig.slaveAddress = MEM24LC256_READ_ADDRESS;
-            I2C_SlaveInit(I2C0, &slaveConfig,I2C_CLK);
-
-
-            slaveConfig.slaveAddress = PCF8563_WRITE_ADDRESS;
-            I2C_SlaveInit(I2C0, &slaveConfig,I2C_CLK);
-            slaveConfig.slaveAddress = PCF8563_READ_ADDRESS;
-            I2C_SlaveInit(I2C0, &slaveConfig,I2C_CLK);
-            slaveConfig.slaveAddress = PCF8563_SECONDS_ADDRESS;
-            I2C_SlaveInit(I2C0, &slaveConfig,I2C_CLK);
-            slaveConfig.slaveAddress = PCF8563_MINUTES_ADDRESS;
-            I2C_SlaveInit(I2C0, &slaveConfig,I2C_CLK);
-            slaveConfig.slaveAddress = PCF8563_HOURS_ADDRESS;
-            I2C_SlaveInit(I2C0, &slaveConfig,I2C_CLK);
-            slaveConfig.slaveAddress = PCF8563_DAYS_ADDRESS;
-            I2C_SlaveInit(I2C0, &slaveConfig,I2C_CLK);
-            slaveConfig.slaveAddress = PCF8563_MONTHS_ADDRESS;
-            I2C_SlaveInit(I2C0, &slaveConfig,I2C_CLK);
-            slaveConfig.slaveAddress = PCF8563_YEARS_ADDRESS;
-            I2C_SlaveInit(I2C0, &slaveConfig,I2C_CLK);
-
-           I2C_Enable(I2C0, true);
-           I2C_EnableInterrupts(I2C0, kI2C_GlobalInterruptEnable);
+    I2C_Enable (I2C0, true);
+    I2C_EnableInterrupts (I2C0, kI2C_GlobalInterruptEnable);
 
 //       uint32_t status = kI2C_StopDetectFlag;
 //       I2C0->D = 6;
@@ -124,8 +90,6 @@ void initMain(){
 //	   PCF8563_setMonths(0x11);
 //	   PCF8563_setDays(0x30);
 
-
-
 //	TODO init UART
 //	/**Configures UART 0 to transmit/receive at 11520 bauds with a 21 MHz of clock core*/
 //	UART_init (UART_0,  60000000, BD_115200);
@@ -139,7 +103,6 @@ void initMain(){
 //  /**Configures the pin control register of pin16 in PortB as UART TX*/
 //  PORTB->PCR[17] = PORT_PCR_MUX(3);
 
-
 //  TODO init NVIC
 //	/**Sets the threshold for interrupts, if the interrupt has higher priority constant that the BASEPRI, the interrupt will not be attended*/
 //	NVIC_setBASEPRI_threshold(PRIORITY_5);
@@ -147,7 +110,6 @@ void initMain(){
 //	NVIC_enableInterruptAndPriotity(UART0_IRQ, PRIORITY_3);
 //	/**Enables interrupts*/
 //	EnableInterrupts;
-
 
 //	TODO init TeraTerm
 //	/**Print menu by the Serial output*/
