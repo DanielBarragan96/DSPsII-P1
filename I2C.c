@@ -146,8 +146,8 @@ int init_i2c ()
     CLOCK_EnableClock (kCLOCK_I2c0);
 
     port_pin_config_t config_i2c =
-    { kPORT_PullUp, kPORT_SlowSlewRate, kPORT_PassiveFilterDisable,
-            kPORT_OpenDrainDisable, kPORT_LowDriveStrength, kPORT_MuxAlt5,
+    { kPORT_PullUp, kPORT_FastSlewRate, kPORT_PassiveFilterDisable,
+            kPORT_OpenDrainEnable, kPORT_LowDriveStrength, kPORT_MuxAlt5,
             kPORT_UnlockRegister, };
 
     PORT_SetPinConfig (PORTB, BIT2, &config_i2c);//SCL
@@ -165,10 +165,13 @@ int init_i2c ()
     I2C_MasterTransferCreateHandle (I2C0, &g_m_handle, i2c_master_callback,
     NULL);
 
+    I2C_Enable (I2C0, true);
+    I2C_EnableInterrupts (I2C0, kI2C_GlobalInterruptEnable);
+
     slaveConfig.slaveAddress = MEM24LC256_WRITE_ADDRESS;
-    I2C_SlaveInit(I2C0, &slaveConfig,I2C_CLK);
+    I2C_SlaveInit(I2C0, &slaveConfig,kCLOCK_BusClk);
     slaveConfig.slaveAddress = MEM24LC256_READ_ADDRESS;
-    I2C_SlaveInit(I2C0, &slaveConfig,I2C_CLK);
+    I2C_SlaveInit(I2C0, &slaveConfig,kCLOCK_BusClk);
 
 //    slaveConfig.slaveAddress = PCF8563_WRITE_ADDRESS;
 //    I2C_SlaveInit(I2C0, &slaveConfig,I2C_CLK);

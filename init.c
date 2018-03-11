@@ -65,9 +65,6 @@ void initMain ()
 
     CLOCK_EnableClock (kCLOCK_PortB);
 
-    I2C_Enable (I2C0, true);
-    I2C_EnableInterrupts (I2C0, kI2C_GlobalInterruptEnable);
-
 //       uint32_t status = kI2C_StopDetectFlag;
 //       I2C0->D = 6;
 //	   // Send start and slave address.
