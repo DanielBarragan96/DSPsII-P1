@@ -150,14 +150,12 @@ int init_i2c ()
             kPORT_OpenDrainEnable, kPORT_LowDriveStrength, kPORT_MuxAlt5,
             kPORT_UnlockRegister, };
 
-    PORT_SetPinConfig (PORTB, BIT2, &config_i2c);//SCL
-    PORT_SetPinConfig (PORTB, BIT3, &config_i2c);//SDA
+    PORT_SetPinConfig (PORTB, BIT2, &config_i2c); //SCL
+    PORT_SetPinConfig (PORTB, BIT3, &config_i2c); //SDA
 
     // Get default configuration for master.
     i2c_master_config_t masterConfig;
     I2C_MasterGetDefaultConfig (&masterConfig);
-    i2c_slave_config_t slaveConfig;
-    I2C_SlaveGetDefaultConfig (&slaveConfig);
 
     masterConfig.baudRate_Bps = 100000;
     I2C_MasterInit (I2C0, &masterConfig, CLOCK_GetFreq (kCLOCK_BusClk));
@@ -167,28 +165,6 @@ int init_i2c ()
 
     I2C_Enable (I2C0, true);
     I2C_EnableInterrupts (I2C0, kI2C_GlobalInterruptEnable);
-
-    slaveConfig.slaveAddress = MEM24LC256_WRITE_ADDRESS;
-    I2C_SlaveInit(I2C0, &slaveConfig,kCLOCK_BusClk);
-    slaveConfig.slaveAddress = MEM24LC256_READ_ADDRESS;
-    I2C_SlaveInit(I2C0, &slaveConfig,kCLOCK_BusClk);
-
-//    slaveConfig.slaveAddress = PCF8563_WRITE_ADDRESS;
-//    I2C_SlaveInit(I2C0, &slaveConfig,I2C_CLK);
-//    slaveConfig.slaveAddress = PCF8563_READ_ADDRESS;
-//    I2C_SlaveInit(I2C0, &slaveConfig,I2C_CLK);
-//    slaveConfig.slaveAddress = PCF8563_SECONDS_ADDRESS;
-//    I2C_SlaveInit(I2C0, &slaveConfig,I2C_CLK);
-//    slaveConfig.slaveAddress = PCF8563_MINUTES_ADDRESS;
-//    I2C_SlaveInit(I2C0, &slaveConfig,I2C_CLK);
-//    slaveConfig.slaveAddress = PCF8563_HOURS_ADDRESS;
-//    I2C_SlaveInit(I2C0, &slaveConfig,I2C_CLK);
-//    slaveConfig.slaveAddress = PCF8563_DAYS_ADDRESS;
-//    I2C_SlaveInit(I2C0, &slaveConfig,I2C_CLK);
-//    slaveConfig.slaveAddress = PCF8563_MONTHS_ADDRESS;
-//    I2C_SlaveInit(I2C0, &slaveConfig,I2C_CLK);
-//    slaveConfig.slaveAddress = PCF8563_YEARS_ADDRESS;
-//    I2C_SlaveInit(I2C0, &slaveConfig,I2C_CLK);
 
     return 0;
 }

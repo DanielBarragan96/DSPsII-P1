@@ -13,8 +13,8 @@ void MEM24LC256_setData (uint16 address, uint8_t dataSize, uint8* data)
     i2c_writes (MEM24LC256_WRITE_ADDRESS, address, dataSize, data);
 }
 
-uint8* MEM24LC256_getData (uint16 address, uint8 bytes, uint8* data)
+uint8* MEM24LC256_getData (uint16 address, uint8 dataSize, uint8* data)
 {
-    i2c_read (MEM24LC256_READ_ADDRESS, address, bytes, data);
+    i2c_read (MEM24LC256_READ_ADDRESS, address, dataSize, data);
     return data;
 }

@@ -36,6 +36,6 @@ void MEM24LC256_setData(uint16 address, uint8_t dataSize, uint8* data);
 	\param[in]  uint16 address where we get the data from (gets separated into high and low).
 	\return the data from the memory address we give as a param.
  */
-uint8* MEM24LC256_getData(uint16 address, uint8 bytes, uint8* data);
+uint8* MEM24LC256_getData(uint16 address, uint8 dataSize, uint8* data);
 
 #endif /* MEM24LC256_H_ */
