@@ -147,7 +147,7 @@ int init_i2c ()
 
     port_pin_config_t config_i2c =
     { kPORT_PullUp, kPORT_FastSlewRate, kPORT_PassiveFilterDisable,
-            kPORT_OpenDrainEnable, kPORT_LowDriveStrength, kPORT_MuxAlt5,
+            kPORT_OpenDrainEnable, kPORT_LowDriveStrength, kPORT_MuxAlt2,
             kPORT_UnlockRegister, };
 
     PORT_SetPinConfig (PORTB, BIT2, &config_i2c); //SCL
@@ -157,7 +157,6 @@ int init_i2c ()
     i2c_master_config_t masterConfig;
     I2C_MasterGetDefaultConfig (&masterConfig);
 
-    masterConfig.baudRate_Bps = 100000;
     I2C_MasterInit (I2C0, &masterConfig, CLOCK_GetFreq (kCLOCK_BusClk));
 
     I2C_MasterTransferCreateHandle (I2C0, &g_m_handle, i2c_master_callback,
@@ -172,19 +171,25 @@ int init_i2c ()
 int i2c_read (uint8_t slaveAdress, uint32_t subaddress, uint8_t dataSize,
         uint8_t* bufferOut)
 {
+    // Get default configuration for master.
+    i2c_slave_config_t slaveConfig;
+    I2C_SlaveGetDefaultConfig (&slaveConfig);
+
+    I2C_SlaveInit (I2C0, &slaveConfig, CLOCK_GetFreq (kCLOCK_BusClk));
+
     /* Force the counter to be placed into memory. */
     volatile static int i = 0;
 
     masterXfer.slaveAddress = slaveAdress;
     masterXfer.direction = kI2C_Read;
     masterXfer.subaddress = subaddress;
-    masterXfer.subaddressSize = 1;
+    masterXfer.subaddressSize = 2;
     masterXfer.data = bufferOut;
     masterXfer.dataSize = dataSize;
     masterXfer.flags = kI2C_TransferDefaultFlag;
 
     I2C_MasterTransferNonBlocking (I2C0, &g_m_handle, &masterXfer);
-    while (!g_MasterCompletionFlag)
+    while (!g_MasterCompletionFlag)////TODO create callback masterXfer != MASTER_XFER_SUCCEDED
     {
     }
     g_MasterCompletionFlag = false;
@@ -194,13 +199,19 @@ int i2c_read (uint8_t slaveAdress, uint32_t subaddress, uint8_t dataSize,
 int i2c_writes (uint8_t slaveAdress, uint32_t subaddress, uint8_t dataSize,
         uint8_t* buffer)
 {
+    // Get default configuration for master.
+    i2c_master_config_t masterConfig;
+    I2C_MasterGetDefaultConfig (&masterConfig);
+
+    I2C_MasterInit (I2C0, &masterConfig, CLOCK_GetFreq (kCLOCK_BusClk));
+
     /* Force the counter to be placed into memory. */
     volatile static int i = 0;
 
     masterXfer.slaveAddress = slaveAdress;
     masterXfer.direction = kI2C_Write;
     masterXfer.subaddress = subaddress;
-    masterXfer.subaddressSize = 1;
+    masterXfer.subaddressSize = 2;
     masterXfer.data = buffer;
     masterXfer.dataSize = dataSize;
     masterXfer.flags = kI2C_TransferDefaultFlag;
