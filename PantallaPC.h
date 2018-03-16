@@ -19,7 +19,7 @@
  	  \param[in]  string datos a imprimir en el bufer
  	 \return void
  */
-void escribirP(UART_ChannelType uartChannel,  sint8* Posicion,  sint8* string);
+void escribirP(UART_Type *base, sint8* Posicion,  sint8* data );
 
 //
 /********************************************************************************************/
