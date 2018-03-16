@@ -56,7 +56,7 @@ void task_one()
 {
     uint16_t address = 0x05;
     uint8_t* data = "hola Chung ahhh";
-    uint8_t dataSize = sizeof(data);
+    uint8_t dataSize = 15;
 
     MEM24LC256_setData (address, dataSize, data);
 
