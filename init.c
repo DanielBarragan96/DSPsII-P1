@@ -5,7 +5,6 @@
  *      Author: Daniel Barragán
  */
 
-#include "DataTypeDefinitions.h"
 #include "MK64F12.h"
 #include "init.h"
 #include "MCG.h"

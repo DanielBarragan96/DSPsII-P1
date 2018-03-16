@@ -8,12 +8,12 @@
 #include "MEM24LC256.h"
 #include "I2C.h"
 
-void MEM24LC256_setData (uint16 address, uint8_t dataSize, uint8* data)
+void MEM24LC256_setData (uint16_t address, uint8_t dataSize, uint8_t* data)
 {
     i2c_writes (MEM24LC256_WRITE_ADDRESS, address, dataSize, data);
 }
 
-uint8* MEM24LC256_getData (uint16 address, uint8 dataSize, uint8* data)
+uint8_t* MEM24LC256_getData (uint16_t address, uint8_t dataSize, uint8_t* data)
 {
     i2c_read (MEM24LC256_READ_ADDRESS, address, dataSize, data);
     return data;

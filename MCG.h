@@ -8,8 +8,6 @@
 #ifndef MCG_H_
 #define MCG_H_
 
-#include "DataTypeDefinitions.h"
-
 // Constants for use in pll_init
 #define NO_OSCINIT 0
 #define OSCINIT 1
@@ -43,10 +41,6 @@
 // IRC defines
 #define SLOW_IRC 0
 #define FAST_IRC 1
-
-
-// prototypes
-uint8 MCG_init(void);
 
 
 unsigned char fll_rtc_init(unsigned char, unsigned char);

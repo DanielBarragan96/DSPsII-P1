@@ -18,7 +18,7 @@
  accelerometer.
  \return TRUE if there was no problem
  */
-int init_i2c ();
+int8_t init_i2c ();
 /***************************************************************************/
 /***************************************************************************/
 /***************************************************************************/
@@ -29,7 +29,7 @@ int init_i2c ();
  \param[in] dataSize
  \return TRUE if there was no problem
  */
-int i2c_read (uint8_t slaveAdress, uint32_t subaddress, uint8_t dataSize,
+int8_t i2c_read (uint8_t slaveAdress, uint8_t subaddress, uint8_t dataSize,
         uint8_t* bufferOut);
 /***************************************************************************/
 /***************************************************************************/
@@ -42,7 +42,7 @@ int i2c_read (uint8_t slaveAdress, uint32_t subaddress, uint8_t dataSize,
  \param[in] buffer[dataSize] cointains the information to write
  \return TRUE if there was no problem
  */
-int i2c_writes (uint8_t slaveAdress, uint32_t subaddress, uint8_t dataSize,
+int8_t i2c_writes (uint8_t slaveAdress, uint8_t subaddress, uint8_t dataSize,
         uint8_t* buffer);
 
 #endif /* I2C_H_ */

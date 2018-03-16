@@ -8,8 +8,6 @@
 #ifndef INIT_H_
 #define INIT_H_
 
-#include "DataTypeDefinitions.h"
-
 /** Constant that enable the clock of the DAC*/
 #define DAC_SIM 0x1000U
 

@@ -8,7 +8,6 @@
 
 #include "mcg.h"
 #include "MK64F12.h"
-#include "DataTypeDefinitions.h"
 #include "init.h"
 
 

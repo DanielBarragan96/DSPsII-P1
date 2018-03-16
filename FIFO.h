@@ -8,11 +8,12 @@
 #ifndef FIFO_H_
 #define FIFO_H_
 
+#include "stdint.h"
+#include "stdbool.h"
+
 #define FIFO_LENGHT 200//limit size of FIFO
 #define ENTER 13 //ENTER key value
-#define FIRST_ELEMENT 0//The first element of the FIFO is in the index 0
-
-#include "DataTypeDefinitions.h"
+#define FIRST_ELEMENT 0 //The first element of the FIFO is in the index 0
 
 /********************************************************************************************/
 /********************************************************************************************/
@@ -21,7 +22,7 @@
  	 \brief	 This function deletes the first value IN.
  	 \return If it was possible to eliminate the first value return TRUE, else return FALSE
  */
-sint8 pop();
+int8_t pop();
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
@@ -30,7 +31,7 @@ sint8 pop();
  	 \param[in]  newVal will be added to the FIFO.
  	 \return If it was possible to add the value return TRUE, else return FALSE
  */
-BooleanType push(sint8 newVal);
+bool push(int8_t newVal);
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
@@ -38,7 +39,7 @@ BooleanType push(sint8 newVal);
  	 \brief	 This is the function sends the current FIFO (first element) direction.
  	 \return sint8* the direction of the FIFO
  */
-sint8* getFIFO();
+int8_t* getFIFO();
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
@@ -46,7 +47,7 @@ sint8* getFIFO();
  	 \brief	 This is the function clears the FIFO for new FIFOs
  	 \return If it was possible to eliminate the FIFO values return TRUE, else return FALSE
  */
-BooleanType clearFIFO();
+bool clearFIFO();
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
@@ -54,7 +55,7 @@ BooleanType clearFIFO();
  	 \brief	 This is the function returns the sizze of the FIFO.
  	 \return the size of the FIFO.
  */
-sint8 getFIFOIndex();
+int8_t getFIFOIndex();
 
 #endif /* FIFO_H_ */
 
