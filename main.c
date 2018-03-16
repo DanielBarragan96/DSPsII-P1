@@ -56,22 +56,22 @@
 void task_one()
 {
     //Test mem
-    uint16_t address = 0x05;
-    uint8_t* data = "hola Chung";
-
-    MEM24LC256_setData (address, data);
-
-    uint8_t dataSize = 16;
-    uint8_t val2[dataSize];
-    uint8_t* data2 = &val2[0];
-    MEM24LC256_getData (address, dataSize, data2);
-
-//    uint16_t algo = 0;
-//    PCF8583_setData(0x00, algo[0]);
+//    uint16_t address = 0x05;
+//    uint8_t* data = "hola Chung";
 //
-//    uint8_t sec = PCF8563_getSeconds();
-//    uint8_t min = PCF8563_getMinutes();
-//    uint8_t huo = PCF8563_getHours();
+//    MEM24LC256_setData (address, data);
+//
+//    uint8_t dataSize = 16;
+//    uint8_t val2[dataSize];
+//    uint8_t* data2 = &val2[0];
+//    MEM24LC256_getData (address, dataSize, data2);
+
+    uint16_t algo = 0;
+    PCF8583_setData(0x00, algo);
+
+    uint8_t sec = PCF8563_getSeconds();
+    uint8_t min = PCF8563_getMinutes();
+    uint8_t huo = PCF8563_getHours();
 }
 /*
  * @brief   Application entry point.
