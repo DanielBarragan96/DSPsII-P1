@@ -48,8 +48,8 @@
 #include "FreeRTOS.h"
 #include "timers.h"
 
-#define BIT2 (1<<1)
-#define BIT3 (1<<2)
+#define BIT2 2
+#define BIT3 3
 
 
 //Flag to check the I2C status
