@@ -200,14 +200,12 @@ int8_t init_i2c ()
 int8_t i2c_read (uint8_t slaveAdress, uint8_t subaddress, uint8_t dataSize,
         uint8_t* bufferOut)
 {
-    // Get default configuration for master.
-    i2c_slave_config_t slaveConfig;
-    I2C_SlaveGetDefaultConfig (&slaveConfig);
+        // Get default configuration for master.
+        i2c_slave_config_t slaveConfig;
+        I2C_SlaveGetDefaultConfig (&slaveConfig);
 
-    I2C_SlaveInit (I2C0, &slaveConfig, CLOCK_GetFreq (kCLOCK_BusClk));
-
-    while(dataSize && !g_i2c_nw)
-    {
+        I2C_SlaveInit (I2C0, &slaveConfig, CLOCK_GetFreq (kCLOCK_BusClk));
+  
         masterXfer.slaveAddress = slaveAdress;
         masterXfer.direction = kI2C_Read;
         masterXfer.subaddress = subaddress;
@@ -228,73 +226,37 @@ int8_t i2c_read (uint8_t slaveAdress, uint8_t subaddress, uint8_t dataSize,
             g_i2c_nw = false;
             return -1;//Error
         }
-        dataSize--;
-        subaddress++;
-        bufferOut++;
-    }
     return 0;
 }
 
 int8_t i2c_writes (uint8_t slaveAdress, uint8_t subaddress, uint8_t dataSize,
         uint8_t* buffer)
 {
-    // Get default configuration for master.
-       i2c_master_config_t masterConfig;
-       I2C_MasterGetDefaultConfig (&masterConfig);
+        // Get default configuration for master.
+            i2c_master_config_t masterConfig;
+            I2C_MasterGetDefaultConfig (&masterConfig);
 
-       I2C_MasterInit (I2C0, &masterConfig, CLOCK_GetFreq (kCLOCK_BusClk));
+            I2C_MasterInit (I2C0, &masterConfig, CLOCK_GetFreq (kCLOCK_BusClk));
 
-       masterXfer.slaveAddress = slaveAdress;
-       masterXfer.direction = kI2C_Write;
-       masterXfer.subaddress = subaddress;
-       masterXfer.subaddressSize = 2;
-       masterXfer.data = buffer;
-       masterXfer.dataSize = dataSize;
-       masterXfer.flags = kI2C_TransferDefaultFlag;
+        masterXfer.slaveAddress = slaveAdress;
+        masterXfer.direction = kI2C_Write;
+        masterXfer.subaddress = subaddress;
+        masterXfer.subaddressSize = 2;
+        masterXfer.data = buffer;
+        masterXfer.dataSize = dataSize;
+        masterXfer.flags = kI2C_TransferDefaultFlag;
 
-       //xTimerReset(g_timer,portMAX_DELAY);
-       I2C_MasterTransferNonBlocking (I2C0, &g_m_handle, &masterXfer);
-       while (!g_MasterCompletionFlag && !g_i2c_nw)
-       {
-       }
-       g_MasterCompletionFlag = false;
-       int ret = 0;
-       if(g_i2c_nw)
-           ret = -1;//Error
-       g_i2c_nw = false;
-       return ret;
-//
-//
-//    while(dataSize && !g_i2c_nw)
-//    {
-//        // Get default configuration for master.
-//            i2c_master_config_t masterConfig;
-//            I2C_MasterGetDefaultConfig (&masterConfig);
-//
-//            I2C_MasterInit (I2C0, &masterConfig, CLOCK_GetFreq (kCLOCK_BusClk));
-//
-//        masterXfer.slaveAddress = slaveAdress;
-//        masterXfer.direction = kI2C_Write;
-//        masterXfer.subaddress = subaddress;
-//        masterXfer.subaddressSize = 2;
-//        masterXfer.data = buffer;
-//        masterXfer.dataSize = dataSize;
-//        masterXfer.flags = kI2C_TransferDefaultFlag;
-//
-//        //xTimerReset(g_timer,portMAX_DELAY);
-//        I2C_MasterTransferNonBlocking (I2C0, &g_m_handle, &masterXfer);
-//        while (!g_MasterCompletionFlag && !g_i2c_nw)
-//        {
-//        }
-//        g_MasterCompletionFlag = false;
-//        if(g_i2c_nw)
-//        {
-//            g_i2c_nw = false;
-//            return -1;
-//        }
-//        dataSize--;
-//        subaddress++;
-//        buffer++;
-//    }
-//    return 0;
+        //xTimerReset(g_timer,portMAX_DELAY);
+        I2C_MasterTransferNonBlocking (I2C0, &g_m_handle, &masterXfer);
+        while (!g_MasterCompletionFlag && !g_i2c_nw)
+        {
+        }
+        g_MasterCompletionFlag = false;
+
+        if(g_i2c_nw)
+        {
+            g_i2c_nw = false;
+            return -1;
+        }
+    return 0;
 }
