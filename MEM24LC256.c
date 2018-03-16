@@ -21,14 +21,14 @@ uint8_t checkStringSize(uint8_t* string)
 }
 
 
-void MEM24LC256_setData (uint16_t address, uint8_t* data)
+int8_t MEM24LC256_setData (uint16_t address, uint8_t* data)
 {
     uint8_t dataSize = checkStringSize(data);
-    i2c_writes (MEM24LC256_WRITE_ADDRESS, address, dataSize, data);
+    return i2c_writes (MEM24LC256_WRITE_ADDRESS, address, dataSize, data);
 }
 
-void MEM24LC256_getData (uint16_t address, uint8_t dataSize, uint8_t* data)
+int8_t MEM24LC256_getData (uint16_t address, uint8_t dataSize, uint8_t* data)
 {
-    i2c_read (MEM24LC256_READ_ADDRESS, address, dataSize, data);
+    return i2c_read (MEM24LC256_READ_ADDRESS, address, dataSize, data);
 }
 

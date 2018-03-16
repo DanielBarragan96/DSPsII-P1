@@ -20,12 +20,12 @@
 #define PCF8563_MONTHS_ADDRESS 0x07
 #define PCF8563_YEARS_ADDRESS 0x08
 
-void PCF8563_setSeconds(uint8_t data);
-void PCF8563_setMinutes(uint8_t data);
-void PCF8563_setHours(uint8_t data);
-void PCF8563_setYears(uint8_t data);
-void PCF8563_setMonths(uint8_t data);
-void PCF8563_setDays(uint8_t data);
+uint8_t PCF8563_setSeconds(uint8_t data);
+uint8_t PCF8563_setMinutes(uint8_t data);
+uint8_t PCF8563_setHours(uint8_t data);
+uint8_t PCF8563_setYears(uint8_t data);
+uint8_t PCF8563_setMonths(uint8_t data);
+uint8_t PCF8563_setDays(uint8_t data);
 
 uint8_t PCF8563_getSeconds();
 uint8_t PCF8563_getMinutes();
@@ -34,7 +34,7 @@ uint8_t PCF8563_getYears();
 uint8_t PCF8563_getMonths();
 uint8_t PCF8563_getDays();
 
-void PCF8583_setData(uint8_t address, uint8_t data);
+uint8_t PCF8583_setData(uint8_t address, uint8_t data);
 
 #endif /* PCF8563_H_ */
 
