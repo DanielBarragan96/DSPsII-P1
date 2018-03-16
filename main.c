@@ -54,19 +54,22 @@
 
 void task_one()
 {
-    uint16 address = 0x05;
+    uint16_t address = 0x05;
     uint8_t dataSize = 1;
-    uint8 val = 100;
-    uint8* data = &val;
+    uint8_t val = 100;
+    uint8_t* data = &val;
     MEM24LC256_setData (address, dataSize, data);
 
     uint8_t val2 = 0;
-    uint8* data2 = &val2;
+    uint8_t* data2 = &val2;
     MEM24LC256_getData (address, dataSize, data2);
 
-    uint8 sec = PCF8563_getSeconds();
-    uint8 min = PCF8563_getMinutes();
-    uint8 huo = PCF8563_getHours();
+    uint16_t algo = 0;
+    PCF8583_setData(0x00, algo);
+
+    uint8_t sec = PCF8563_getSeconds();
+    uint8_t min = PCF8563_getMinutes();
+    uint8_t huo = PCF8563_getHours();
 }
 /*
  * @brief   Application entry point.

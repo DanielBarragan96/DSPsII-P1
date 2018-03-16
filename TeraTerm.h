@@ -11,7 +11,8 @@
 #ifndef TERATERM_H_
 #define TERATERM_H_
 
-#include "DataTypeDefinitions.h"
+#include "stdint.h"
+#include "stdbool.h"
 
 /*! This data type is used to indicate when TeraTerm worked properly*/
 typedef enum{
@@ -27,7 +28,7 @@ typedef enum{
  	 \brief	 It sends the MainMenu through the serial port.
  	 \return GOOD if there were no troubles
  */
-uint8 printTTMainMenu();
+uint8_t printTTMainMenu();
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
@@ -36,7 +37,7 @@ uint8 printTTMainMenu();
  	 We have three stages to control this state, this is the first.
  	 \return GOOD if there were no troubles
  */
-uint8 printTTMenuRMemI2C_1();
+uint8_t printTTMenuRMemI2C_1();
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
@@ -45,7 +46,7 @@ uint8 printTTMenuRMemI2C_1();
  	 We have three stages to control this state, this is the second.
  	 \return GOOD if there were no troubles
  */
-uint8 printTTMenuRMemI2C_2();
+uint8_t printTTMenuRMemI2C_2();
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
@@ -54,7 +55,7 @@ uint8 printTTMenuRMemI2C_2();
  	 We have three stages to control this state, this is the third.
  	 \return GOOD if there were no troubles
  */
-uint8 printTTMenuRMemI2C_3();
+uint8_t printTTMenuRMemI2C_3();
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
@@ -63,7 +64,7 @@ uint8 printTTMenuRMemI2C_3();
  	 We have three stages to control this state, this is the first.
  	 \return GOOD if there were no troubles
  */
-uint8 printTTMenuWMemI2C_1();
+uint8_t printTTMenuWMemI2C_1();
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
@@ -72,7 +73,7 @@ uint8 printTTMenuWMemI2C_1();
  	 We have three stages to control this state, this is the second.
  	 \return GOOD if there were no troubles
  */
-uint8 printTTMenuWMemI2C_2();
+uint8_t printTTMenuWMemI2C_2();
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
@@ -81,7 +82,7 @@ uint8 printTTMenuWMemI2C_2();
  	 We have three stages to control this state, this is the third.
  	 \return GOOD if there were no troubles
  */
-uint8 printTTMenuWMemI2C_3();
+uint8_t printTTMenuWMemI2C_3();
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
@@ -90,7 +91,7 @@ uint8 printTTMenuWMemI2C_3();
  	 We have two stages to control this state, this is the first.
  	 \return GOOD if there were no troubles
  */
-uint8 printTTMenuSetH_1();
+uint8_t printTTMenuSetH_1();
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
@@ -99,7 +100,7 @@ uint8 printTTMenuSetH_1();
  	 We have two stages to control this state, this is the second.
  	 \return GOOD if there were no troubles
  */
-uint8 printTTMenuSetH_2();
+uint8_t printTTMenuSetH_2();
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
@@ -108,7 +109,7 @@ uint8 printTTMenuSetH_2();
  	 We have two stages to control this state, this is the first.
  	 \return GOOD if there were no troubles
  */
-uint8 printTTMenuSetD_1();
+uint8_t printTTMenuSetD_1();
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
@@ -117,7 +118,7 @@ uint8 printTTMenuSetD_1();
  	 We have two stages to control this state, this is the second.
  	 \return GOOD if there were no troubles
  */
-uint8 printTTMenuSetD_2();
+uint8_t printTTMenuSetD_2();
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
@@ -126,7 +127,7 @@ uint8 printTTMenuSetD_2();
  	 We have two stages to control this state, this is the first.
  	 \return GOOD if there were no troubles
  */
-uint8 printTTMenuFH_1();
+uint8_t printTTMenuFH_1();
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
@@ -135,7 +136,7 @@ uint8 printTTMenuFH_1();
  	 We have two stages to control this state, this is the second.
  	 \return GOOD if there were no troubles
  */
-uint8 printTTMenuFH_2();
+uint8_t printTTMenuFH_2();
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
@@ -143,7 +144,7 @@ uint8 printTTMenuFH_2();
  	 \brief	 It sends the MenuRH through the serial port.
  	 \return GOOD if there were no troubles
  */
-uint8 printTTMenuRH_1();
+uint8_t printTTMenuRH_1();
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
@@ -151,7 +152,7 @@ uint8 printTTMenuRH_1();
  	 \brief	 It sends the MenuRD through the serial port.
  	 \return GOOD if there were no troubles
  */
-uint8 printTTMenuRD_1();
+uint8_t printTTMenuRD_1();
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
@@ -160,7 +161,7 @@ uint8 printTTMenuRD_1();
  	 We have two stages to control this state, this is the first.
  	 \return GOOD if there were no troubles
  */
-uint8 printTTMenuEchoLCD_1();
+uint8_t printTTMenuEchoLCD_1();
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
@@ -169,7 +170,7 @@ uint8 printTTMenuEchoLCD_1();
  	 We have two stages to control this state, this is the second.
  	 \return GOOD if there were no troubles
  */
-uint8 printTTMenuEchoLCD_2();
+uint8_t printTTMenuEchoLCD_2();
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
@@ -177,7 +178,7 @@ uint8 printTTMenuEchoLCD_2();
  	 \brief	 This function stores the value of the number send in asciiVal (tens and units)
  	 \return GOOD if there were no troubles
  */
-BooleanType setTimeASCII(uint8 value, BooleanType hour);
+bool setTimeASCII(uint8_t value, bool hour);
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
@@ -186,7 +187,7 @@ BooleanType setTimeASCII(uint8 value, BooleanType hour);
  	 write asciiVal of Time in the serial port.
  	 \return TRUE if there were no troubles
  */
-BooleanType writeTime();
+bool writeTime();
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
@@ -195,7 +196,7 @@ BooleanType writeTime();
  	 write asciiVal of Date in the serial port.
  	 \return TRUE if there were no troubles
  */
-BooleanType writeDate();
+bool writeDate();
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
@@ -204,7 +205,7 @@ BooleanType writeDate();
  	  hex value with the two numbers.
  	 \return the hex value to set Date/Time;
  */
-sint8 dataSet();
+int8_t dataSet();
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
@@ -213,6 +214,6 @@ sint8 dataSet();
  	  decimal value with the two numbers.
  	 \return the hex value to set Date/Time;
  */
-sint8 dataSetInt();
+int8_t dataSetInt();
 
 #endif /* TERATERM_H_ */

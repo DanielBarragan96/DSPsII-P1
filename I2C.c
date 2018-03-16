@@ -44,10 +44,13 @@
 
 #include "MEM24LC256.h"
 #include "I2C.h"
-#include "DataTypeDefinitions.h"
 #include "FreeRTOSConfig.h"
 #include "FreeRTOS.h"
 #include "timers.h"
+
+#define BIT2 (1<<1)
+#define BIT3 (1<<2)
+
 
 //Flag to check the I2C status
 volatile bool g_MasterCompletionFlag = false;
@@ -141,7 +144,7 @@ static void i2c_master_callback (I2C_Type *base, i2c_master_handle_t *handle,
 /*
  * @brief   Application entry point.
  */
-int init_i2c ()
+int8_t init_i2c ()
 {
 
     /* Init board hardware. */
@@ -194,7 +197,7 @@ int init_i2c ()
     return 0;
 }
 
-int i2c_read (uint8_t slaveAdress, uint32_t subaddress, uint8_t dataSize,
+int8_t i2c_read (uint8_t slaveAdress, uint32_t subaddress, uint8_t dataSize,
         uint8_t* bufferOut)
 {
     // Get default configuration for master.
@@ -211,7 +214,7 @@ int i2c_read (uint8_t slaveAdress, uint32_t subaddress, uint8_t dataSize,
     masterXfer.dataSize = dataSize;
     masterXfer.flags = kI2C_TransferDefaultFlag;
 
-    xTimerReset(g_timer,portMAX_DELAY);
+    //xTimerReset(g_timer,portMAX_DELAY);
     I2C_MasterTransferNonBlocking (I2C0, &g_m_handle, &masterXfer);
     while (!g_MasterCompletionFlag && !g_i2c_nw)
     {
@@ -224,7 +227,7 @@ int i2c_read (uint8_t slaveAdress, uint32_t subaddress, uint8_t dataSize,
     return ret;
 }
 
-int i2c_writes (uint8_t slaveAdress, uint32_t subaddress, uint8_t dataSize,
+int8_t i2c_writes (uint8_t slaveAdress, uint32_t subaddress, uint8_t dataSize,
         uint8_t* buffer)
 {
     // Get default configuration for master.
@@ -241,7 +244,7 @@ int i2c_writes (uint8_t slaveAdress, uint32_t subaddress, uint8_t dataSize,
     masterXfer.dataSize = dataSize;
     masterXfer.flags = kI2C_TransferDefaultFlag;
 
-    xTimerReset(g_timer,portMAX_DELAY);
+    //xTimerReset(g_timer,portMAX_DELAY);
     I2C_MasterTransferNonBlocking (I2C0, &g_m_handle, &masterXfer);
     while (!g_MasterCompletionFlag && !g_i2c_nw)
     {
