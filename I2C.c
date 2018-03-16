@@ -211,7 +211,7 @@ int i2c_read (uint8_t slaveAdress, uint32_t subaddress, uint8_t dataSize,
     masterXfer.dataSize = dataSize;
     masterXfer.flags = kI2C_TransferDefaultFlag;
 
-    //xTimerReset(g_timer,portMAX_DELAY);
+    xTimerReset(g_timer,portMAX_DELAY);
     I2C_MasterTransferNonBlocking (I2C0, &g_m_handle, &masterXfer);
     while (!g_MasterCompletionFlag && !g_i2c_nw)
     {
@@ -241,7 +241,7 @@ int i2c_writes (uint8_t slaveAdress, uint32_t subaddress, uint8_t dataSize,
     masterXfer.dataSize = dataSize;
     masterXfer.flags = kI2C_TransferDefaultFlag;
 
-    //xTimerReset(g_timer,portMAX_DELAY);
+    xTimerReset(g_timer,portMAX_DELAY);
     I2C_MasterTransferNonBlocking (I2C0, &g_m_handle, &masterXfer);
     while (!g_MasterCompletionFlag && !g_i2c_nw)
     {
