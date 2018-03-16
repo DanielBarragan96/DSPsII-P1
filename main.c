@@ -65,16 +65,14 @@ int main (void)
 
     initMain ();
 
-
-    uart_send(UART0,(uint8_t*)"HOLA MUNDO");
-
     uart_receive(UART0, msg);
+
+   // uart_send(UART0,(uint8_t*)"HOLA MUNDO");
 
 
     while (1)
     {
 
-        uart_receive(UART0, msg);
 
     }
     return 0;

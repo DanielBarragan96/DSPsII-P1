@@ -73,8 +73,7 @@ void uart_send(UART_Type *base, uint8_t* string){
 	xfer.dataSize = 1;//sizeof( string) ;
 	txOnGoing = true;
     UART_TransferSendNonBlocking(UART0, &g_uartHandle, &xfer);
-
-    /* Wait send finished */
+     /* Wait send finished */
       while (txOnGoing)
       {
       }
@@ -88,8 +87,14 @@ void uart_receive(UART_Type *base, uint8_t* string){
 	xfer.data = receiveData;
 	xfer.dataSize = sizeof(receiveData)/sizeof(receiveData[0]);
 	rxOnGoing = true;
-
 	UART_TransferReceiveNonBlocking(UART0, &g_uartHandle, &xfer, &xfer.dataSize);
+
+	if(ENTER == *xfer.data)
+	    	rxOnGoing = 0;
+
+	while (rxOnGoing)
+	      {
+	      }
 }
 
 void setflagE(){
