@@ -205,7 +205,7 @@ int8_t i2c_read (uint8_t slaveAdress, uint8_t subaddress, uint8_t dataSize,
         I2C_SlaveGetDefaultConfig (&slaveConfig);
 
         I2C_SlaveInit (I2C0, &slaveConfig, CLOCK_GetFreq (kCLOCK_BusClk));
-
+  
         masterXfer.slaveAddress = slaveAdress;
         masterXfer.direction = kI2C_Read;
         masterXfer.subaddress = subaddress;
