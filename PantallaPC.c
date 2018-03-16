@@ -7,9 +7,9 @@
  *      Author: Avelar Díaz José Francisco
  *      		Chung Correa Sergio Raúl
  */
+#include <TeraTerm_Task_UART.h>/**UART device driver*/
 #include "board.h"
 #include "MK64F12.h"
-#include "UART.h"/**UART device driver*/
 #include "pin_mux.h"
 #include "Fifo.h"
 #include "PCF8563.h"

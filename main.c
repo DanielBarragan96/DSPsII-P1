@@ -39,6 +39,7 @@
 #include "clock_config.h"
 #include "MK64F12.h"
 #include "fsl_debug_console.h"
+#include "TeraTerm_Task_UART.h"
 
 #include "MCG.h"
 #include "init.h"
@@ -50,6 +51,9 @@
 /*
  * @brief   Application entry point.
  */
+
+uint8_t* msg;
+
 int main (void)
 {
     /* Init board hardware. */
@@ -61,22 +65,17 @@ int main (void)
 
     initMain ();
 
-    uint16 address = 0x05;
-    uint8_t dataSize = 1;
-    uint8 val = 5;
-    uint8* data = &val;
-    MEM24LC256_setData (address, dataSize, data);
 
-    uint8_t val2 = 0;
-    uint8* data2 = &val2;
-    MEM24LC256_getData (address, dataSize, data2);
+    uart_send(UART0,(uint8_t*)"HOLA MUNDO");
 
-    /* Force the counter to be placed into memory. */
-    volatile static int i = 0;
-    /* Enter an infinite loop, just incrementing a counter. */
+    uart_receive(UART0, msg);
+
+
     while (1)
     {
-        i++;
+
+        uart_receive(UART0, msg);
+
     }
     return 0;
 }
