@@ -1,6 +1,5 @@
 
 #include "MK64F12.h"
-#include "DataTypeDefinitions.h"
 #include "FIFO.h"
 #include "States.h"
 #include "PCF8563.h"
@@ -24,15 +23,15 @@ const StateType FSM_Moore[] =
 //This structure handles the current system status
 SystemControl currentSystem = {PRINCIPAL,0,{0,0,0},{0,0,0},0,FORM12};
 
-BooleanType noFunction(){
+bool noFunction(){
 	//as we put an index in the limit, control Menu will restart the serial port
 	currentSystem.stateIndex = STATE_MACHINE_SIZE;
 	controlMenu();
-	return FALSE;
+	return false;
 }
 
-BooleanType controlSystem(){//control system alternates the sub functions inside an state of the FSM_Moore
-	uint8 index = (currentSystem.currentStatus - 48);//because currentStatus is in ASCII value, we have to decrease 48
+bool controlSystem(){//control system alternates the sub functions inside an state of the FSM_Moore
+	uint8_t index = (currentSystem.currentStatus - 48);//because currentStatus is in ASCII value, we have to decrease 48
 	//according to the index value we control the sub functions of the current FSM_Moore state
 	if(CERO == currentSystem.stateIndex) FSM_Moore[index].fptrFirst();
 	else if(ONE== currentSystem.stateIndex) FSM_Moore[index].fptrSecond();
@@ -40,10 +39,10 @@ BooleanType controlSystem(){//control system alternates the sub functions inside
 	else if(THREE == currentSystem.stateIndex) FSM_Moore[index].fptrFour();
 
 	currentSystem.stateIndex++;//update the sub function index for the next lap
-	return TRUE;
+	return true;
 }
 
-BooleanType controlMenu(){
+bool controlMenu(){
 	if(STATE_MACHINE_SIZE <= currentSystem.stateIndex){//if we overpassed the state machine size
 			currentSystem.stateIndex = 0;//restore the initial configuration of the screen
 			currentSystem.currentStatus = PRINCIPAL;
@@ -65,12 +64,12 @@ BooleanType controlMenu(){
 	controlSystem();//update the serial port screen
 	//clearEnter();//clear enter flag, which is enabled in the UART interruption
 	clearFIFO();//reset the stored FIFO
-	return TRUE;
+	return true;
 }
 
 SystemControl* getSystem(){ return &currentSystem; }//return currentSstem direction
 
-BooleanType updateSystemTimeDate(){//update the structure values
+bool updateSystemTimeDate(){//update the structure values
 	currentSystem.currentTime.Seconds = (PCF8563_getSeconds());
 	currentSystem.currentTime.Minutes =	(PCF8563_getMinutes());
 	currentSystem.currentTime.Hours =	(PCF8563_getHours());
@@ -79,16 +78,16 @@ BooleanType updateSystemTimeDate(){//update the structure values
 	currentSystem.currentDate.Months = (PCF8563_getMonths());
 	currentSystem.currentDate.Days = (PCF8563_getDays());
 
-	return TRUE;
+	return true;
 }
 
-BooleanType setSystemAddress(){
+bool setSystemAddress(){
 
 	//the address has 16 bits so we need to pop the first
-	uint8 newAddressH1 = pop();
-	uint8 newAddressH2 = pop();
-	uint8 newAddressL1 = pop();
-	uint8 newAddressL2 = pop();
+	uint8_t newAddressH1 = pop();
+	uint8_t newAddressH2 = pop();
+	uint8_t newAddressL1 = pop();
+	uint8_t newAddressL2 = pop();
 
 	//cast the captured value depending if it was a letter or a number
 	if(NUMBER_LOW<=newAddressH1 && newAddressH1<=NUMBER_HIGH){
@@ -102,7 +101,7 @@ BooleanType setSystemAddress(){
 	}
 	else{
 		currentSystem.address = ERROR_ADSRESS;
-		return FALSE;
+		return false;
 	}
 
 	if(newAddressH2>=NUMBER_LOW && newAddressH2<=NUMBER_HIGH){
@@ -116,7 +115,7 @@ BooleanType setSystemAddress(){
 	}
 	else{
 		currentSystem.address = ERROR_ADSRESS;
-		return FALSE;
+		return false;
 	}
 
 	if(NUMBER_LOW<=newAddressL1 && newAddressL1<=NUMBER_HIGH){
@@ -130,7 +129,7 @@ BooleanType setSystemAddress(){
 	}
 	else{
 		currentSystem.address = ERROR_ADSRESS;
-		return FALSE;
+		return false;
 	}
 
 	if(NUMBER_LOW<=newAddressL2 && newAddressL2<=NUMBER_HIGH){
@@ -144,23 +143,23 @@ BooleanType setSystemAddress(){
 	}
 	else{
 		currentSystem.address = ERROR_ADSRESS;
-		return FALSE;
+		return false;
 	}
 
-	sint16 newAddress = (newAddressH1<<12);//shift the upper hex value
+	int16_t newAddress = (newAddressH1<<12);//shift the upper hex value
 	newAddress += (newAddressH2<<8);//shift the upper hex value
 	newAddress += (newAddressL1<<4);//shift the upper hex value
 	newAddress += newAddressL2;//add the low hex value
 	currentSystem.address = newAddress;
-	return TRUE;
+	return true;
 }
 
-BooleanType pauseExcecution(){
+bool pauseExcecution(){
 	currentSystem.stateIndex = STATE_MACHINE_SIZE;
-	return TRUE;
+	return true;
 }
 
-BooleanType toggleHourFormat(){
+bool toggleHourFormat(){
 	currentSystem.hourFormat =  (1 & ~(currentSystem.hourFormat)); //update Hour Format
-	return TRUE;
+	return true;
 }

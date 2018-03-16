@@ -43,10 +43,34 @@
 #include "MCG.h"
 #include "init.h"
 #include "MEM24LC256.h"
+#include "PCF8563.h"
+#include "FreeRTOSConfig.h"
+#include "FreeRTOS.h"
+#include "task.h"
 /* TODO: insert other include files here. */
 
 /* TODO: insert other definitions and declarations here. */
 
+
+void task_one()
+{
+    uint16_t address = 0x05;
+    uint8_t dataSize = 1;
+    uint8_t val = 100;
+    uint8_t* data = &val;
+    MEM24LC256_setData (address, dataSize, data);
+
+    uint8_t val2 = 0;
+    uint8_t* data2 = &val2;
+    MEM24LC256_getData (address, dataSize, data2);
+
+    uint16_t algo = 0;
+    PCF8583_setData(0x00, algo);
+
+    uint8_t sec = PCF8563_getSeconds();
+    uint8_t min = PCF8563_getMinutes();
+    uint8_t huo = PCF8563_getHours();
+}
 /*
  * @brief   Application entry point.
  */
@@ -60,23 +84,13 @@ int main (void)
     BOARD_InitDebugConsole ();
 
     initMain ();
+    xTaskCreate(task_one, "I2C test", configMINIMAL_STACK_SIZE, NULL, configMAX_PRIORITIES-1, NULL);
+    vTaskStartScheduler();
 
-    uint16 address = 0x05;
-    uint8_t dataSize = 1;
-    uint8 val = 5;
-    uint8* data = &val;
-    MEM24LC256_setData (address, dataSize, data);
-
-    uint8_t val2 = 0;
-    uint8* data2 = &val2;
-    MEM24LC256_getData (address, dataSize, data2);
-
-    /* Force the counter to be placed into memory. */
-    volatile static int i = 0;
     /* Enter an infinite loop, just incrementing a counter. */
     while (1)
     {
-        i++;
+
     }
     return 0;
 }

@@ -9,7 +9,7 @@
 #ifndef STATES_H_
 #define STATES_H_
 
-#include "DataTypeDefinitions.h"
+#include "stdbool.h"
 
 #define STATE_MACHINE_SIZE 4 // size of the State Machine
 #define READ_NUMBER_ERRO 100 // represents error reading number for date
@@ -28,15 +28,15 @@ typedef enum{
 }ASCIIDecode;
 /*! This data type represents the Time values*/
 typedef struct{
-	uint8 Seconds;
-	uint8 Minutes;
-	uint8 Hours;
+	uint8_t Seconds;
+	uint8_t Minutes;
+	uint8_t Hours;
 }Time;
 /*! This data type represents the Date values*/
 typedef struct{
-	uint8 Years;
-	uint8 Months;
-	uint8 Days;
+	uint8_t Years;
+	uint8_t Months;
+	uint8_t Days;
 }Date;
 /*! This data type represents the screen status*/
 typedef enum{//each value is set in ASCII value
@@ -70,18 +70,18 @@ typedef enum{
 /*! This data type is used to control the serial port screen*/
 typedef struct
 {
-	uint8(*fptrFirst)();
-	uint8(*fptrSecond)();
-	uint8(*fptrThird)();
-	uint8(*fptrFour)();
+	uint8_t(*fptrFirst)();
+	uint8_t(*fptrSecond)();
+	uint8_t(*fptrThird)();
+	uint8_t(*fptrFour)();
 }StateType;
 /*! This data type is used to control the system status*/
 typedef struct{
 	ProgramStatus currentStatus;
-	uint8	stateIndex;
+	uint8_t	stateIndex;
 	Time currentTime;
 	Date currentDate;
-	uint16 address;
+	uint16_t address;
 	HourFormat hourFormat;
 }SystemControl;
 
@@ -92,7 +92,7 @@ typedef struct{
  	 \brief	 It is used when the current state has finished, and we need to reset the serial port.
  	 \return TRUE if there were no troubles
  */
-BooleanType noFunction();
+bool noFunction();
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
@@ -100,7 +100,7 @@ BooleanType noFunction();
  	 \brief	 This function updates the serial port according to the current sub function index.
  	 \return TRUE if there were no troubles
  */
-BooleanType controlSystem();
+bool controlSystem();
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
@@ -109,7 +109,7 @@ BooleanType controlSystem();
  	 its out of limits.
  	 \return TRUE if there were no troubles
  */
-BooleanType controlMenu();
+bool controlMenu();
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
@@ -125,7 +125,7 @@ SystemControl* getSystem();
  	 \brief	 This function returns the value of the FIFOIndex.
  	 \return TRUE if there were no troubles
  */
-BooleanType updateSystemTimeDate();
+bool updateSystemTimeDate();
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
@@ -135,7 +135,7 @@ BooleanType updateSystemTimeDate();
  	 \param[in]  newAddressL high part of the memory.
  	 \return TRUE if there were no troubles
  */
-BooleanType setSystemAddress();
+bool setSystemAddress();
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
@@ -143,7 +143,7 @@ BooleanType setSystemAddress();
  	 \brief	 This function pauses the excecution of TeraTerm.
  	 \return TRUE if there were no troubles
  */
-BooleanType pauseExcecution();
+bool pauseExcecution();
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
@@ -151,6 +151,6 @@ BooleanType pauseExcecution();
  	 \brief	 This function toggle hourFormat.
  	 \return TRUE if there were no troubles
  */
-BooleanType toggleHourFormat();
+bool toggleHourFormat();
 
 #endif /*STATES_H_*/
