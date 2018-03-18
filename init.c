@@ -44,47 +44,8 @@
 
 void initMain ()
 {
-    //Change the Kinetis clock speed
-    int mcg_clk_hz;
-    unsigned char modeMCG = 0;
-
-#ifndef PLL_DIRECT_INIT
-    mcg_clk_hz = fei_fbi (SLOW_IRC_FREQ, SLOW_IRC); // 64 Hz ---> 32768
-    mcg_clk_hz = fbi_fbe (CLK_FREQ_HZ, LOW_POWER, EXTERNAL_CLOCK); // 97.656KHz ---> 50000000
-    mcg_clk_hz = fbe_pbe (CLK_FREQ_HZ, PLL0_PRDIV, PLL0_VDIV);// 97.656KHz ---> 50000000 and PLL is configured to generate 60000000
-    mcg_clk_hz = pbe_pee (CLK_FREQ_HZ);	// 117.18 KHz ---> 60000000
-#else
-    mcg_clk_hz = pll_init(CLK_FREQ_HZ, LOW_POWER, EXTERNAL_CLOCK, PLL0_PRDIV, PLL0_VDIV, PLL_ENABLE);
-#endif
-
-    modeMCG = what_mcg_mode ();
-
-//		   I2C_init(I2C_0, 60000000, 100000);
-    init_i2c ();
-
     CLOCK_EnableClock (kCLOCK_PortB);
-
-//       uint32_t status = kI2C_StopDetectFlag;
-//       I2C0->D = 6;
-//	   // Send start and slave address.
-//	   I2C_MasterStart(I2C0, MEM24LC256_WRITE_ADDRESS, kI2C_Write);
-//	   // Wait address sent out.
-//	   while(!((status = I2C_MasterGetStatusFlags(I2C0)) & kI2C_IntPendingFlag))
-//	   { }
-//	   I2C_MasterClearStatusFlags(I2C0, kI2C_StopDetectFlag);
-//	   I2C_MasterStart(I2C0, MEM24LC256_READ_ADDRESS, kI2C_Read);
-//	   while(!((status = I2C_SlaveGetStatusFlags(I2C0)) & kI2C_IntPendingFlag))
-//	   { }
-//	   //TODO donde leo el valor recibido
-//	   uint8_t read = I2C0->D;
-//
-//	   //set initial values for the clock
-//	   PCF8563_setSeconds(0x50);
-//	   PCF8563_setMinutes(0x59);
-//	   PCF8563_setHours(0x21);
-//	   PCF8563_setYears(0x98);
-//	   PCF8563_setMonths(0x11);
-//	   PCF8563_setDays(0x30);
+    init_i2c ();
 
 //	TODO init UART
 //	/**Configures UART 0 to transmit/receive at 11520 bauds with a 21 MHz of clock core*/
