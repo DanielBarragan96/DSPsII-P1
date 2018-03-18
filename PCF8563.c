@@ -89,6 +89,7 @@ uint8_t PCF8563_getDays ()
 }
 
 uint8_t PCF8583_setData (uint8_t address, uint8_t data)
+
 {
     return i2c_writes (PCF8563_WRITE_DATA_ADDRESS, address, sizeof(data), &data);
 }

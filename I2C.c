@@ -67,6 +67,7 @@ i2c_master_handle_t g_m_handle;
 volatile bool g_i2c_nw = false;
 TimerHandle_t g_timer; //global para que todas las tareas puedan usarlo.
 
+
 void TimerCallback (TimerHandle_t timeIn)
 {
     g_i2c_nw = true;
@@ -189,17 +190,18 @@ int8_t init_i2c ()
     //se crea el timer, es global, tipo TimerHandle_t
     g_timer = xTimerCreate (pcTimerName, g_xTimerPeriod, uxAutoReload,
             pvTimerID, pxCallbackFunction);
+
     return 0;
 }
 
 int8_t i2c_read (uint8_t slaveAdress, uint8_t subaddress, uint8_t dataSize,
         uint8_t* bufferOut)
 {
-    // Get default configuration for master.
-    i2c_slave_config_t slaveConfig;
-    I2C_SlaveGetDefaultConfig (&slaveConfig);
+        // Get default configuration for master.
+        i2c_slave_config_t slaveConfig;
+        I2C_SlaveGetDefaultConfig (&slaveConfig);
 
-    I2C_SlaveInit (I2C0, &slaveConfig, CLOCK_GetFreq (kCLOCK_BusClk));
+        I2C_SlaveInit (I2C0, &slaveConfig, CLOCK_GetFreq (kCLOCK_BusClk));
 
     masterXfer.slaveAddress = slaveAdress;
     masterXfer.direction = kI2C_Read;

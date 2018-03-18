@@ -29,4 +29,3 @@ int8_t MEM24LC256_getData (uint16_t address, uint8_t dataSize, uint8_t* data)
 {
     return i2c_read (MEM24LC256_READ_ADDRESS, address, dataSize, data);
 }
-
