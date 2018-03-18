@@ -15,11 +15,10 @@
 /********************************************************************************************/
 /********************************************************************************************/
 /*!
- 	 \brief	 This function initializes the necesary componentes of the Kinetis to start the program
+ \brief	 This function initializes the necesary componentes of the Kinetis to start the program
 
- 	 \return void
+ \return void
  */
-void initMain();
-
+void initMain ();
 
 #endif /* INIT_H_ */

@@ -1,9 +1,9 @@
 /**
-	\file FIFO.h
-	\brief
-		This is the header file for using a FIFO with the UART.
-	\author Daniel Barragán
-	\date	05/11/2017
+ \file FIFO.h
+ \brief
+ This is the header file for using a FIFO with the UART.
+ \author Daniel Barragán
+ \date	05/11/2017
  */
 #ifndef FIFO_H_
 #define FIFO_H_
@@ -19,43 +19,43 @@
 /********************************************************************************************/
 /********************************************************************************************/
 /*!
- 	 \brief	 This function deletes the first value IN.
- 	 \return If it was possible to eliminate the first value return TRUE, else return FALSE
+ \brief	 This function deletes the first value IN.
+ \return If it was possible to eliminate the first value return TRUE, else return FALSE
  */
-int8_t pop();
+int8_t pop ();
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
 /*!
- 	 \brief	 This function add a new value to the FIFO.
- 	 \param[in]  newVal will be added to the FIFO.
- 	 \return If it was possible to add the value return TRUE, else return FALSE
+ \brief	 This function add a new value to the FIFO.
+ \param[in]  newVal will be added to the FIFO.
+ \return If it was possible to add the value return TRUE, else return FALSE
  */
-bool push(int8_t newVal);
+bool push (int8_t newVal);
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
 /*!
- 	 \brief	 This is the function sends the current FIFO (first element) direction.
- 	 \return sint8* the direction of the FIFO
+ \brief	 This is the function sends the current FIFO (first element) direction.
+ \return sint8* the direction of the FIFO
  */
-int8_t* getFIFO();
+int8_t* getFIFO ();
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
 /*!
- 	 \brief	 This is the function clears the FIFO for new FIFOs
- 	 \return If it was possible to eliminate the FIFO values return TRUE, else return FALSE
+ \brief	 This is the function clears the FIFO for new FIFOs
+ \return If it was possible to eliminate the FIFO values return TRUE, else return FALSE
  */
-bool clearFIFO();
+bool clearFIFO ();
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
 /*!
- 	 \brief	 This is the function returns the sizze of the FIFO.
- 	 \return the size of the FIFO.
+ \brief	 This is the function returns the sizze of the FIFO.
+ \return the size of the FIFO.
  */
-int8_t getFIFOIndex();
+int8_t getFIFOIndex ();
 
 #endif /* FIFO_H_ */
 

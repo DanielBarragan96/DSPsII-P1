@@ -51,7 +51,6 @@
 #define BIT2 2
 #define BIT3 3
 
-
 //Flag to check the I2C status
 volatile bool g_MasterCompletionFlag = false;
 //Master transfer used to write
@@ -66,8 +65,8 @@ uint8_t read_data;
 
 i2c_master_handle_t g_m_handle;
 volatile bool g_i2c_nw = false;
+TimerHandle_t g_timer; //global para que todas las tareas puedan usarlo.
 
-TimerHandle_t g_timer;//global para que todas las tareas puedan usarlo.
 void TimerCallback (TimerHandle_t timeIn)
 {
     g_i2c_nw = true;
@@ -179,21 +178,17 @@ int8_t init_i2c ()
     I2C_Enable (I2C0, true);
     I2C_EnableInterrupts (I2C0, kI2C_GlobalInterruptEnable);
 
-
     //I2C nw
-    const TickType_t g_xTimerPeriod = pdMS_TO_TICKS(500);//periodo a interrumpir
+    const TickType_t g_xTimerPeriod = pdMS_TO_TICKS(500); //periodo a interrumpir
     //Interrupt I2C nw
-    const char *pcTimerName = "Timer";//nombre
-    const UBaseType_t uxAutoReload = pdFALSE;//si se hace auto reload
-    void * const pvTimerID = NULL;//handle de las tareas, regresa un valor para identificar la tarea
-    TimerCallbackFunction_t pxCallbackFunction = TimerCallback;//callback function
+    const char *pcTimerName = "Timer";    //nombre
+    const UBaseType_t uxAutoReload = pdFALSE;    //si se hace auto reload
+    void * const pvTimerID = NULL; //handle de las tareas, regresa un valor para identificar la tarea
+    TimerCallbackFunction_t pxCallbackFunction = TimerCallback; //callback function
 
     //se crea el timer, es global, tipo TimerHandle_t
-    g_timer = xTimerCreate( pcTimerName,
-                          g_xTimerPeriod,
-                          uxAutoReload,
-                          pvTimerID,
-                          pxCallbackFunction );
+    g_timer = xTimerCreate (pcTimerName, g_xTimerPeriod, uxAutoReload,
+            pvTimerID, pxCallbackFunction);
     return 0;
 }
 
@@ -206,31 +201,26 @@ int8_t i2c_read (uint8_t slaveAdress, uint8_t subaddress, uint8_t dataSize,
 
     I2C_SlaveInit (I2C0, &slaveConfig, CLOCK_GetFreq (kCLOCK_BusClk));
 
-    while(dataSize && !g_i2c_nw)
+    masterXfer.slaveAddress = slaveAdress;
+    masterXfer.direction = kI2C_Read;
+    masterXfer.subaddress = subaddress;
+    masterXfer.subaddressSize = 2;
+    masterXfer.data = bufferOut;
+    masterXfer.dataSize = dataSize;
+    masterXfer.flags = kI2C_TransferDefaultFlag;
+
+    xTimerReset(g_timer, portMAX_DELAY);
+    I2C_MasterTransferNonBlocking (I2C0, &g_m_handle, &masterXfer);
+    while (!g_MasterCompletionFlag && !g_i2c_nw)
     {
-        masterXfer.slaveAddress = slaveAdress;
-        masterXfer.direction = kI2C_Read;
-        masterXfer.subaddress = subaddress;
-        masterXfer.subaddressSize = 2;
-        masterXfer.data = bufferOut;
-        masterXfer.dataSize = dataSize;
-        masterXfer.flags = kI2C_TransferDefaultFlag;
+    }
+    xTimerStop(g_timer, portMAX_DELAY);
+    g_MasterCompletionFlag = false;
 
-        //xTimerReset(g_timer,portMAX_DELAY);
-        I2C_MasterTransferNonBlocking (I2C0, &g_m_handle, &masterXfer);
-        while (!g_MasterCompletionFlag && !g_i2c_nw)
-        {
-        }
-        g_MasterCompletionFlag = false;
-
-        if(g_i2c_nw)
-        {
-            g_i2c_nw = false;
-            return -1;//Error
-        }
-        dataSize--;
-        subaddress++;
-        bufferOut++;
+    if (g_i2c_nw)
+    {
+        g_i2c_nw = false;
+        return -1;    //Error
     }
     return 0;
 }
@@ -239,62 +229,34 @@ int8_t i2c_writes (uint8_t slaveAdress, uint8_t subaddress, uint8_t dataSize,
         uint8_t* buffer)
 {
     // Get default configuration for master.
-       i2c_master_config_t masterConfig;
-       I2C_MasterGetDefaultConfig (&masterConfig);
+    i2c_master_config_t masterConfig;
+    I2C_MasterGetDefaultConfig (&masterConfig);
 
-       I2C_MasterInit (I2C0, &masterConfig, CLOCK_GetFreq (kCLOCK_BusClk));
+    I2C_MasterInit (I2C0, &masterConfig, CLOCK_GetFreq (kCLOCK_BusClk));
 
-       masterXfer.slaveAddress = slaveAdress;
-       masterXfer.direction = kI2C_Write;
-       masterXfer.subaddress = subaddress;
-       masterXfer.subaddressSize = 2;
-       masterXfer.data = buffer;
-       masterXfer.dataSize = dataSize;
-       masterXfer.flags = kI2C_TransferDefaultFlag;
+    masterXfer.slaveAddress = slaveAdress;
+    masterXfer.direction = kI2C_Write;
+    masterXfer.subaddress = subaddress;
+    masterXfer.subaddressSize = 2;
+    masterXfer.data = buffer;
+    masterXfer.dataSize = dataSize;
+    masterXfer.flags = kI2C_TransferDefaultFlag;
 
-       //xTimerReset(g_timer,portMAX_DELAY);
-       I2C_MasterTransferNonBlocking (I2C0, &g_m_handle, &masterXfer);
-       while (!g_MasterCompletionFlag && !g_i2c_nw)
-       {
-       }
-       g_MasterCompletionFlag = false;
-       int ret = 0;
-       if(g_i2c_nw)
-           ret = -1;//Error
-       g_i2c_nw = false;
-       return ret;
-//
-//
-//    while(dataSize && !g_i2c_nw)
-//    {
-//        // Get default configuration for master.
-//            i2c_master_config_t masterConfig;
-//            I2C_MasterGetDefaultConfig (&masterConfig);
-//
-//            I2C_MasterInit (I2C0, &masterConfig, CLOCK_GetFreq (kCLOCK_BusClk));
-//
-//        masterXfer.slaveAddress = slaveAdress;
-//        masterXfer.direction = kI2C_Write;
-//        masterXfer.subaddress = subaddress;
-//        masterXfer.subaddressSize = 2;
-//        masterXfer.data = buffer;
-//        masterXfer.dataSize = dataSize;
-//        masterXfer.flags = kI2C_TransferDefaultFlag;
-//
-//        //xTimerReset(g_timer,portMAX_DELAY);
-//        I2C_MasterTransferNonBlocking (I2C0, &g_m_handle, &masterXfer);
-//        while (!g_MasterCompletionFlag && !g_i2c_nw)
-//        {
-//        }
-//        g_MasterCompletionFlag = false;
-//        if(g_i2c_nw)
-//        {
-//            g_i2c_nw = false;
-//            return -1;
-//        }
-//        dataSize--;
-//        subaddress++;
-//        buffer++;
-//    }
-//    return 0;
+    if (xTimerReset(g_timer,portMAX_DELAY) != pdPASS)
+    {
+        printf ("\nERROR\n\r");
+    }
+    I2C_MasterTransferNonBlocking (I2C0, &g_m_handle, &masterXfer);
+    while (!g_MasterCompletionFlag && !g_i2c_nw)
+    {
+    }
+    xTimerStop(g_timer, portMAX_DELAY);
+    g_MasterCompletionFlag = false;
+
+    if (g_i2c_nw)
+    {
+        g_i2c_nw = false;
+        return -1;
+    }
+    return 0;
 }
