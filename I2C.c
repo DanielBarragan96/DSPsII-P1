@@ -190,7 +190,6 @@ int8_t init_i2c ()
     g_timer = xTimerCreate (pcTimerName, g_xTimerPeriod, uxAutoReload,
             pvTimerID, pxCallbackFunction);
 
-    xTimerChangePeriod(g_timer,g_xTimerPeriod,portMAX_DELAY);
     return 0;
 }
 
@@ -215,8 +214,10 @@ int8_t i2c_read (uint8_t slaveAdress, uint8_t subaddress, uint8_t dataSize,
     I2C_MasterTransferNonBlocking (I2C0, &g_m_handle, &masterXfer);
     while (!g_MasterCompletionFlag && !g_i2c_nw)
     {
+        vTaskDelay (pdMS_TO_TICKS(10));
     }
     xTimerStop(g_timer, portMAX_DELAY);
+    I2C_MasterStop(I2C0);
     g_MasterCompletionFlag = false;
 
     if (g_i2c_nw)
@@ -248,8 +249,10 @@ int8_t i2c_writes (uint8_t slaveAdress, uint8_t subaddress, uint8_t dataSize,
     I2C_MasterTransferNonBlocking (I2C0, &g_m_handle, &masterXfer);
     while (!g_MasterCompletionFlag && !g_i2c_nw)
     {
+        vTaskDelay (pdMS_TO_TICKS(10));
     }
     xTimerStop(g_timer, portMAX_DELAY);
+    I2C_MasterStop(I2C0);
     g_MasterCompletionFlag = false;
 
     if (g_i2c_nw)
