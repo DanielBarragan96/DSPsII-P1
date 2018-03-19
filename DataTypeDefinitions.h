@@ -8,6 +8,10 @@
 #ifndef DATATYPEDEFINITIONS_H_
 #define DATATYPEDEFINITIONS_H_
 
+#include "board.h"
+#include "pin_mux.h"
+
+
 
 /*! This definition is as a general definitions to bits in regiter or pins in the microcontroller.*/
 typedef enum {BIT0,  /*!< Bit 0 */
@@ -63,6 +67,15 @@ typedef long int sint32;
 
 /*! This data type is 32-bit unsigned float*/
 typedef float ufloat32;
+
+/**
+ * \brief A mail box type definition for serial port
+ */
+typedef struct{
+	bool flag; /** Flag to indicate that there is new data*/
+	bool flagEnter;
+	uint8_t mailBox; /** it contains the received data*/
+}UART_MailBoxType;
 
 
 

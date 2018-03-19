@@ -61,7 +61,7 @@ void initMain ()
 
     modeMCG = what_mcg_mode ();
     init_i2c();
-    uart_init();
+    uart_TeraTerm_init();
 
     CLOCK_EnableClock (kCLOCK_PortB);
 }
