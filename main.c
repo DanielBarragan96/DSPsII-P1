@@ -40,7 +40,7 @@
 #include "MK64F12.h"
 #include "fsl_debug_console.h"
 #include "TeraTerm_Task_UART.h"
-
+#include "BT_Task_UART.h"
 #include "MCG.h"
 #include "init.h"
 #include "MEM24LC256.h"
@@ -65,9 +65,9 @@ int main (void)
 
     initMain ();
 
-    uart_TeraTerm_receive(UART0, msg);
+    //uart_BT_receive(UART0, msg);
 
-   // uart_send(UART0,(uint8_t*)"HOLA MUNDO");
+    uart_BT_send(UART4,(uint8_t*)"HOLA MUNDO");
 
 
     while (1)

@@ -16,7 +16,7 @@
 #include "fsl_gpio.h"
 #include "pin_mux.h"
 #include "TeraTerm_Task_UART.h"
-
+#include "BT_Task_UART.h"
 #include "I2C.h"
 
 /* I2C source clock */
@@ -62,6 +62,7 @@ void initMain ()
     modeMCG = what_mcg_mode ();
     init_i2c();
     uart_TeraTerm_init();
+    uart_BT_init();
 
     CLOCK_EnableClock (kCLOCK_PortB);
 }

@@ -20,5 +20,8 @@ void uart_BT_init();
 void clearflagEnter();
 bool getflagEnter();
 
+void uart_BT_receive(UART_Type *base, uint8_t* string);
+void uart_BT_send(UART_Type *base, uint8_t* string);
+
 
 #endif /* BT_TASK_UART_H_ */

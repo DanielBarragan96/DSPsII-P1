@@ -22,7 +22,7 @@
 /*******************************************************************************
  * Variables UART
  ******************************************************************************/
-uart_handle_t g_uartHandle;
+uart_handle_t g_UartHandle;
 uint8_t g_RxRingBuffer[RX_RING_BUFFER_SIZE] = {0}; /* RX ring buffer. */
 volatile bool rxBuffer_Empty = true;
 volatile bool txBuffer_Full = false;
@@ -59,21 +59,17 @@ void PORTE_IRQHandler(){
 void uart_BT_init(){
 
 	uart_config_t config;
-
-	CLOCK_EnableClock(kCLOCK_PortE);
-
-	PORT_SetPinMux(PORTE, 24, kPORT_MuxAlt3);
-	PORT_SetPinMux(PORTE, 25, kPORT_MuxAlt3);
-	UART_GetDefaultConfig(&config);
-
+	BOARD_InitPins_BT();
 	config.baudRate_Bps = BOARD_DEBUG_UART_BAUDRATE;
 	config.enableTx = true;
 	config.enableRx = true;
 
-	UART_Init(UART4, &config, CLOCK_GetFreq(UART0_CLK_SRC));
-	UART_TransferCreateHandle(UART4, &g_uartHandle, BT_UART_UserCallback, NULL);
-	UART_TransferStartRingBuffer(UART4, &g_uartHandle, g_RxRingBuffer, RX_RING_BUFFER_SIZE);
-	NVIC_EnableIRQ(PORTE_IRQn);
+	UART_Init(UART0, &config, CLOCK_GetFreq(UART0_CLK_SRC));
+	UART_TransferCreateHandle(UART0, &g_UartHandle, BT_UART_UserCallback, NULL);
+	UART_TransferStartRingBuffer(UART0, &g_UartHandle, g_RxRingBuffer, RX_RING_BUFFER_SIZE);
+
+	UART_interruptEnable(UART0);
+	NVIC_EnableIRQ(PORTA_IRQn);
 
 	}
 
@@ -84,7 +80,7 @@ void uart_BT_send(UART_Type *base, uint8_t* string){
 	xfer.data = string;
 	xfer.dataSize = 1;//sizeof( string) ;
 	tx_OnGoing = true;
-    UART_TransferSendNonBlocking(UART0, &g_uartHandle, &xfer);
+    UART_TransferSendNonBlocking(UART0, &g_UartHandle, &xfer);
      /* Wait send finished */
       while (tx_OnGoing)
       {
@@ -97,19 +93,24 @@ void uart_BT_send(UART_Type *base, uint8_t* string){
 
 void uart_BT_receive(UART_Type *base, uint8_t* string){
 	uint8_t receiveData[32];
-	uart_transfer_t xfer;
-	xfer.data = receiveData;
-	xfer.dataSize = sizeof(receiveData)/sizeof(receiveData[0]);
-	rx_OnGoing = true;
-	UART_TransferReceiveNonBlocking(UART0, &g_uartHandle, &xfer, &xfer.dataSize);
+		uint8_t i=0;
+		uart_transfer_t xfer;
+		xfer.data = receiveData;
+		xfer.dataSize = sizeof(receiveData)/sizeof(receiveData[0]);
+		rx_OnGoing = true;
+		UART_TransferReceiveNonBlocking(UART0, &g_UartHandle, &xfer, &xfer.dataSize);
 
-	if(ENTER == *xfer.data)
-	    	rx_OnGoing = 0;
 
-	while (rx_OnGoing)
-	      {
-	      }
-}
+
+		while (rx_OnGoing)
+		      {
+
+			if(ENTER == receiveData[i])
+				    	rx_OnGoing = 0;
+			i==31?i=0:i++;
+
+		      }
+	}
 
 
 

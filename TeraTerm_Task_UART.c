@@ -93,17 +93,22 @@ void uart_TeraTerm_send(UART_Type *base, uint8_t* string){
 
 void uart_TeraTerm_receive(UART_Type *base, uint8_t* string){
 	uint8_t receiveData[32];
+	uint8_t i=0;
 	uart_transfer_t xfer;
 	xfer.data = receiveData;
 	xfer.dataSize = sizeof(receiveData)/sizeof(receiveData[0]);
 	rxOnGoing = true;
 	UART_TransferReceiveNonBlocking(UART0, &g_uartHandle, &xfer, &xfer.dataSize);
 
-	if(ENTER == *xfer.data)
-	    	rxOnGoing = 0;
+
 
 	while (rxOnGoing)
 	      {
+
+		if(ENTER == receiveData[i])
+			    	rxOnGoing = 0;
+		i==31?i=0:i++;
+
 	      }
 }
 
