@@ -65,7 +65,7 @@ int main (void)
 
     initMain ();
 
-    uart_receive(UART0, msg);
+    uart_TeraTerm_receive(UART0, msg);
 
    // uart_send(UART0,(uint8_t*)"HOLA MUNDO");
 

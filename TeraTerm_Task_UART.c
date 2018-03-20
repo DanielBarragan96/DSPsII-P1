@@ -28,9 +28,12 @@ volatile bool txBufferFull = false;
 volatile bool txOnGoing = false;
 volatile bool rxOnGoing = false;
 UART_MailBoxType UART0_MailBox;
-/******************************************************************************/
-/* UART user callback */
 
+
+/*******************************************************************************
+ * Code
+ ******************************************************************************/
+/* UART user callback */
 void TeraTerm_UART_UserCallback(UART_Type *base, uart_handle_t *handle, status_t status, void *userData)
 {
    userData = userData;
@@ -51,6 +54,7 @@ void TeraTerm_UART_UserCallback(UART_Type *base, uart_handle_t *handle, status_t
 void uart_TeraTerm_init(){
 
 	uart_config_t config;
+    BOARD_InitPins();
 	UART_GetDefaultConfig(&config);
 
 	config.baudRate_Bps = BOARD_DEBUG_UART_BAUDRATE;
@@ -63,10 +67,12 @@ void uart_TeraTerm_init(){
 }
 
 
-void uart_send(UART_Type *base, uint8_t* string){
-	while (*string)
-{//se transmiten los datos hasta llegar al caracter nulo
+void uart_TeraTerm_send(UART_Type *base, uint8_t* string){
+	while (*string)//se transmiten los datos hasta llegar al caracter nulo
+{
 	uart_transfer_t xfer;
+	uart_transfer_t sendXfer;
+	uart_transfer_t receiveXfer;
 	xfer.data = string;
 	xfer.dataSize = 1;//sizeof( string) ;
 	txOnGoing = true;
@@ -76,10 +82,16 @@ void uart_send(UART_Type *base, uint8_t* string){
       {
       }
       string++;
+      /* Start to echo. */
+      sendXfer.data = g_txBuffer;
+      sendXfer.dataSize = ECHO_BUFFER_SIZE;
+      receiveXfer.data = g_rxBuffer;
+      receiveXfer.dataSize = ECHO_BUFFER_SIZE;
 	}
+
 }
 
-void uart_receive(UART_Type *base, uint8_t* string){
+void uart_TeraTerm_receive(UART_Type *base, uint8_t* string){
 	uint8_t receiveData[32];
 	uart_transfer_t xfer;
 	xfer.data = receiveData;
@@ -93,6 +105,10 @@ void uart_receive(UART_Type *base, uint8_t* string){
 	while (rxOnGoing)
 	      {
 	      }
+}
+
+void uart_TeraTerm_echo(){
+
 }
 
 void setflagE(){
