@@ -63,11 +63,10 @@ int main (void)
     /* Init FSL debug console. */
     BOARD_InitDebugConsole ();
 
-    initMain ();
+    initMain();
 
     //uart_BT_receive(UART0, msg);
-
-    uart_BT_send(UART4,(uint8_t*)"HOLA MUNDO");
+    //uart_BT_send(UART4,(uint8_t*)"HOLA MUNDO");
 
 
     while (1)

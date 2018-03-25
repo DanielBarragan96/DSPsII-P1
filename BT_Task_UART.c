@@ -19,6 +19,7 @@
 #define ECHO_BUFFER_SIZE 8U
 #define ENTER 13
 
+
 /*******************************************************************************
  * Variables UART
  ******************************************************************************/
@@ -50,17 +51,16 @@ void BT_UART_UserCallback(UART_Type *base, uart_handle_t *handle, status_t statu
    }
 }
 
-void PORTE_IRQHandler(){
+void PORTA_IRQHandler() {
 
-   	PORT_ClearPinsInterruptFlags(PORTE, BIT25);
-
-   }
+	PORT_ClearPinsInterruptFlags(PORTA, 1 << 4);
+}
 
 void uart_BT_init(){
 
 	uart_config_t config;
 	BOARD_InitPins_BT();
-	config.baudRate_Bps = BOARD_DEBUG_UART_BAUDRATE;
+	config.baudRate_Bps = 9600;
 	config.enableTx = true;
 	config.enableRx = true;
 
@@ -68,8 +68,9 @@ void uart_BT_init(){
 	UART_TransferCreateHandle(UART0, &g_UartHandle, BT_UART_UserCallback, NULL);
 	UART_TransferStartRingBuffer(UART0, &g_UartHandle, g_RxRingBuffer, RX_RING_BUFFER_SIZE);
 
-	UART_interruptEnable(UART0);
 	NVIC_EnableIRQ(PORTA_IRQn);
+	NVIC_SetPriority(PORTA_IRQn, 5);
+	EnableIRQ(UART0_RX_TX_IRQn);
 
 	}
 

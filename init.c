@@ -18,6 +18,7 @@
 #include "TeraTerm_Task_UART.h"
 #include "BT_Task_UART.h"
 #include "I2C.h"
+#include "SPI.h"
 
 /* I2C source clock */
 #define I2C_MASTER_CLK_SRC I2C0_CLK_SRC
@@ -63,6 +64,7 @@ void initMain ()
     init_i2c();
     uart_TeraTerm_init();
     uart_BT_init();
+    SPI_init();
 
     CLOCK_EnableClock (kCLOCK_PortB);
 }
