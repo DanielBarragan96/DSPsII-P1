@@ -26,10 +26,7 @@ void DSPI_MasterUserCallback(SPI_Type *base, dspi_master_handle_t *handle, statu
 /*******************************************************************************
  * Variables
  ******************************************************************************/
-uint8_t masterRxData[TRANSFER_SIZE] = {0U};
-uint8_t masterTxData[TRANSFER_SIZE] = {0U};
-
-dspi_master_handle_t g_m_handle;
+dspi_master_handle_t g_m_handleSPI;
 volatile bool isTransferCompleted = false;
 
 /*******************************************************************************
@@ -51,30 +48,36 @@ void SPI_init(){
 	BOARD_InitPins_SPI();
 	DSPI_MasterGetDefaultConfig(&masterConfig);
 
-	uint32_t srcClock_Hz = CLOCK_GetFreq(DSPI0_CLK_SRC);
-	DSPI_MasterInit(SPI0, &masterConfig, srcClock_Hz);
-    DSPI_MasterTransferCreateHandle(SPI0, &g_m_handle, DSPI_MasterUserCallback, NULL);
+	DSPI_MasterInit(SPI0, &masterConfig, CLOCK_GetBusClkFreq());
+    DSPI_MasterTransferCreateHandle(SPI0, &g_m_handleSPI, DSPI_MasterUserCallback, NULL);
 }
 
-void SPI_send(SPI_Type *base, uint8_t* string){
+void SPI_send(uint8_t* string){
 	 dspi_transfer_t masterXfer;
-	  /* Start master transfer, send data to slave */
-	        isTransferCompleted = false;
-	        masterXfer.txData = string;
-	        masterXfer.rxData = NULL;
-	        masterXfer.dataSize = sizeof(string);
-	        masterXfer.configFlags = kDSPI_MasterCtar0 | EXAMPLE_DSPI_MASTER_PCS_FOR_TRANSFER | kDSPI_MasterPcsContinuous;
-	        DSPI_MasterTransferNonBlocking(SPI0, &g_m_handle, &masterXfer);
+  /* Start master transfer, send data to slave */
+	 isTransferCompleted = false;
+	 masterXfer.txData = string;
+	 masterXfer.rxData = NULL;
+	 masterXfer.dataSize = sizeof(string);
+	 masterXfer.configFlags = kDSPI_MasterCtar0 | EXAMPLE_DSPI_MASTER_PCS_FOR_TRANSFER | kDSPI_MasterPcsContinuous;
+	 DSPI_MasterTransferNonBlocking(SPI0, &g_m_handleSPI, &masterXfer);
 
-	        /* Wait transfer complete */
-	        while (!isTransferCompleted)
-	        {
-	        }
+	 /* Wait transfer complete */
+	 while (!isTransferCompleted)
+	 {
+	 }
 }
 
-void SPI_sendOneByte (SPI_Type *base, uint8_t Data){
-	base->PUSHR = Data;
-	while(0 == (base->SR & SPI_SR_TCF_MASK));
-	base->SR |= SPI_SR_TCF_MASK;
+void SPI_sendOneByte (uint8_t Data){
+	 uint8_t sendData[1];
+	 sendData[0] = Data;
+	 dspi_transfer_t masterXfer;
+	 masterXfer.txData = sendData;
+	 masterXfer.rxData = NULL;
+	 masterXfer.dataSize = sizeof(sendData);
+	 masterXfer.configFlags = kDSPI_MasterCtar0 | EXAMPLE_DSPI_MASTER_PCS_FOR_TRANSFER | kDSPI_MasterPcsContinuous;
+
+	 DSPI_MasterTransferNonBlocking(SPI0, &g_m_handleSPI, &masterXfer);
+	 DSPI_StopTransfer(SPI0);
 }
 

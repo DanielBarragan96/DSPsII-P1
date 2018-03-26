@@ -8,15 +8,20 @@
 //#include "GPIO.h"
 #include "SPI.h"
 #include "LCDNokia5110.h"
-
+#include "FreeRTOS.h"
 #include "fsl_port.h"
 #include "fsl_gpio.h"
 #include "fsl_dspi.h"
 #include "SPI.h"
+#include "board.h"
+#include "task.h"
+#include "peripherals.h"
+#include "pin_mux.h"
+#include "GlobalFunctions.h"
+#include "MK64F12.h"
 
 
-
-static const uint8 ASCII[][5] =
+static const uint8_t ASCII[][5] =
 {
  {0x00, 0x00, 0x00, 0x00, 0x00} // 20  
 ,{0x00, 0x00, 0x5f, 0x00, 0x00} // 21 !
@@ -119,31 +124,22 @@ static const uint8 ASCII[][5] =
 
 void LCDNokia_init(void) {
 	CLOCK_EnableClock(kCLOCK_PortD);
-	CLOCK_EnableClock(kCLOCK_PortC);
 
-	port_pin_config_t config_pantalla = { kPORT_PullDisable, kPORT_SlowSlewRate,
+	port_pin_config_t config_lcd = { kPORT_PullDisable, kPORT_SlowSlewRate,
 					kPORT_PassiveFilterDisable, kPORT_OpenDrainDisable,
 					kPORT_LowDriveStrength, kPORT_MuxAsGpio, kPORT_UnlockRegister, };
 
-	PORT_SetPinConfig(PORTD, BIT3, &config_pantalla);
+	PORT_SetPinConfig(PORTD, BIT3, &config_lcd);
+	PORT_SetPinConfig(PORTD, BIT0, &config_lcd);
 
-	gpio_pin_config_t pantalla_config_gpio = { kGPIO_DigitalOutput, 1 };
+	gpio_pin_config_t lcd_config_gpio = { kGPIO_DigitalOutput, 0 };
 
-	GPIO_PinInit(GPIOD, BIT3, &pantalla_config_gpio);
+	GPIO_PinInit(GPIOD, BIT3, &lcd_config_gpio);
+	GPIO_PinInit(GPIOD, BIT0, &lcd_config_gpio);
 
-	port_pin_config_t config_reset = { kPORT_PullDisable, kPORT_SlowSlewRate,
-						kPORT_PassiveFilterDisable, kPORT_OpenDrainDisable,
-						kPORT_LowDriveStrength, kPORT_MuxAsGpio, kPORT_UnlockRegister, };
-
-	PORT_SetPinConfig(PORTC, BIT3, &config_reset);
-
-	gpio_pin_config_t reset_config_gpio = { kGPIO_DigitalOutput, 1 };
-
-	GPIO_PinInit(GPIOC, BIT3, &reset_config_gpio);
-
-	GPIO_WritePinOutput(GPIOC, BIT3, 0);
-	LCD_delay();
-	GPIO_WritePinOutput(GPIOC, BIT3, 1);
+	GPIO_WritePinOutput(GPIOD, BIT0, 0);
+	delay(65000);
+	GPIO_WritePinOutput(GPIOD, BIT0, 1);
 	LCDNokia_writeByte(LCD_CMD, 0x21); //Tell LCD that extended commands follow
 	LCDNokia_writeByte(LCD_CMD, 0xBF); //Set LCD Vop (Contrast): Try 0xB1(good @ 3.3V) or 0xBF if your display is too dark
 	LCDNokia_writeByte(LCD_CMD, 0x04); //Set Temp coefficent
@@ -153,7 +149,7 @@ void LCDNokia_init(void) {
 	LCDNokia_writeByte(LCD_CMD, 0x0C); //Set display control, normal mode. 0x0D for inverse
 }
 
-void LCDNokia_bitmap(const uint8* my_array){
+void LCDNokia_bitmap(const uint8_t* my_array){
 	uint16 index=0;
   for (index = 0 ; index < (LCD_X * LCD_Y / 8) ; index++)
 	  LCDNokia_writeByte(LCD_DATA, *(my_array+index));
@@ -161,19 +157,17 @@ void LCDNokia_bitmap(const uint8* my_array){
 
 
 
-void LCDNokia_writeByte(uint8 DataOrCmd, uint8 data)
+void LCDNokia_writeByte(uint8_t DataOrCmd, uint8_t data)
 {
 	if(DataOrCmd)
-		GPIO_WritePinOutput(GPIOC, BIT3, 1);
+		GPIO_WritePinOutput(GPIOD, BIT3, 1);
 	else
-		GPIO_WritePinOutput(GPIOC, BIT3, 0);
+		GPIO_WritePinOutput(GPIOD, BIT3, 0);
 	
-	DSPI_StartTransfer(SPI0);
-	SPI_sendOneByte(SPI0,data);
-	DSPI_StopTransfer(SPI0);
+	SPI_sendOneByte(data);
 }
 
-void LCDNokia_sendChar(uint8 character) {
+void LCDNokia_sendChar(uint8_t character) {
   uint16 index = 0; 
 	
   LCDNokia_writeByte(LCD_DATA, 0x00); //Blank vertical line padding
@@ -185,7 +179,7 @@ void LCDNokia_sendChar(uint8 character) {
   LCDNokia_writeByte(LCD_DATA, 0x00); //Blank vertical line padding
 }
 
-void LCDNokia_sendString(uint8 *characters) {
+void LCDNokia_sendString(uint8_t *characters) {
   while (*characters)
 	  LCDNokia_sendChar(*characters++);
 }
@@ -197,7 +191,7 @@ void LCDNokia_clear(void) {
   LCDNokia_gotoXY(0, 0); //After we clear the display, return to the home position
 }
 
-void LCDNokia_gotoXY(uint8 x, uint8 y) {
+void LCDNokia_gotoXY(uint8_t x, uint8_t y) {
 	LCDNokia_writeByte(LCD_CMD, 0x80 | x);  // Column.
 	LCDNokia_writeByte(LCD_CMD, 0x40 | y);  // Row.  ?
 }

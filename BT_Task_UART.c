@@ -92,7 +92,7 @@ void uart_BT_send(UART_Type *base, uint8_t* string){
 
 }
 
-void uart_BT_receive(UART_Type *base, uint8_t* string){
+void uart_BT_receive(UART_Type *base){
 	uint8_t receiveData[32];
 		uint8_t i=0;
 		uart_transfer_t xfer;

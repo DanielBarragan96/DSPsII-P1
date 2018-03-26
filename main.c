@@ -41,9 +41,10 @@
 #include "fsl_debug_console.h"
 #include "TeraTerm_Task_UART.h"
 #include "BT_Task_UART.h"
-#include "MCG.h"
 #include "init.h"
-#include "MEM24LC256.h"
+#include "SPI.h"
+#include "PantallaPC.h"
+
 /* TODO: insert other include files here. */
 
 /* TODO: insert other definitions and declarations here. */
@@ -67,6 +68,7 @@ int main (void)
 
     //uart_BT_receive(UART0, msg);
     //uart_BT_send(UART4,(uint8_t*)"HOLA MUNDO");
+    imprimirPantalla();
 
 
     while (1)

@@ -8,17 +8,14 @@
 #include "DataTypeDefinitions.h"
 #include "MK64F12.h"
 #include "init.h"
-#include "MCG.h"
-#include "MEM24LC256.h"
-#include "PCF8563.h"
 #include "fsl_clock.h"
 #include "fsl_i2c.h"
 #include "fsl_gpio.h"
 #include "pin_mux.h"
 #include "TeraTerm_Task_UART.h"
 #include "BT_Task_UART.h"
-#include "I2C.h"
 #include "SPI.h"
+#include "LCDNokia5110.h"
 
 /* I2C source clock */
 #define I2C_MASTER_CLK_SRC I2C0_CLK_SRC
@@ -47,24 +44,9 @@
 
 void initMain ()
 {
-    //Change the Kinetis clock speed
-    int mcg_clk_hz;
-    unsigned char modeMCG = 0;
-
-#ifndef PLL_DIRECT_INIT
-    mcg_clk_hz = fei_fbi (SLOW_IRC_FREQ, SLOW_IRC); // 64 Hz ---> 32768
-    mcg_clk_hz = fbi_fbe (CLK_FREQ_HZ, LOW_POWER, EXTERNAL_CLOCK); // 97.656KHz ---> 50000000
-    mcg_clk_hz = fbe_pbe (CLK_FREQ_HZ, PLL0_PRDIV, PLL0_VDIV);// 97.656KHz ---> 50000000 and PLL is configured to generate 60000000
-    mcg_clk_hz = pbe_pee (CLK_FREQ_HZ);	// 117.18 KHz ---> 60000000
-#else
-    mcg_clk_hz = pll_init(CLK_FREQ_HZ, LOW_POWER, EXTERNAL_CLOCK, PLL0_PRDIV, PLL0_VDIV, PLL_ENABLE);
-#endif
-
-    modeMCG = what_mcg_mode ();
-    init_i2c();
-    uart_TeraTerm_init();
-    uart_BT_init();
+    //init_i2c();
+    //uart_TeraTerm_init();
+    //uart_BT_init();
     SPI_init();
-
-    CLOCK_EnableClock (kCLOCK_PortB);
+    LCDNokia_init();
 }

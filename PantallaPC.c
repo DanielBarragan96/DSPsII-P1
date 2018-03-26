@@ -11,12 +11,15 @@
 #include "board.h"
 #include "MK64F12.h"
 #include "pin_mux.h"
+#include "GlobalFunctions.h"
 #include "Fifo.h"
-#include "PCF8563.h"
+//#include "PCF8563.h"
 #include "DataTypeDefinitions.h"
 #include "PantallaPC.h"
-#include "MEM24LC256.h"
+//#include "MEM24LC256.h"
 #include "fsl_uart.h"
+#include "BT_Task_UART.h"
+#include "LCDNokia5110.h"
 
 BooleanType Formatohora = FALSE; //bandera para cambiar el formato
 static sint8 string[2] ;
@@ -25,10 +28,25 @@ sint8 formato[2] = {'h','r'};
 /*
  * Realiza las dos operaciones para enviar escribir en el serial, primero la posicion y despues los valores
  */
-void escribirP(UART_Type *base, sint8* Posicion,  sint8* data ){
-	uart_send(base, (uint8_t*)Posicion);
-	uart_send(base, (uint8_t*)data);
+void escribirP(UART_Type *base, sint8* Posicion,  sint8* string ){
+	uart_TeraTerm_send(base, (uint8_t*)Posicion);
+	uart_TeraTerm_send(base, (uint8_t*)string);
 }
+
+void imprimir_lcd(uint8* string,uint8 posicion_x, uint8 posicion_y){
+	LCDNokia_gotoXY(posicion_x,posicion_y); /*! It establishes the position to print the messages in the LCD*/
+	LCDNokia_sendString(string); /*! It print a string stored in an array*/
+	delay(65000);
+}
+
+void limpiar_lcd(){
+	LCDNokia_clear();/*! It clears the information printed in the LCD*/
+	delay(65000);
+	LCDNokia_clear();
+	delay(65000);
+	LCDNokia_clear();
+}
+
 
 /*
  * Funcion que espera hasta que terminemos de ingresar los valores que queremos. En otras palabras espera un ENTER
@@ -36,14 +54,25 @@ void escribirP(UART_Type *base, sint8* Posicion,  sint8* data ){
 void ingresoDatos(){
 	while(FALSE == getflagEnter());
 	clearflagE();
+
+}
+
+void imprimirPantalla(){
+	uint8 string1[] = "1)Alarma"; /*! String to be printed in the LCD*/
+	uint8 string2[] = "2)Format T."; /*! String to be printed in the LCD*/
+
+	limpiar_lcd();
+	imprimir_lcd(string1, 2, 0);
+	imprimir_lcd(string2, 2, 1);
 }
 
 /*
  * Se imprime el menu inicial de la práctica
  */
 void MenuInicial(){
+
 	/**clear screen*/
-	uart_send(UART0,(uint8_t*)"\033[2J");
+	uart_TeraTerm_send(UART0,(uint8_t*)"\033[2J");
 	/** VT100 command for positioning the cursor in x and y position and sending the message*/
 	escribirP(UART0,"\033[10;10H", "1) Leer Memoria I2C");
 	escribirP(UART0,"\033[11;10H", "2) Escribir memoria I2C");
@@ -53,6 +82,7 @@ void MenuInicial(){
 	escribirP(UART0,"\033[15;10H", "6) Leer hora");
 	escribirP(UART0,"\033[16;10H", "7) Leer fecha");
 	escribirP(UART0,"\033[18;10H", "");
+
 }
 
 /*
@@ -70,7 +100,7 @@ void LeerM(){
 	uint8 NDatos ;
 	uint8 ContadorDeDatosExtraidos = 0;
 	resetContador();
-	uart_send(UART0,(uint8_t*)"\033[2J");
+	uart_TeraTerm_send(UART0,(uint8_t*)"\033[2J");
 	escribirP(UART0,"\033[10;10H", "Direccion de lectura:");
 	ingresoDatos();
 	escribirP(UART0,"\033[10;50H", getFIFO());
@@ -91,20 +121,20 @@ void LeerM(){
 	escribirP(UART0,"\033[11;50H", getFIFO());
 	resetContador();
 	escribirP(UART0,"\033[12;10H", "Contenido");
-	clearFlagM();
-
-
-	for( ContadorDeDatosExtraidos = 0; ContadorDeDatosExtraidos<NDatos ; ContadorDeDatosExtraidos++){
-
-		StringFromMemory[ContadorDeDatosExtraidos] = Memoria_24LC256_getValue(get_Memoria_24LC256_ConfigStruct(),(address +ContadorDeDatosExtraidos));
-	}
+//	clearFlagM();
+//
+//
+//	for( ContadorDeDatosExtraidos = 0; ContadorDeDatosExtraidos<NDatos ; ContadorDeDatosExtraidos++){
+//
+//		StringFromMemory[ContadorDeDatosExtraidos] = Memoria_24LC256_getValue(get_Memoria_24LC256_ConfigStruct(),(address +ContadorDeDatosExtraidos));
+//	}
 
 
 	escribirP(UART0,"\033[13;10H", StringFromMemory);
 	escribirP(UART0,"\033[14;10H", "Presiona una tecla para continuar...");
 
 
-	while(FALSE==getFlagM());
+//	while(FALSE==getFlagM());
 
 
 }
@@ -127,7 +157,7 @@ void EscribirM(){
 	uint8 NDatos = 0;
 
 
-	uart_send(UART0,(uint8_t*)"\033[2J");
+	uart_TeraTerm_send(UART0,(uint8_t*)"\033[2J");
 	escribirP(UART0,"\033[10;10H", "Direccion de escritura:");
 	resetContador();
 	ingresoDatos();
@@ -147,13 +177,13 @@ void EscribirM(){
 
 
 	x = (pop() + 48);
-	while(x != '\0'){
-
-
-		while(FALSE == Memoria_24LC256_setValue(get_Memoria_24LC256_ConfigStruct(), (address +NDatos),x));
-		NDatos +=1;
-		x = (pop() + 48);
-	}
+//	while(x != '\0'){
+//
+//
+//		while(FALSE == Memoria_24LC256_setValue(get_Memoria_24LC256_ConfigStruct(), (address +NDatos),x));
+//		NDatos +=1;
+//		x = (pop() + 48);
+//	}
 
 	resetContador();
 	escribirP(UART0,"\033[13;10H", "Su texto ha sido guardado...");
@@ -170,7 +200,7 @@ void Ehora(){
 	uint8 hora;
 	uint8 min;
 	uint8 seg;
-	uart_send(UART0,(uint8_t*)"\033[2J");
+	uart_TeraTerm_send(UART0,(uint8_t*)"\033[2J");
 	escribirP(UART0,"\033[10;10H", "Escribir hora en hh/mm/ss");
 	ingresoDatos();
 	escribirP(UART0,"\033[10;50H", getFIFO());
@@ -186,9 +216,9 @@ void Ehora(){
 	seg = (valor<<4)|valor2;
 
 	resetContador();
-	PCF8563_SetHours(PCF8563_configurationStruct(), hora);
-	PCF8563_SetMinutes(PCF8563_configurationStruct(), min);
-	PCF8563_SetSeconds(PCF8563_configurationStruct(), seg);
+//	PCF8563_SetHours(PCF8563_configurationStruct(), hora);
+//	PCF8563_SetMinutes(PCF8563_configurationStruct(), min);
+//	PCF8563_SetSeconds(PCF8563_configurationStruct(), seg);
 	escribirP(UART0,"\033[12;10H", "La hora ha sido cambiada...");
 }
 
@@ -204,7 +234,7 @@ void Efecha(){
 	uint8 valor;
 	uint8 valor2;
 	resetContador();
-	uart_send(UART0,(uint8_t*)"\033[2J");
+	uart_TeraTerm_send(UART0,(uint8_t*)"\033[2J");
 	escribirP(UART0,"\033[10;10H", "Escribir fecha en dd/mm/aa");
 	ingresoDatos();
 	escribirP(UART0,"\033[10;50H", getFIFO());
@@ -220,9 +250,9 @@ void Efecha(){
 	aa =(valor<<4)|valor2;
 
 	resetContador();
-	PCF8563_SetDay(PCF8563_configurationStruct(), dia);
-	PCF8563_SetMonth(PCF8563_configurationStruct(), mes);
-	PCF8563_SetYear(PCF8563_configurationStruct(), aa);
+//	PCF8563_SetDay(PCF8563_configurationStruct(), dia);
+//	PCF8563_SetMonth(PCF8563_configurationStruct(), mes);
+//	PCF8563_SetYear(PCF8563_configurationStruct(), aa);
 	escribirP(UART0,"\033[12;10H", "La fecha ha sido cambiada...");
 }
 
@@ -233,7 +263,7 @@ void Efecha(){
 void Fhora(){
 	uint8 formato;
 	uint8 S = 35;
-	uart_send(UART0,(uint8_t*)"\033[2J");
+	uart_TeraTerm_send(UART0,(uint8_t*)"\033[2J");
 	escribirP(UART0,"\033[10;10H", "El formato actual es 12h");
 	escribirP(UART0,"\033[11;10H", "Desea cambiar el formato a 12h si/no?");
 	ingresoDatos();
@@ -253,25 +283,25 @@ void Fhora(){
 void Lhora(){
 	uint8 valor;
 	uint8 valor1;
-	uart_send(UART0,(uint8_t*)"\033[2J");
+	uart_TeraTerm_send(UART0,(uint8_t*)"\033[2J");
 	escribirP(UART0,"\033[10;10H", "La hora actual es");
-	clearFlagM();
-		while(FALSE==getFlagM()){
-			valor = PCF8563_getHours(PCF8563_configurationStruct());
-			valor1 = formatoHora(valor);
-			sint8* x=(valorMem(valor1));
-			escribirP(UART0,"\033[12;10H", x);
-			escribirP(UART0,"\033[12;13H", ":");
-			valor = PCF8563_getMinutes(PCF8563_configurationStruct());
-			x=(valorMem(valor));
-			escribirP(UART0,"\033[12;15H", x);
-			escribirP(UART0,"\033[12;18H", ":");
-			valor = PCF8563_getSeconds(PCF8563_configurationStruct());
-			x=(valorMem(valor));
-			escribirP(UART0,"\033[12;20H", x);
-			escribirP(UART0,"\033[12;25H", formato);
-		}
-	while(FALSE==getFlagM());
+//	clearFlagM();
+//		while(FALSE==getFlagM()){
+//			valor = PCF8563_getHours(PCF8563_configurationStruct());
+//			valor1 = formatoHora(valor);
+//			sint8* x=(valorMem(valor1));
+//			escribirP(UART0,"\033[12;10H", x);
+//			escribirP(UART0,"\033[12;13H", ":");
+//			valor = PCF8563_getMinutes(PCF8563_configurationStruct());
+//			x=(valorMem(valor));
+//			escribirP(UART0,"\033[12;15H", x);
+//			escribirP(UART0,"\033[12;18H", ":");
+//			valor = PCF8563_getSeconds(PCF8563_configurationStruct());
+//			x=(valorMem(valor));
+//			escribirP(UART0,"\033[12;20H", x);
+//			escribirP(UART0,"\033[12;25H", formato);
+//		}
+//	while(FALSE==getFlagM());
 }
 
 /*
@@ -282,23 +312,24 @@ void Lhora(){
  */
 void Lfecha(){
 	uint8 valor;
-	uart_send(UART0,(uint8_t*)"\033[2J");
+	uart_TeraTerm_send(UART0,(uint8_t*)"\033[2J");
 	escribirP(UART0,"\033[10;10H", "La fecha actual es");
-	clearFlagM();
-		while(FALSE==getFlagM()){
-			valor = PCF8563_getDay(PCF8563_configurationStruct());
-			sint8* x=(valorMem(valor));
-			escribirP(UART0,"\033[12;10H", x);
-			escribirP(UART0,"\033[12;13H", "/");
-			valor = PCF8563_getMonth(PCF8563_configurationStruct());
-			x=(valorMem(valor));
-			escribirP(UART0,"\033[12;15H", x);
-			escribirP(UART0,"\033[12;18H", "/");
-			valor = PCF8563_getYear(PCF8563_configurationStruct());
-			x=(valorMem(valor));
-			escribirP(UART0,"\033[12;20H", x);
-		}
-	while(FALSE==getFlagM());
+//	clearFlagM();
+//		while(FALSE==getFlagM()){
+//			valor = PCF8563_getDay(PCF8563_configurationStruct());
+//			sint8* x=(valorMem(valor));
+//			escribirP(UART0,"\033[12;10H", x);
+//			escribirP(UART0,"\033[12;13H", "/");
+//			valor = PCF8563_getMonth(PCF8563_configurationStruct());
+//			x=(valorMem(valor));
+//			escribirP(UART0,"\033[12;15H", x);
+//			escribirP(UART0,"\033[12;18H", "/");
+//			valor = PCF8563_getYear(PCF8563_configurationStruct());
+//			x=(valorMem(valor));
+//			escribirP(UART0,"\033[12;20H", x);
+//		}
+//	while(FALSE==getFlagM());//flag del mailbox si está recibiendo datos
+
 }
 
 /*

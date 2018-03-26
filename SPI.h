@@ -10,6 +10,8 @@
 
 #include "fsl_dspi.h"
 
-void SPI_sendOneByte (SPI_Type *base, uint8_t Data);
+void SPI_init();
+void SPI_send(uint8_t* string);
+void SPI_sendOneByte (uint8_t Data);
 
 #endif /* SPI_H_ */
