@@ -72,7 +72,7 @@ void SPI_sendOneByte (uint8_t Data){
 	 uint8_t sendData[1];
 	 sendData[0] = Data;
 	 dspi_transfer_t masterXfer;
-	 masterXfer.txData = sendData;
+	 masterXfer.txData = (uint8_t*)sendData;
 	 masterXfer.rxData = NULL;
 	 masterXfer.dataSize = sizeof(sendData);
 	 masterXfer.configFlags = kDSPI_MasterCtar0 | EXAMPLE_DSPI_MASTER_PCS_FOR_TRANSFER | kDSPI_MasterPcsContinuous;
