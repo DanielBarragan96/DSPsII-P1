@@ -47,6 +47,7 @@
 #include "FreeRTOSConfig.h"
 #include "FreeRTOS.h"
 #include "timers.h"
+#include "semphr.h"
 
 #define BIT2 2
 #define BIT3 3
@@ -65,6 +66,8 @@ uint8_t read_data;
 
 i2c_master_handle_t g_m_handle;
 volatile bool g_i2c_nw = false;
+
+SemaphoreHandle_t mutex;
 TimerHandle_t g_timer; //global para que todas las tareas puedan usarlo.
 
 void TimerCallback (TimerHandle_t timeIn)
@@ -179,7 +182,7 @@ int8_t init_i2c ()
     I2C_EnableInterrupts (I2C0, kI2C_GlobalInterruptEnable);
 
     //I2C nw
-    const TickType_t g_xTimerPeriod = pdMS_TO_TICKS(500); //periodo a interrumpir
+    const TickType_t g_xTimerPeriod = pdMS_TO_TICKS(1000); //periodo a interrumpir
     //Interrupt I2C nw
     const char *pcTimerName = "Timer";    //nombre
     const UBaseType_t uxAutoReload = pdFALSE;    //si se hace auto reload
@@ -189,6 +192,9 @@ int8_t init_i2c ()
     //se crea el timer, es global, tipo TimerHandle_t
     g_timer = xTimerCreate (pcTimerName, g_xTimerPeriod, uxAutoReload,
             pvTimerID, pxCallbackFunction);
+
+    mutex = xSemaphoreCreateMutex();
+    xSemaphoreGive(mutex);
 
     return 0;
 }
@@ -205,20 +211,24 @@ int8_t i2c_read (uint8_t slaveAdress, uint8_t subaddress, uint8_t dataSize,
     masterXfer.slaveAddress = slaveAdress;
     masterXfer.direction = kI2C_Read;
     masterXfer.subaddress = subaddress;
-    masterXfer.subaddressSize = 2;
+    masterXfer.subaddressSize = 1;
     masterXfer.data = bufferOut;
     masterXfer.dataSize = dataSize;
     masterXfer.flags = kI2C_TransferDefaultFlag;
 
+	//TODO mutex
+    xSemaphoreTake(mutex,portMAX_DELAY);
     xTimerStart(g_timer, portMAX_DELAY);
     I2C_MasterTransferNonBlocking (I2C0, &g_m_handle, &masterXfer);
     while (!g_MasterCompletionFlag && !g_i2c_nw)
     {
-        vTaskDelay (pdMS_TO_TICKS(10));
+        vTaskDelay (pdMS_TO_TICKS(I2C_TRANS_DELAY));
     }
     xTimerStop(g_timer, portMAX_DELAY);
     I2C_MasterStop(I2C0);
     g_MasterCompletionFlag = false;
+
+    xSemaphoreGive(mutex);
 
     if (g_i2c_nw)
     {
@@ -245,15 +255,19 @@ int8_t i2c_writes (uint8_t slaveAdress, uint8_t subaddress, uint8_t dataSize,
     masterXfer.dataSize = dataSize;
     masterXfer.flags = kI2C_TransferDefaultFlag;
 
+	//TODO mutex
+    xSemaphoreTake(mutex,portMAX_DELAY);
     xTimerStart(g_timer, portMAX_DELAY);
     I2C_MasterTransferNonBlocking (I2C0, &g_m_handle, &masterXfer);
     while (!g_MasterCompletionFlag && !g_i2c_nw)
     {
-        vTaskDelay (pdMS_TO_TICKS(10));
+        vTaskDelay (pdMS_TO_TICKS(I2C_TRANS_DELAY));
     }
     xTimerStop(g_timer, portMAX_DELAY);
     I2C_MasterStop(I2C0);
     g_MasterCompletionFlag = false;
+
+    xSemaphoreGive(mutex);
 
     if (g_i2c_nw)
     {
