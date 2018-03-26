@@ -52,15 +52,41 @@
 
 /* TODO: insert other definitions and declarations here. */
 
-void task_one ()
+void task_time ()
 {
     uint16_t algo = 0;
     PCF8583_setData (0x00, algo);
 
-    uint8_t sec = PCF8563_getSeconds ();
-    uint8_t min = PCF8563_getMinutes ();
-    uint8_t huo = PCF8563_getHours ();
+    while(1)
+    {
+        uint8_t sec = PCF8563_getSeconds ();
+        uint8_t min = PCF8563_getMinutes ();
+        uint8_t huo = PCF8563_getHours ();
+    }
 }
+
+void task_write()
+{
+    uint16_t address = 0x15;
+    uint8_t* data = "gatos";
+
+    MEM24LC256_setData (address, data);
+    vTaskDelete(NULL);
+}
+
+void task_read()
+{
+    uint16_t address = 0x15;
+    uint8_t dataSize = 5;
+    uint8_t val2[dataSize];
+    uint8_t* data2 = &val2[0];
+
+    while(1)
+    {
+        MEM24LC256_getData (address, dataSize, data2);
+    }
+}
+
 /*
  * @brief   Application entry point.
  */
@@ -74,8 +100,14 @@ int main (void)
     BOARD_InitDebugConsole ();
 
     initMain ();
-    xTaskCreate (task_one, "I2C test", configMINIMAL_STACK_SIZE, NULL,
+    /*
+    xTaskCreate (task_time, "I2C test", configMINIMAL_STACK_SIZE, NULL,
             configMAX_PRIORITIES - 1, NULL);
+    */
+    xTaskCreate (task_write, "I2C test wr", configMINIMAL_STACK_SIZE, NULL,
+                configMAX_PRIORITIES - 1, NULL);
+    xTaskCreate (task_read, "I2C test re", configMINIMAL_STACK_SIZE, NULL,
+                configMAX_PRIORITIES - 1, NULL);
     vTaskStartScheduler ();
 
     /* Enter an infinite loop, just incrementing a counter. */

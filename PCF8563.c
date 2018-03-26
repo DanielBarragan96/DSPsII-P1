@@ -18,8 +18,9 @@ uint8_t PCF8563_setSeconds (uint8_t data)
 
 uint8_t PCF8563_getSeconds ()
 {
+    uint8_t* pdataFromPCF8563 = &dataFromPCF8563;
     i2c_read (PCF8563_READ_ADDRESS, PCF8563_SECONDS_ADDRESS,
-            sizeof(dataFromPCF8563), &dataFromPCF8563);
+            sizeof(dataFromPCF8563), pdataFromPCF8563);
     return dataFromPCF8563;
 }
 
