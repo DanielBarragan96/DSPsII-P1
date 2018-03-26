@@ -69,11 +69,9 @@ void task_write()
 {
     uint16_t address = 0x15;
     uint8_t* data = "gatos";
-    while(1)
-    {
-        MEM24LC256_setData (address, data);
-        vTaskDelete(NULL);
-    }
+
+    MEM24LC256_setData (address, data);
+    vTaskDelete(NULL);
 }
 
 void task_read()
@@ -82,6 +80,7 @@ void task_read()
     uint8_t dataSize = 5;
     uint8_t val2[dataSize];
     uint8_t* data2 = &val2[0];
+
     while(1)
     {
         MEM24LC256_getData (address, dataSize, data2);

@@ -202,6 +202,9 @@ int8_t init_i2c ()
 int8_t i2c_read (uint8_t slaveAdress, uint8_t subaddress, uint8_t dataSize,
         uint8_t* bufferOut)
 {
+    //TODO mutex
+    xSemaphoreTake(mutex,portMAX_DELAY);
+
     // Get default configuration for master.
     i2c_slave_config_t slaveConfig;
     I2C_SlaveGetDefaultConfig (&slaveConfig);
@@ -211,13 +214,11 @@ int8_t i2c_read (uint8_t slaveAdress, uint8_t subaddress, uint8_t dataSize,
     masterXfer.slaveAddress = slaveAdress;
     masterXfer.direction = kI2C_Read;
     masterXfer.subaddress = subaddress;
-    masterXfer.subaddressSize = 1;
+    masterXfer.subaddressSize = 2;
     masterXfer.data = bufferOut;
     masterXfer.dataSize = dataSize;
     masterXfer.flags = kI2C_TransferDefaultFlag;
 
-	//TODO mutex
-    xSemaphoreTake(mutex,portMAX_DELAY);
     xTimerStart(g_timer, portMAX_DELAY);
     I2C_MasterTransferNonBlocking (I2C0, &g_m_handle, &masterXfer);
     while (!g_MasterCompletionFlag && !g_i2c_nw)
@@ -241,6 +242,8 @@ int8_t i2c_read (uint8_t slaveAdress, uint8_t subaddress, uint8_t dataSize,
 int8_t i2c_writes (uint8_t slaveAdress, uint8_t subaddress, uint8_t dataSize,
         uint8_t* buffer)
 {
+    //TODO mutex
+    xSemaphoreTake(mutex,portMAX_DELAY);
     // Get default configuration for master.
     i2c_master_config_t masterConfig;
     I2C_MasterGetDefaultConfig (&masterConfig);
@@ -255,8 +258,6 @@ int8_t i2c_writes (uint8_t slaveAdress, uint8_t subaddress, uint8_t dataSize,
     masterXfer.dataSize = dataSize;
     masterXfer.flags = kI2C_TransferDefaultFlag;
 
-	//TODO mutex
-    xSemaphoreTake(mutex,portMAX_DELAY);
     xTimerStart(g_timer, portMAX_DELAY);
     I2C_MasterTransferNonBlocking (I2C0, &g_m_handle, &masterXfer);
     while (!g_MasterCompletionFlag && !g_i2c_nw)
