@@ -60,9 +60,11 @@ void uart_BT_init(){
 
 	uart_config_t config;
 	BOARD_InitPins_BT();
+	UART_GetDefaultConfig(&config);
 	config.baudRate_Bps = 9600;
 	config.enableTx = true;
 	config.enableRx = true;
+
 
 	UART_Init(UART0, &config, CLOCK_GetFreq(UART0_CLK_SRC));
 	UART_TransferCreateHandle(UART0, &g_UartHandle, BT_UART_UserCallback, NULL);
@@ -92,11 +94,11 @@ void uart_BT_send(UART_Type *base, uint8_t* string){
 
 }
 
-void uart_BT_receive(UART_Type *base){
+void uart_BT_receive(){
 	uint8_t receiveData[32];
 		uint8_t i=0;
 		uart_transfer_t xfer;
-		xfer.data = receiveData;
+		xfer.data = (uint8_t*)receiveData;
 		xfer.dataSize = sizeof(receiveData)/sizeof(receiveData[0]);
 		rx_OnGoing = true;
 		UART_TransferReceiveNonBlocking(UART0, &g_UartHandle, &xfer, &xfer.dataSize);
@@ -104,13 +106,13 @@ void uart_BT_receive(UART_Type *base){
 
 
 		while (rx_OnGoing)
-		      {
+			      {
 
-			if(ENTER == receiveData[i])
-				    	rx_OnGoing = 0;
-			i==31?i=0:i++;
+				if(ENTER == receiveData[i])
+					rx_OnGoing = 0;
+				i==31?i=0:i++;
 
-		      }
+			      }
 	}
 
 
