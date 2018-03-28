@@ -1,19 +1,16 @@
 /*
- * BT_Task_UART.c
+ * UART_BT.c
  *
- *  Created on: Mar 16, 2018
+ *  Created on: Mar 27, 2018
  *      Author: Sergio
  */
-#include <BT_Task_UART.h>
-#include "board.h"
-#include "fsl_uart.h"
-#include "pin_mux.h"
-#include "clock_config.h"
 
+#include "UART_BT.h"
+#include "fsl_uart.h"
 #include "fsl_port.h"
-#include "fsl_gpio.h"
-#include "Fifo.h"
 #include "DataTypeDefinitions.h"
+#include "Fifo.h"
+#include "pin_mux.h"
 
 #define RX_RING_BUFFER_SIZE 20U
 #define ECHO_BUFFER_SIZE 8U
@@ -29,7 +26,7 @@ volatile bool rxBuffer_Empty = true;
 volatile bool txBuffer_Full = false;
 volatile bool tx_OnGoing = false;
 volatile bool rx_OnGoing = false;
-UART_MailBoxType UART4_BT_Mailbox;
+UART_MailBoxType UART0_BT_Mailbox;
 
 /******************************************************************************/
 /* UART user callback */
@@ -118,15 +115,13 @@ void uart_BT_receive(){
 
 
 void setflagEnter(){
-	UART4_BT_Mailbox.flagEnter = TRUE;
+	UART0_BT_Mailbox.flagEnter = TRUE;
 }
 
 void clearflagEnter(){
-	UART4_BT_Mailbox.flagEnter = FALSE;
+	UART0_BT_Mailbox.flagEnter = FALSE;
 }
 
 bool getflagEnter(){
-	return UART4_BT_Mailbox.flagEnter;
+	return UART0_BT_Mailbox.flagEnter;
 }
-
-

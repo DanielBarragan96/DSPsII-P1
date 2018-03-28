@@ -7,7 +7,6 @@
  *      Author: Avelar Díaz José Francisco
  *      		Chung Correa Sergio Raúl
  */
-#include <TeraTerm_Task_UART.h>/**UART device driver*/
 #include "board.h"
 #include "MK64F12.h"
 #include "pin_mux.h"
@@ -18,8 +17,9 @@
 #include "PantallaPC.h"
 //#include "MEM24LC256.h"
 #include "fsl_uart.h"
-#include "BT_Task_UART.h"
+#include "UART_BT.h"
 #include "LCDNokia5110.h"
+#include "UART_TeraTerm.h"
 
 BooleanType Formatohora = FALSE; //bandera para cambiar el formato
 static sint8 string[2] ;

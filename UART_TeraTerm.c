@@ -1,14 +1,14 @@
 /*
- * UART.c
+ * UART_TeraTerm.c
  *
- *  Created on: Mar 12, 2018
+ *  Created on: Mar 27, 2018
  *      Author: Sergio
  */
-#include <TeraTerm_Task_UART.h>
 #include "board.h"
 #include "fsl_uart.h"
 #include "pin_mux.h"
 #include "clock_config.h"
+#include "UART_TeraTerm.h"
 #include "Fifo.h"
 #include "DataTypeDefinitions.h"
 
@@ -64,30 +64,35 @@ void uart_TeraTerm_init(){
 	UART_Init(UART0, &config, CLOCK_GetFreq(UART0_CLK_SRC));
 	UART_TransferCreateHandle(UART0, &g_uartHandle, TeraTerm_UART_UserCallback, NULL);
 	UART_TransferStartRingBuffer(UART0, &g_uartHandle, g_rxRingBuffer, RX_RING_BUFFER_SIZE);
+
+	uart_transfer_t xfer;
+	uint8_t string[] = "HOLA MUNDO";
+		/* Send g_tipString out. */
+		    xfer.data = string;
+		    xfer.dataSize = sizeof(string) - 1;
+		    txOnGoing = false;
+		    UART_TransferSendNonBlocking(UART0, &g_uartHandle, &xfer);
+
+		    /* Wait send finished */
+		    while (txOnGoing)
+		    {
+		    }
 }
 
 
 void uart_TeraTerm_send(UART_Type *base, uint8_t* string){
-	while (*string)//se transmiten los datos hasta llegar al caracter nulo
-{
+
 	uart_transfer_t xfer;
-	uart_transfer_t sendXfer;
-	uart_transfer_t receiveXfer;
-	xfer.data = string;
-	xfer.dataSize = 1;//sizeof( string) ;
-	txOnGoing = true;
-    UART_TransferSendNonBlocking(UART0, &g_uartHandle, &xfer);
-     /* Wait send finished */
-      while (txOnGoing)
-      {
-      }
-      string++;
-      /* Start to echo. */
-      sendXfer.data = g_txBuffer;
-      sendXfer.dataSize = ECHO_BUFFER_SIZE;
-      receiveXfer.data = g_rxBuffer;
-      receiveXfer.dataSize = ECHO_BUFFER_SIZE;
-	}
+	/* Send g_tipString out. */
+	    xfer.data = string;
+	    xfer.dataSize = sizeof(string) - 1;
+	    txOnGoing = false;
+	    UART_TransferSendNonBlocking(base, &g_uartHandle, &xfer);
+
+	    /* Wait send finished */
+	    while (txOnGoing)
+	    {
+	    }
 
 }
 
@@ -127,3 +132,5 @@ void clearflagE(){
 bool getflagE(){
 	return UART0_MailBox.flagEnter;
 }
+
+

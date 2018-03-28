@@ -27,9 +27,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
+ 
 /**
- * @file    P1-1.c
+ * @file    Practica01.c
  * @brief   Application entry point.
  */
 #include <stdio.h>
@@ -39,42 +39,26 @@
 #include "clock_config.h"
 #include "MK64F12.h"
 #include "fsl_debug_console.h"
-#include "TeraTerm_Task_UART.h"
-#include "BT_Task_UART.h"
-#include "init.h"
 #include "SPI.h"
 #include "PantallaPC.h"
+#include "UART_BT.h"
+#include "UART_TeraTerm.h"
 
-/* TODO: insert other include files here. */
 
-/* TODO: insert other definitions and declarations here. */
+int main(void) {
 
-/*
- * @brief   Application entry point.
- */
-
-uint8_t* msg;
-
-int main (void)
-{
-    /* Init board hardware. */
-    BOARD_InitBootPins ();
-    BOARD_InitBootClocks ();
-    BOARD_InitBootPeripherals ();
-    /* Init FSL debug console. */
-    BOARD_InitDebugConsole ();
-
-    initMain();
+  	/* Init board hardware. */
+    //BOARD_InitBootPins();
+    BOARD_InitBootClocks();
+    BOARD_InitBootPeripherals();
+  	/* Init FSL debug console. */
+    BOARD_InitDebugConsole();
 
     //uart_BT_receive(UART0, msg);
     //uart_BT_send(UART4,(uint8_t*)"HOLA MUNDO");
-    imprimirPantalla();
+    //imprimirPantalla();
+    //uart_TeraTerm_send(UART0, (uint8_t*)"HOLA MUNDO");
 
-
-    while (1)
-    {
-
-
-    }
-    return 0;
+    while(1) { }
+    return 0 ;
 }

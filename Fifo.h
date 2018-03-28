@@ -1,15 +1,12 @@
 /*
  * Fifo.h
  *
- *  Created on: 3 nov. 2017
- *      Author: Avelar Díaz José Francisco
- *      		Chung Correa Sergio Raúl
+ *  Created on: Mar 27, 2018
+ *      Author: Sergio
  */
-/*!
-	\This writes up to nbytes bytes to the FIFO
-	\If the head runs in to the tail, not all bytes are written
-	\The number of bytes written is returned
-*/
+
+#ifndef FIFO_H_
+#define FIFO_H_
 
 #include "DataTypeDefinitions.h"
 
@@ -85,3 +82,6 @@ void resetContador();
  	\return BooleanType
  */
 BooleanType getFIFO_flag();
+
+
+#endif /* FIFO_H_ */
