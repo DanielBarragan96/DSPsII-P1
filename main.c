@@ -43,6 +43,7 @@
 #include "PantallaPC.h"
 #include "UART_BT.h"
 #include "UART_TeraTerm.h"
+#include "LCDNokia5110.h"
 
 
 int main(void) {
@@ -55,10 +56,12 @@ int main(void) {
     BOARD_InitDebugConsole();
 
     //uart_BT_receive();
-    //uart_BT_send(UART4,(uint8_t*)"HOLA MUNDO");
-    imprimirPantalla();
-   //uart_TeraTerm_send(UART0, (uint8_t*)"HOLA MUNDO");
-   // uart_TeraTerm_receive(UART0);
+   uart_BT_send(UART4,(uint8_t*)"HOLA MUNDO");
+
+    //imprimirPantalla();
+
+    //uart_TeraTerm_send(UART0, (uint8_t*)"HOLA MUNDO");
+    //uart_TeraTerm_receive(UART0);
 
     while(1) { }
     return 0 ;

@@ -58,6 +58,9 @@ processor_version: 2.0.0
 #define PIN17_IDX                       17u   /*!< Pin number for pin 17 in a port */
 #define PIN1_IDX                       1u   /*!< Pin number for pin 16 in a port */
 #define PIN2_IDX                       2u   /*!< Pin number for pin 17 in a port */
+#define PIN24_IDX                       24u   /*!< Pin number for pin 17 in a port */
+#define PIN25_IDX                       25u   /*!< Pin number for pin 17 in a port */
+
 
 #define SOPT5_UART0TXSRC_UART_TX      0x00u   /*!< UART 0 transmit data source select: UART0_TX pin */
 
@@ -80,6 +83,7 @@ BOARD_InitPins:
 void BOARD_InitPins(void) {
   CLOCK_EnableClock(kCLOCK_PortB);                           /* Port B Clock Gate Control: Clock enabled */
   CLOCK_EnableClock(kCLOCK_Uart0);
+  EnableIRQ(UART0_RX_TX_IRQn);
   NVIC_EnableIRQ(PORTB_IRQn);
   NVIC_SetPriority(PORTB_IRQn, 5);
 
@@ -90,12 +94,13 @@ void BOARD_InitPins(void) {
 }
 
 void BOARD_InitPins_BT(){
-	CLOCK_EnableClock(kCLOCK_PortA);                           /* Port B Clock Gate Control: Clock enabled */
-	NVIC_EnableIRQ(PORTA_IRQn);
-  	NVIC_SetPriority(PORTA_IRQn, 5);
+	CLOCK_EnableClock(kCLOCK_PortE);                           /* Port B Clock Gate Control: Clock enabled */
+	CLOCK_EnableClock(kCLOCK_Uart4);
+	NVIC_EnableIRQ(PORTE_IRQn);
+  	NVIC_SetPriority(PORTE_IRQn, 5);
 
-	  PORT_SetPinMux(PORTA, PIN1_IDX, kPORT_MuxAlt2);           /* PORTB16 (pin 62) is configured as UART0_RX */
-	  PORT_SetPinMux(PORTA, PIN2_IDX, kPORT_MuxAlt2);           /* PORTB17 (pin 63) is configured as UART0_TX */
+	  PORT_SetPinMux(PORTE, PIN25_IDX, kPORT_MuxAlt3);           /* PORTB16 (pin 62) is configured as UART0_RX */
+	  PORT_SetPinMux(PORTE, PIN24_IDX, kPORT_MuxAlt3);           /* PORTB17 (pin 63) is configured as UART0_TX */
 
 }
 
