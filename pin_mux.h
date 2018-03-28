@@ -61,12 +61,6 @@ typedef enum _pin_mux_direction
 extern "C" {
 #endif
 
-/*!
- * @brief Calls initialization functions.
- *
- */
-void BOARD_InitBootPins(void);
-
 
 /*!
  * @brief Configures pin routing and optionally pin electrical features.

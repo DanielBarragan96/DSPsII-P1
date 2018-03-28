@@ -65,38 +65,36 @@ void uart_TeraTerm_init(){
 	UART_TransferCreateHandle(UART0, &g_uartHandle, TeraTerm_UART_UserCallback, NULL);
 	UART_TransferStartRingBuffer(UART0, &g_uartHandle, g_rxRingBuffer, RX_RING_BUFFER_SIZE);
 
-	uart_transfer_t xfer;
-	uint8_t string[] = "HOLA MUNDO";
-		/* Send g_tipString out. */
-		    xfer.data = string;
-		    xfer.dataSize = sizeof(string) - 1;
-		    txOnGoing = false;
-		    UART_TransferSendNonBlocking(UART0, &g_uartHandle, &xfer);
-
-		    /* Wait send finished */
-		    while (txOnGoing)
-		    {
-		    }
 }
 
 
 void uart_TeraTerm_send(UART_Type *base, uint8_t* string){
 
-	uart_transfer_t xfer;
-	/* Send g_tipString out. */
-	    xfer.data = string;
-	    xfer.dataSize = sizeof(string) - 1;
-	    txOnGoing = false;
-	    UART_TransferSendNonBlocking(base, &g_uartHandle, &xfer);
 
-	    /* Wait send finished */
-	    while (txOnGoing)
-	    {
-	    }
+	while (*string)//se transmiten los datos hasta llegar al caracter nulo
+	{
+		uart_transfer_t xfer;
+//		uart_transfer_t sendXfer;
+//		uart_transfer_t receiveXfer;
+		xfer.data = string;
+		xfer.dataSize = 1;//sizeof( string) ;
+		txOnGoing = true;
+	    UART_TransferSendNonBlocking(UART0, &g_uartHandle, &xfer);
+	     /* Wait send finished */
+	      while (txOnGoing)
+	      {
+	      }
+	      string++;
+	      /* Start to echo. */
+	//      sendXfer.data = g_txBuffer;
+	//      sendXfer.dataSize = ECHO_BUFFER_SIZE;
+	//      receiveXfer.data = g_rxBuffer;
+	//      receiveXfer.dataSize = ECHO_BUFFER_SIZE;
+		}
 
 }
 
-void uart_TeraTerm_receive(UART_Type *base, uint8_t* string){
+void uart_TeraTerm_receive(UART_Type *base){
 	uint8_t receiveData[32];
 	uint8_t i=0;
 	uart_transfer_t xfer;

@@ -72,12 +72,18 @@ void SPI_sendOneByte (uint8_t Data){
 	 uint8_t sendData[1];
 	 sendData[0] = Data;
 	 dspi_transfer_t masterXfer;
+	 /* Start master transfer, send data to slave */
+		 isTransferCompleted = false;
 	 masterXfer.txData = (uint8_t*)sendData;
 	 masterXfer.rxData = NULL;
 	 masterXfer.dataSize = sizeof(sendData);
 	 masterXfer.configFlags = kDSPI_MasterCtar0 | EXAMPLE_DSPI_MASTER_PCS_FOR_TRANSFER | kDSPI_MasterPcsContinuous;
 
 	 DSPI_MasterTransferNonBlocking(SPI0, &g_m_handleSPI, &masterXfer);
+	 /* Wait transfer complete */
+	         while (!isTransferCompleted)
+	         {
+	         }
 	 DSPI_StopTransfer(SPI0);
 }
 
