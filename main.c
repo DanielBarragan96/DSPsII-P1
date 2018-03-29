@@ -55,9 +55,7 @@
 
 void task_one()
 {
-
-    uint16_t algo = 16;
-    PCF8583_setData(0x05, algo);
+    init_clk();
 
     getTime();
 
@@ -84,7 +82,7 @@ int main (void)
     BOARD_InitDebugConsole ();
 
     initMain ();
-    xTaskCreate(task_one, "I2C test", configMINIMAL_STACK_SIZE, NULL, configMAX_PRIORITIES-1, NULL);
+    xTaskCreate(task_one, "I2C test", 250, NULL, configMAX_PRIORITIES-1, NULL);
     vTaskStartScheduler();
 
     /* Enter an infinite loop, just incrementing a counter. */
