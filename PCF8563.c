@@ -98,9 +98,8 @@ uint8_t PCF8583_setData (uint8_t address, uint8_t data)
 
 void init_clk()
 {
-    static i2c_master_transfer_t masterXfer;
     static uint8_t buffer = 0x00;
-    i2c_writes(PCF8563_READ_ADDRESS, CLK_REGISTER_ADRESS, ONE_BYTE, buffer, ONE_BYTE);
+    i2c_writes(PCF8563_READ_ADDRESS, CLK_REGISTER_ADRESS, ONE_BYTE, &buffer, ONE_BYTE);
 }
 
 uint8_t getTime()
