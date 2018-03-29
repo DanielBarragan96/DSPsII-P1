@@ -42,6 +42,8 @@ uint8_t PCF8563_getDays ();
 
 uint8_t PCF8583_setData (uint8_t address, uint8_t data);
 
+void init_clk();
+
 uint8_t getTime();
 
 #endif /* PCF8563_H_ */

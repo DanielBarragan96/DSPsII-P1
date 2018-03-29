@@ -130,7 +130,6 @@ void i2c_ReleaseBus ()
 static void i2c_master_callback (I2C_Type *base, i2c_master_handle_t *handle,
         status_t status, void * userData)
 {
-
     if (status == kStatus_Success)
     {
         g_MasterCompletionFlag = true;

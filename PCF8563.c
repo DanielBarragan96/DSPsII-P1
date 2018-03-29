@@ -7,6 +7,7 @@
 
 #include "PCF8563.h"
 #include "I2C.h"
+#include "fsl_i2c.h"
 
 #define SUBADRESS_SIZE 1
 uint8_t dataFromPCF8563[2];
@@ -93,6 +94,13 @@ uint8_t PCF8563_getDays ()
 uint8_t PCF8583_setData (uint8_t address, uint8_t data)
 {
     return i2c_writes (PCF8563_WRITE_DATA_ADDRESS, address, sizeof(data), &data, SUBADRESS_SIZE);
+}
+
+void init_clk()
+{
+    static i2c_master_transfer_t masterXfer;
+    static uint8_t buffer = 0x00;
+    i2c_writes(PCF8563_READ_ADDRESS, 0, 1, buffer, 1);
 }
 
 uint8_t getTime()
