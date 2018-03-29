@@ -27,9 +27,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
+ 
 /**
- * @file    P1-1.c
+ * @file    Practica01.c
  * @brief   Application entry point.
  */
 #include <stdio.h>
@@ -39,42 +39,36 @@
 #include "clock_config.h"
 #include "MK64F12.h"
 #include "fsl_debug_console.h"
-#include "TeraTerm_Task_UART.h"
-#include "BT_Task_UART.h"
-#include "init.h"
 #include "SPI.h"
+#include "Fifo.h"
 #include "PantallaPC.h"
+#include "UART_BT.h"
+#include "UART_TeraTerm.h"
+#include "LCDNokia5110.h"
 
-/* TODO: insert other include files here. */
+#define nullValue 208
 
-/* TODO: insert other definitions and declarations here. */
+int main(void) {
 
-/*
- * @brief   Application entry point.
- */
+  	/* Init board hardware. */
+    //BOARD_InitBootPins();
+    BOARD_InitBootClocks();
+    BOARD_InitBootPeripherals();
+  	/* Init FSL debug console. */
+    BOARD_InitDebugConsole();
 
-uint8_t* msg;
+    void (*Pantallas[9])()={LeerM, EscribirM, Ehora, Efecha, Fhora, Lhora, Lfecha, Comunicacion, Eco };//Arreglo de funciones para los distintos menus
 
-int main (void)
-{
-    /* Init board hardware. */
-    BOARD_InitBootPins ();
-    BOARD_InitBootClocks ();
-    BOARD_InitBootPeripherals ();
-    /* Init FSL debug console. */
-    BOARD_InitDebugConsole ();
+	MenuInicial();
 
-    initMain();
-
-    //uart_BT_receive(UART0, msg);
-    //uart_BT_send(UART4,(uint8_t*)"HOLA MUNDO");
-    imprimirPantalla();
-
-
-    while (1)
-    {
-
-
-    }
-    return 0;
+	while(1){
+   		uint8 x = pop() ;
+   		if((x!=0) && (nullValue!=x) && FALSE==getflagEnter()){//el 208 es un valor que recibe al no presionar nada, si presionamos ENTER no hacemos nada
+   			resetContador();//limpiamos cualquier basura de la FIFO
+   			Pantallas[x-1]();//Entramos al menu seleccinado
+   			MenuInicial();//Salimos del menu y volvemos al inicial
+   			clearflagE();
+   		}
+   	}
+   return 0;
 }

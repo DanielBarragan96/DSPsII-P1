@@ -7,7 +7,6 @@
  *      Author: Avelar Díaz José Francisco
  *      		Chung Correa Sergio Raúl
  */
-#include <TeraTerm_Task_UART.h>/**UART device driver*/
 #include "board.h"
 #include "MK64F12.h"
 #include "pin_mux.h"
@@ -18,8 +17,9 @@
 #include "PantallaPC.h"
 //#include "MEM24LC256.h"
 #include "fsl_uart.h"
-#include "BT_Task_UART.h"
+#include "UART_BT.h"
 #include "LCDNokia5110.h"
+#include "UART_TeraTerm.h"
 
 BooleanType Formatohora = FALSE; //bandera para cambiar el formato
 static sint8 string[2] ;
@@ -33,19 +33,6 @@ void escribirP(UART_Type *base, sint8* Posicion,  sint8* string ){
 	uart_TeraTerm_send(base, (uint8_t*)string);
 }
 
-void imprimir_lcd(uint8* string,uint8 posicion_x, uint8 posicion_y){
-	LCDNokia_gotoXY(posicion_x,posicion_y); /*! It establishes the position to print the messages in the LCD*/
-	LCDNokia_sendString(string); /*! It print a string stored in an array*/
-	delay(65000);
-}
-
-void limpiar_lcd(){
-	LCDNokia_clear();/*! It clears the information printed in the LCD*/
-	delay(65000);
-	LCDNokia_clear();
-	delay(65000);
-	LCDNokia_clear();
-}
 
 
 /*
@@ -55,15 +42,6 @@ void ingresoDatos(){
 	while(FALSE == getflagEnter());
 	clearflagE();
 
-}
-
-void imprimirPantalla(){
-	uint8 string1[] = "1)Alarma"; /*! String to be printed in the LCD*/
-	uint8 string2[] = "2)Format T."; /*! String to be printed in the LCD*/
-
-	limpiar_lcd();
-	imprimir_lcd(string1, 2, 0);
-	imprimir_lcd(string2, 2, 1);
 }
 
 /*
@@ -81,8 +59,8 @@ void MenuInicial(){
 	escribirP(UART0,"\033[14;10H", "5) Formato de hora");
 	escribirP(UART0,"\033[15;10H", "6) Leer hora");
 	escribirP(UART0,"\033[16;10H", "7) Leer fecha");
-	escribirP(UART0,"\033[18;10H", "");
-
+	escribirP(UART0,"\033[17;10H", "8) Comunicación con terminal 2");
+	escribirP(UART0,"\033[18;10H", "9) Eco en LCD");
 }
 
 /*
@@ -330,6 +308,18 @@ void Lfecha(){
 //		}
 //	while(FALSE==getFlagM());//flag del mailbox si está recibiendo datos
 
+}
+
+void Comunicacion(){
+	uart_TeraTerm_send(UART0,(uint8_t*)"\033[2J");
+	escribirP(UART0,"\033[10;10H", "Escribir texto:/n");
+	uart_TeraTerm_echo();
+}
+
+void Eco(){
+	uart_TeraTerm_send(UART0,(uint8_t*)"\033[2J");
+	escribirP(UART0,"\033[10;10H", "Escribir texto:/n");
+	uart_TeraTerm_echo();
 }
 
 /*

@@ -185,6 +185,6 @@ uint8 valMemoria();
  */
 uint8 formatoHora(uint8 x);
 
-void imprimir_lcd(uint8* string,uint8 posicion_x, uint8 posicion_y);
-void limpiar_lcd();
-void imprimirPantalla();
+void Eco();
+
+void Comunicacion();

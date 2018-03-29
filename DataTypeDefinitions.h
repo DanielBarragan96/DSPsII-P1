@@ -77,7 +77,15 @@ typedef struct{
 	uint8_t mailBox; /** it contains the received data*/
 }UART_MailBoxType;
 
-
+typedef union
+	 	{
+	 		uint8 allBits;
+	 		struct{
+	 			uint8 bit0 :1;
+	 			uint8 bit1 :1;
+	 			uint8 bit2 :1;
+	 		}bitField;
+	 	} Binario;
 
 
 #endif /* DATATYPEDEFINITIONS_H_ */

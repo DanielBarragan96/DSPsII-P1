@@ -1,9 +1,8 @@
 /*
  * Fifo.c
  *
- *  Created on: 3 nov. 2017
- *      Author: Avelar Díaz José Francisco
- *      		Chung Correa Sergio Raúl
+ *  Created on: Mar 27, 2018
+ *      Author: Sergio
  */
 #include "Fifo.h"
 #include "DataTypeDefinitions.h"
@@ -81,3 +80,5 @@ void resetContador(){
 		FIFO[i] = 0;
 	}
 }
+
+
