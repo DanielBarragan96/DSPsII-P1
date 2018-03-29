@@ -31,7 +31,7 @@ int8_t init_i2c ();
  \return TRUE if there was no problem
  */
 int8_t i2c_read (uint8_t slaveAdress, uint8_t subaddress, uint8_t dataSize,
-        uint8_t* bufferOut);
+        uint8_t* bufferOut, uint8_t subaddressSize);
 /***************************************************************************/
 /***************************************************************************/
 /***************************************************************************/
@@ -44,6 +44,6 @@ int8_t i2c_read (uint8_t slaveAdress, uint8_t subaddress, uint8_t dataSize,
  \return TRUE if there was no problem
  */
 int8_t i2c_writes (uint8_t slaveAdress, uint8_t subaddress, uint8_t dataSize,
-        uint8_t* buffer);
+        uint8_t* buffer, uint8_t subaddressSize);
 
 #endif /* I2C_H_ */

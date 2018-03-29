@@ -12,8 +12,11 @@
 
 #define PCF8563_WRITE_DATA_ADDRESS 0x51
 
-#define PCF8563_WRITE_ADDRESS 0xA0
-#define PCF8563_READ_ADDRESS 0xA1
+#define PCF8563_WRITE_ADDRESS 0x51
+#define PCF8563_READ_ADDRESS 0x51
+
+#define PCF8563_TIME_ADDRESS 0x02
+#define PCF8563_DATE_ADDRESS 0x05
 
 #define PCF8563_SECONDS_ADDRESS 0x02
 #define PCF8563_MINUTES_ADDRESS 0x03
@@ -38,5 +41,7 @@ uint8_t PCF8563_getMonths ();
 uint8_t PCF8563_getDays ();
 
 uint8_t PCF8583_setData (uint8_t address, uint8_t data);
+
+uint8_t getTime();
 
 #endif /* PCF8563_H_ */
