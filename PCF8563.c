@@ -10,7 +10,7 @@
 #include "fsl_i2c.h"
 
 #define SUBADRESS_SIZE 1
-uint8_t dataFromPCF8563[2];
+uint8_t dataFromPCF8563[3];
 
 uint8_t PCF8563_setSeconds (uint8_t data)
 {
@@ -100,12 +100,12 @@ void init_clk()
 {
     static i2c_master_transfer_t masterXfer;
     static uint8_t buffer = 0x00;
-    i2c_writes(PCF8563_READ_ADDRESS, 0, 1, buffer, 1);
+    i2c_writes(PCF8563_READ_ADDRESS, CLK_REGISTER_ADRESS, ONE_BYTE, buffer, ONE_BYTE);
 }
 
 uint8_t getTime()
 {
     i2c_read (PCF8563_READ_ADDRESS, PCF8563_TIME_ADDRESS,
-                3, &dataFromPCF8563[0], SUBADRESS_SIZE);
+                1, &dataFromPCF8563[0], SUBADRESS_SIZE);
         return dataFromPCF8563[0];
 }

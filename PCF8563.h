@@ -11,6 +11,9 @@
 #include "stdint.h"
 
 #define PCF8563_WRITE_DATA_ADDRESS 0x51
+#define CLK_REGISTER_ADRESS 0X00
+
+#define ONE_BYTE 1
 
 #define PCF8563_WRITE_ADDRESS 0x51
 #define PCF8563_READ_ADDRESS 0x51

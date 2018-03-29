@@ -40,7 +40,6 @@
 #include "MK64F12.h"
 #include "fsl_debug_console.h"
 
-#include "MCG.h"
 #include "init.h"
 #include "MEM24LC256.h"
 #include "PCF8563.h"
@@ -56,7 +55,6 @@
 void task_one()
 {
     init_clk();
-
     getTime();
 
 //    uint8_t sec = PCF8563_getSeconds();
