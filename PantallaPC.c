@@ -47,20 +47,20 @@ void ingresoDatos(){
 /*
  * Se imprime el menu inicial de la práctica
  */
-void MenuInicial(){
+void MenuInicial(UART_Type *uart){
 
 	/**clear screen*/
-	uart_TeraTerm_send(UART0,(uint8_t*)"\033[2J");
+	uart_TeraTerm_send(uart,(uint8_t*)"\033[2J");
 	/** VT100 command for positioning the cursor in x and y position and sending the message*/
-	escribirP(UART0,"\033[10;10H", "1) Leer Memoria I2C");
-	escribirP(UART0,"\033[11;10H", "2) Escribir memoria I2C");
-	escribirP(UART0,"\033[12;10H", "3) Establecer Hora");
-	escribirP(UART0,"\033[13;10H", "4) Establecer Fecha");
-	escribirP(UART0,"\033[14;10H", "5) Formato de hora");
-	escribirP(UART0,"\033[15;10H", "6) Leer hora");
-	escribirP(UART0,"\033[16;10H", "7) Leer fecha");
-	escribirP(UART0,"\033[17;10H", "8) Comunicación con terminal 2");
-	escribirP(UART0,"\033[18;10H", "9) Eco en LCD");
+	escribirP(uart,"\033[10;10H", "1) Leer Memoria I2C");
+	escribirP(uart,"\033[11;10H", "2) Escribir memoria I2C");
+	escribirP(uart,"\033[12;10H", "3) Establecer Hora");
+	escribirP(uart,"\033[13;10H", "4) Establecer Fecha");
+	escribirP(uart,"\033[14;10H", "5) Formato de hora");
+	escribirP(uart,"\033[15;10H", "6) Leer hora");
+	escribirP(uart,"\033[16;10H", "7) Leer fecha");
+	escribirP(uart,"\033[17;10H", "8) Comunicación con terminal 2");
+	escribirP(uart,"\033[18;10H", "9) Eco en LCD");
 }
 
 /*
@@ -69,7 +69,7 @@ void MenuInicial(){
  * con un OR. Después obtenemos el valor contenido en esa direccion y utlilizando la funcion
  * valorMem convertimos ese dato en un string para poder imprimirlo en pantalla
  */
-void LeerM(){
+void LeerM(UART_Type *uart){
 	uint16 address;
 	uint8 l_decimales=0;
 	uint8 l_unidades=0;
@@ -78,10 +78,10 @@ void LeerM(){
 	uint8 NDatos ;
 	uint8 ContadorDeDatosExtraidos = 0;
 	resetContador();
-	uart_TeraTerm_send(UART0,(uint8_t*)"\033[2J");
-	escribirP(UART0,"\033[10;10H", "Direccion de lectura:");
+	uart_TeraTerm_send(uart,(uint8_t*)"\033[2J");
+	escribirP(uart,"\033[10;10H", "Direccion de lectura:");
 	ingresoDatos();
-	escribirP(UART0,"\033[10;50H", getFIFO());
+	escribirP(uart,"\033[10;50H", getFIFO());
 	h_decimales = valMemoria();
 	h_decimales = valMemoria();
 	h_decimales = valMemoria();
@@ -91,14 +91,14 @@ void LeerM(){
 	address = (h_decimales <<12)|(h_unidades <<8)|(l_decimales <<4)|l_unidades;
 
 	resetContador();
-	escribirP(UART0,"\033[11;10H", "Longitud en bytes:");
+	escribirP(uart,"\033[11;10H", "Longitud en bytes:");
 	ingresoDatos();
 
 	NDatos = valMemoria();
 	sint8 StringFromMemory[NDatos];
-	escribirP(UART0,"\033[11;50H", getFIFO());
+	escribirP(uart,"\033[11;50H", getFIFO());
 	resetContador();
-	escribirP(UART0,"\033[12;10H", "Contenido");
+	escribirP(uart,"\033[12;10H", "Contenido");
 //	clearFlagM();
 //
 //
@@ -108,8 +108,8 @@ void LeerM(){
 //	}
 
 
-	escribirP(UART0,"\033[13;10H", StringFromMemory);
-	escribirP(UART0,"\033[14;10H", "Presiona una tecla para continuar...");
+	escribirP(uart,"\033[13;10H", StringFromMemory);
+	escribirP(uart,"\033[14;10H", "Presiona una tecla para continuar...");
 
 
 //	while(FALSE==getFlagM());
@@ -123,7 +123,7 @@ void LeerM(){
  * utilizando la funcion Memoria_24LC256_serValue la cual nos regresa una flag status en verdadero cuando termina de guardar
  * todos los datos contenidos en la fifo
  */
-void EscribirM(){
+void EscribirM(UART_Type *uart){
 	uint16 address;
 	uint8 l_decimales=0;
 	uint8 l_unidades=0;
@@ -135,11 +135,11 @@ void EscribirM(){
 	uint8 NDatos = 0;
 
 
-	uart_TeraTerm_send(UART0,(uint8_t*)"\033[2J");
-	escribirP(UART0,"\033[10;10H", "Direccion de escritura:");
+	uart_TeraTerm_send(uart,(uint8_t*)"\033[2J");
+	escribirP(uart,"\033[10;10H", "Direccion de escritura:");
 	resetContador();
 	ingresoDatos();
-	escribirP(UART0,"\033[10;50H", getFIFO());
+	escribirP(uart,"\033[10;50H", getFIFO());
 
 	h_decimales = valMemoria();
 	h_decimales = valMemoria();
@@ -149,9 +149,9 @@ void EscribirM(){
 	l_unidades = valMemoria();
 	address = (h_decimales <<12)|(h_unidades <<8)|(l_decimales <<4)|l_unidades;
 	resetContador();
-	escribirP(UART0,"\033[11;10H", "Texto a guardar: ");
+	escribirP(uart,"\033[11;10H", "Texto a guardar: ");
 	ingresoDatos();
-	escribirP(UART0,"\033[11;50H", getFIFO());
+	escribirP(uart,"\033[11;50H", getFIFO());
 
 
 	x = (pop() + 48);
@@ -164,7 +164,7 @@ void EscribirM(){
 //	}
 
 	resetContador();
-	escribirP(UART0,"\033[13;10H", "Su texto ha sido guardado...");
+	escribirP(uart,"\033[13;10H", "Su texto ha sido guardado...");
 }
 
 /*
@@ -172,16 +172,16 @@ void EscribirM(){
  * para guardar los dos dígitos que componen a cada uno utilizamos el mismo procedimiento que para obtener el address al
  * trabajar con memorias, hacemos un corrimiento y un OR. Al final los guardamos utilizando la funcion del PCF8563
  */
-void Ehora(){
+void Ehora(UART_Type *uart){
 	uint8 valor;
 	uint8 valor2;
 	uint8 hora;
 	uint8 min;
 	uint8 seg;
-	uart_TeraTerm_send(UART0,(uint8_t*)"\033[2J");
-	escribirP(UART0,"\033[10;10H", "Escribir hora en hh/mm/ss");
+	uart_TeraTerm_send(uart,(uint8_t*)"\033[2J");
+	escribirP(uart,"\033[10;10H", "Escribir hora en hh/mm/ss");
 	ingresoDatos();
-	escribirP(UART0,"\033[10;50H", getFIFO());
+	escribirP(uart,"\033[10;50H", getFIFO());
 
 	valor = pop();
 	valor2 = pop();
@@ -197,7 +197,7 @@ void Ehora(){
 //	PCF8563_SetHours(PCF8563_configurationStruct(), hora);
 //	PCF8563_SetMinutes(PCF8563_configurationStruct(), min);
 //	PCF8563_SetSeconds(PCF8563_configurationStruct(), seg);
-	escribirP(UART0,"\033[12;10H", "La hora ha sido cambiada...");
+	escribirP(uart,"\033[12;10H", "La hora ha sido cambiada...");
 }
 
 /*
@@ -205,17 +205,17 @@ void Ehora(){
  * que en la funcion de Ehora. Obtenemos datos pop(), hacemos un corrimiento y lo guardamos con la
  * fucion correspondiente del PCF8563
  */
-void Efecha(){
+void Efecha(UART_Type *uart){
 	uint8 dia;
 	uint8 mes;
 	uint8 aa;
 	uint8 valor;
 	uint8 valor2;
 	resetContador();
-	uart_TeraTerm_send(UART0,(uint8_t*)"\033[2J");
-	escribirP(UART0,"\033[10;10H", "Escribir fecha en dd/mm/aa");
+	uart_TeraTerm_send(uart,(uint8_t*)"\033[2J");
+	escribirP(uart,"\033[10;10H", "Escribir fecha en dd/mm/aa");
 	ingresoDatos();
-	escribirP(UART0,"\033[10;50H", getFIFO());
+	escribirP(uart,"\033[10;50H", getFIFO());
 
 	valor = pop();
 	valor2 = pop();
@@ -231,25 +231,25 @@ void Efecha(){
 //	PCF8563_SetDay(PCF8563_configurationStruct(), dia);
 //	PCF8563_SetMonth(PCF8563_configurationStruct(), mes);
 //	PCF8563_SetYear(PCF8563_configurationStruct(), aa);
-	escribirP(UART0,"\033[12;10H", "La fecha ha sido cambiada...");
+	escribirP(uart,"\033[12;10H", "La fecha ha sido cambiada...");
 }
 
 /*
  * En esta funcion solo recibe un Si o No, con un pop() obtenemos el primer valor de la fifo
  * comparamos si es una S ya sea mayúscula o minúscula y de ser así activamos la flag del formato
  */
-void Fhora(){
+void Fhora(UART_Type *uart){
 	uint8 formato;
 	uint8 S = 35;
-	uart_TeraTerm_send(UART0,(uint8_t*)"\033[2J");
-	escribirP(UART0,"\033[10;10H", "El formato actual es 12h");
-	escribirP(UART0,"\033[11;10H", "Desea cambiar el formato a 12h si/no?");
+	uart_TeraTerm_send(uart,(uint8_t*)"\033[2J");
+	escribirP(uart,"\033[10;10H", "El formato actual es 12h");
+	escribirP(uart,"\033[11;10H", "Desea cambiar el formato a 12h si/no?");
 	ingresoDatos();
-	escribirP(UART0,"\033[11;50H", getFIFO());
+	escribirP(uart,"\033[11;50H", getFIFO());
 	formato=pop();
 	formato==S || formato== 67? setFlagF():clearFlagF();
 	resetContador();
-	escribirP(UART0,"\033[13;10H", "El formato ha sido cambiado...");
+	escribirP(uart,"\033[13;10H", "El formato ha sido cambiado...");
 }
 
 /*
@@ -258,26 +258,26 @@ void Fhora(){
  * pára poder mostrarlo en pantalla. Esto se hace en un cilco hasta que la bandera del
  * mailbox se active (se presione cualquier tecla)
  */
-void Lhora(){
+void Lhora(UART_Type *uart){
 	uint8 valor;
 	uint8 valor1;
-	uart_TeraTerm_send(UART0,(uint8_t*)"\033[2J");
-	escribirP(UART0,"\033[10;10H", "La hora actual es");
+	uart_TeraTerm_send(uart,(uint8_t*)"\033[2J");
+	escribirP(uart,"\033[10;10H", "La hora actual es");
 //	clearFlagM();
 //		while(FALSE==getFlagM()){
 //			valor = PCF8563_getHours(PCF8563_configurationStruct());
 //			valor1 = formatoHora(valor);
 //			sint8* x=(valorMem(valor1));
-//			escribirP(UART0,"\033[12;10H", x);
-//			escribirP(UART0,"\033[12;13H", ":");
+//			escribirP(uart,"\033[12;10H", x);
+//			escribirP(uart,"\033[12;13H", ":");
 //			valor = PCF8563_getMinutes(PCF8563_configurationStruct());
 //			x=(valorMem(valor));
-//			escribirP(UART0,"\033[12;15H", x);
-//			escribirP(UART0,"\033[12;18H", ":");
+//			escribirP(uart,"\033[12;15H", x);
+//			escribirP(uart,"\033[12;18H", ":");
 //			valor = PCF8563_getSeconds(PCF8563_configurationStruct());
 //			x=(valorMem(valor));
-//			escribirP(UART0,"\033[12;20H", x);
-//			escribirP(UART0,"\033[12;25H", formato);
+//			escribirP(uart,"\033[12;20H", x);
+//			escribirP(uart,"\033[12;25H", formato);
 //		}
 //	while(FALSE==getFlagM());
 }
@@ -288,37 +288,37 @@ void Lhora(){
  * pára poder mostrarlo en pantalla. Esto se hace en un cilco hasta que la bandera del
  * mailbox se active (se presione cualquier tecla)
  */
-void Lfecha(){
+void Lfecha(UART_Type *uart){
 	uint8 valor;
-	uart_TeraTerm_send(UART0,(uint8_t*)"\033[2J");
-	escribirP(UART0,"\033[10;10H", "La fecha actual es");
+	uart_TeraTerm_send(uart,(uint8_t*)"\033[2J");
+	escribirP(uart,"\033[10;10H", "La fecha actual es");
 //	clearFlagM();
 //		while(FALSE==getFlagM()){
 //			valor = PCF8563_getDay(PCF8563_configurationStruct());
 //			sint8* x=(valorMem(valor));
-//			escribirP(UART0,"\033[12;10H", x);
-//			escribirP(UART0,"\033[12;13H", "/");
+//			escribirP(uart,"\033[12;10H", x);
+//			escribirP(uart,"\033[12;13H", "/");
 //			valor = PCF8563_getMonth(PCF8563_configurationStruct());
 //			x=(valorMem(valor));
-//			escribirP(UART0,"\033[12;15H", x);
-//			escribirP(UART0,"\033[12;18H", "/");
+//			escribirP(uart,"\033[12;15H", x);
+//			escribirP(uart,"\033[12;18H", "/");
 //			valor = PCF8563_getYear(PCF8563_configurationStruct());
 //			x=(valorMem(valor));
-//			escribirP(UART0,"\033[12;20H", x);
+//			escribirP(uart,"\033[12;20H", x);
 //		}
 //	while(FALSE==getFlagM());//flag del mailbox si está recibiendo datos
 
 }
 
-void Comunicacion(){
-	uart_TeraTerm_send(UART0,(uint8_t*)"\033[2J");
-	escribirP(UART0,"\033[10;10H", "Escribir texto:/n");
+void Comunicacion(UART_Type *uart){
+	uart_TeraTerm_send(uart,(uint8_t*)"\033[2J");
+	escribirP(uart,"\033[10;10H", "Escribir texto:/n");
 	uart_TeraTerm_echo();
 }
 
-void Eco(){
-	uart_TeraTerm_send(UART0,(uint8_t*)"\033[2J");
-	escribirP(UART0,"\033[10;10H", "Escribir texto:/n");
+void Eco(UART_Type *uart){
+	uart_TeraTerm_send(uart,(uint8_t*)"\033[2J");
+	escribirP(uart,"\033[10;10H", "Escribir texto:/n");
 	uart_TeraTerm_echo();
 }
 
@@ -401,5 +401,5 @@ uint8 formatoHora(uint8 x){
 	return x;
 }
 /*VT100 command for clearing the screen
-	UART_putString(UART0,"\033[2J");*/
+	UART_putString(uart,"\033[2J");*/
 

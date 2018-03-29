@@ -46,7 +46,34 @@
 #include "UART_TeraTerm.h"
 #include "LCDNokia5110.h"
 
+#include "init.h"
+#include "MEM24LC256.h"
+#include "PCF8563.h"
+#include "FreeRTOSConfig.h"
+#include "FreeRTOS.h"
+#include "task.h"
+#include "timers.h"
+
 #define nullValue 208
+
+void menus_task(void* args)
+{
+    UART_Type * uart = (UART_Type *) args;//elegir a cuál UART enviar
+
+    void (*Pantallas[9])()={LeerM, EscribirM, Ehora, Efecha, Fhora, Lhora, Lfecha, Comunicacion, Eco };//Arreglo de funciones para los distintos menus
+    MenuInicial(uart);
+
+    while(1){
+        uint8 x = pop() ;
+        if((x!=0) && (nullValue!=x) && FALSE==getflagEnter()){//el 208 es un valor que recibe al no presionar nada, si presionamos ENTER no hacemos nada
+            resetContador();//limpiamos cualquier basura de la FIFO
+            Pantallas[x-1](uart);//Entramos al menu seleccinado
+            MenuInicial();//Salimos del menu y volvemos al inicial
+            clearflagE();
+        }
+        vTaskDelay(pdMS_TO_TICKS(10));
+    }
+}
 
 int main(void) {
 
@@ -57,18 +84,15 @@ int main(void) {
   	/* Init FSL debug console. */
     BOARD_InitDebugConsole();
 
-    void (*Pantallas[9])()={LeerM, EscribirM, Ehora, Efecha, Fhora, Lhora, Lfecha, Comunicacion, Eco };//Arreglo de funciones para los distintos menus
+    xTaskCreate(menus_task, "Menus PC", configMINIMAL_STACK_SIZE, NULL, configMAX_PRIORITIES-1, (void*) UART0);
+    xTaskCreate(menus_task, "Menus BT", configMINIMAL_STACK_SIZE, NULL, configMAX_PRIORITIES-1, (void*) UART4);
+    vTaskStartScheduler();
 
-	MenuInicial();
+    /* Enter an infinite loop, just incrementing a counter. */
+    while (1)
+    {
 
-	while(1){
-   		uint8 x = pop() ;
-   		if((x!=0) && (nullValue!=x) && FALSE==getflagEnter()){//el 208 es un valor que recibe al no presionar nada, si presionamos ENTER no hacemos nada
-   			resetContador();//limpiamos cualquier basura de la FIFO
-   			Pantallas[x-1]();//Entramos al menu seleccinado
-   			MenuInicial();//Salimos del menu y volvemos al inicial
-   			clearflagE();
-   		}
-   	}
-   return 0;
+    }
+
+    return 0;
 }
