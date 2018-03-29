@@ -7,7 +7,6 @@
 
 #include "MK64F12.h"
 #include "init.h"
-#include "MCG.h"
 #include "MEM24LC256.h"
 #include "PCF8563.h"
 #include "fsl_clock.h"
