@@ -18,7 +18,6 @@
 #include "semphr.h"
 
 #define RX_RING_BUFFER_SIZE 20U
-#define ECHO_BUFFER_SIZE 8U
 #define ENTER 13
 
 
@@ -32,6 +31,10 @@ volatile bool txBuffer_Full = false;
 volatile bool tx_OnGoing = false;
 volatile bool rx_OnGoing = false;
 QueueHandle_t g_uart4_queue;
+
+
+/*******************************************************************************
+ * Code
 /******************************************************************************/
 /* UART user callback */
 
@@ -67,7 +70,6 @@ void uart_BT_init(){
 
 	UART_Init(UART4, &config, CLOCK_GetFreq(UART4_CLK_SRC));
 	UART_TransferCreateHandle(UART4, &g_UartHandle, BT_UART_UserCallback, NULL);
-	UART_TransferStartRingBuffer(UART4, &g_UartHandle, g_RxRingBuffer, RX_RING_BUFFER_SIZE);
 	g_uart4_queue = xQueueCreate(3,sizeof(UART_MailBoxType*));
 
 }
@@ -110,7 +112,7 @@ UART_MailBoxType* uart_BT_receive(){
 
 	msg = pvPortMalloc(sizeof(g_uart4_queue));
 	msg->flagEnter = TRUE;
-	msg->mailBox = receiveData;
+	msg->mailBox = *xfer.data;
 
 	return msg;
 

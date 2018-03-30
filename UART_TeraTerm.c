@@ -19,7 +19,6 @@
 #include "semphr.h"
 
 #define RX_RING_BUFFER_SIZE 20U
-#define ECHO_BUFFER_SIZE 8U
 #define ENTER 13
 #define ESC 27
 
@@ -28,8 +27,6 @@
  ******************************************************************************/
 uart_handle_t g_uartHandle;
 uint8_t g_rxRingBuffer[RX_RING_BUFFER_SIZE] = {0}; /* RX ring buffer. */
-uint8_t g_rxBuffer[ECHO_BUFFER_SIZE] = {0}; /* Buffer for receive data to echo. */
-uint8_t g_txBuffer[ECHO_BUFFER_SIZE] = {0}; /* Buffer for send data to echo. */
 volatile bool rxBufferEmpty = true;
 volatile bool txBufferFull = false;
 volatile bool txOnGoing = false;
@@ -73,6 +70,7 @@ void uart_TeraTerm_init(){
 
 
 void uart_TeraTerm_send(UART_Type *base, uint8_t* string){
+
 	while (*string)//se transmiten los datos hasta llegar al caracter nulo
 	{
 		uart_transfer_t xfer;
@@ -96,7 +94,7 @@ UART_MailBoxType* uart_TeraTerm_receive(){
 	uint8_t receiveData[32];
 	uint8_t i=0;
 	uart_transfer_t xfer;
-	xfer.data = &receiveData[0];
+	xfer.data = (uint8_t*)receiveData;
 	xfer.dataSize = sizeof(receiveData)/sizeof(receiveData[0]);
 	rxOnGoing = true;
 	UART_TransferReceiveNonBlocking(UART0, &g_uartHandle, &xfer, &xfer.dataSize);
@@ -109,11 +107,10 @@ UART_MailBoxType* uart_TeraTerm_receive(){
 			    	rxOnGoing = 0;
 		i==31?i=0:i++;
 		vTaskDelay(pdMS_TO_TICKS(20));
-
 	      }
 	msg = pvPortMalloc(sizeof(g_uart0_queue));
 	msg->flagEnter = TRUE;
-	msg->mailBox = ((uint8_t*)receiveData);
+	msg->mailBox = *receiveData;
 
 	return msg;
 }
@@ -127,8 +124,6 @@ void uart_TeraTerm_echo(){
 		rxOnGoing = true;
 		UART_TransferReceiveNonBlocking(UART0, &g_uartHandle, &xfer, &xfer.dataSize);
 
-
-
 		while (rxOnGoing)
 		      {
 
@@ -139,6 +134,10 @@ void uart_TeraTerm_echo(){
 		      }
 
 		imprimir_lcd(xfer.data, 2, 0);
+}
+
+void limpiarQueue_BT(){
+
 }
 
 

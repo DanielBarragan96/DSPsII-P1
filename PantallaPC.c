@@ -20,6 +20,9 @@
 #include "UART_BT.h"
 #include "LCDNokia5110.h"
 #include "UART_TeraTerm.h"
+#include "FreeRTOSConfig.h"
+#include "FreeRTOS.h"
+#include "task.h"
 
 BooleanType Formatohora = FALSE; //bandera para cambiar el formato
 static sint8 string[2] ;
@@ -37,14 +40,11 @@ void escribirP(UART_Type *base, sint8* Posicion,  sint8* string ){
 		uart_TeraTerm_send(base, (uint8_t*)Posicion);
 		uart_TeraTerm_send(base, (uint8_t*)string);
 	}
-
-
 }
 
 
-
 /*
- * Funcion que espera hasta que terminemos de ingresar los valores que queremos. En otras palabras espera un ENTER
+ * Funcion que espera hasta que terminemos de ingresar los valores que queremos y guardarlos en la queue.
  */
 void ingresoDatos(UART_Type *base){
 	if(UART0 == base)
@@ -52,6 +52,7 @@ void ingresoDatos(UART_Type *base){
 	else
 		uart_BT_receive();
 }
+
 
 /*
  * Se imprime el menu inicial de la práctica
@@ -86,9 +87,9 @@ void LeerM(UART_Type *uart){
 	uint8 h_unidades=0;
 	uint8 NDatos ;
 	uint8 ContadorDeDatosExtraidos = 0;
-	resetContador();
+	/*LIMPIAR LA QUEUE*/
 	escribirP(uart,"\033[10;10H","\033[2J");
-	escribirP(uart,"\033[10;10H", "Direccion de lectura:");
+	escribirP(uart,"\033[10;10H", "Direccion de lectura: ");
 	ingresoDatos(uart);
 	escribirP(uart,"\033[10;50H", getFIFO());
 	h_decimales = valMemoria();
@@ -100,7 +101,7 @@ void LeerM(UART_Type *uart){
 	address = (h_decimales <<12)|(h_unidades <<8)|(l_decimales <<4)|l_unidades;
 
 	resetContador();
-	escribirP(uart,"\033[11;10H", "Longitud en bytes:");
+	escribirP(uart,"\033[11;10H", "Longitud en bytes: ");
 	ingresoDatos(uart);
 
 	NDatos = valMemoria();

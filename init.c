@@ -61,8 +61,6 @@ void initTasks ()
 	xTaskCreate(menus_task, "Menus PC", 110, (void*) UART0, configMAX_PRIORITIES-1, NULL);
 	xTaskCreate(menus_task, "Menus BT", 110, (void*) UART4, configMAX_PRIORITIES-1, NULL);
 
-
-
 	vTaskStartScheduler();
 
 }

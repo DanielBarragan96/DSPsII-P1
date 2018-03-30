@@ -74,7 +74,7 @@ typedef float ufloat32;
 typedef struct{
 	bool flag; /** Flag to indicate that there is new data*/
 	bool flagEnter;
-	uint8_t* mailBox; /** it contains the received data*/
+	uint8_t mailBox; /** it contains the received data*/
 }UART_MailBoxType;
 
 typedef union

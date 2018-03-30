@@ -64,7 +64,7 @@ typedef struct
 {
 	void (*func)(UART_Type *);
 	uint8_t i;
-}Function;
+}Function;  //Para mandar parametro con el apuntador a funciones
 
 void menus_task(void* args)
 {
@@ -81,7 +81,7 @@ void menus_task(void* args)
         	msg = uart_BT_receive();
         else
         	msg = uart_TeraTerm_receive();
-        uint8_t x = *(msg->mailBox);
+        uint8_t x = msg->mailBox;
         x -= 48;
         if((0!=x) && (nullValue!=x)){//el 208 es un valor que recibe al no presionar nada, si presionamos ENTER no hacemos nada
             msg->flagEnter = false;
