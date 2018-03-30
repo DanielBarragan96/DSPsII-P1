@@ -100,7 +100,12 @@ void init_clk()
 {
     static i2c_master_transfer_t masterXfer;
     static uint8_t buffer = 0x00;
-    i2c_writes(PCF8563_READ_ADDRESS, CLK_REGISTER_ADRESS, ONE_BYTE, buffer, ONE_BYTE);
+    i2c_writes(PCF8563_WRITE_ADDRESS, CLK_REGISTER_ADRESS, ONE_BYTE, &buffer, ONE_BYTE);
+    buffer = 7;
+    i2c_writes(PCF8563_WRITE_ADDRESS, 0x09, ONE_BYTE, &buffer, ONE_BYTE);
+    buffer = 0;
+    i2c_read(PCF8563_READ_ADDRESS, 0x09, ONE_BYTE, &buffer, ONE_BYTE);
+    return;
 }
 
 uint8_t getTime()

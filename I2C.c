@@ -207,10 +207,15 @@ int8_t i2c_read (uint8_t slaveAdress, uint8_t subaddress, uint8_t dataSize,
 
     xSemaphoreTake(mutex,portMAX_DELAY);
     // Get default configuration for master.
-    i2c_slave_config_t slaveConfig;
-    I2C_SlaveGetDefaultConfig (&slaveConfig);
+//    i2c_slave_config_t slaveConfig;
+//    I2C_SlaveGetDefaultConfig (&slaveConfig);
+//
+//    I2C_SlaveInit (I2C0, &slaveConfig, CLOCK_GetFreq (kCLOCK_BusClk));
 
-    I2C_SlaveInit (I2C0, &slaveConfig, CLOCK_GetFreq (kCLOCK_BusClk));
+    i2c_master_config_t masterConfig;
+    I2C_MasterGetDefaultConfig (&masterConfig);
+
+    I2C_MasterInit (I2C0, &masterConfig, CLOCK_GetFreq (kCLOCK_BusClk));
 
     xTimerStart(g_timer, portMAX_DELAY);
     I2C_MasterTransferNonBlocking (I2C0, &g_m_handle, &masterXfer);

@@ -10,8 +10,7 @@
 
 #include "stdint.h"
 
-#define MEM24LC256_WRITE_ADDRESS 0x50 // Slave address with chip select bits on ground and w/r bit in 0
-#define MEM24LC256_READ_ADDRESS 0x50 // Slave address with chip select bits on ground and w/r bit in 1
+#define MEM24LC256_SLAVE_ADDRESS 0x50 // Slave address with chip select bits on ground and w/r bit in 0
 
 /********************************************************************************************/
 /********************************************************************************************/
