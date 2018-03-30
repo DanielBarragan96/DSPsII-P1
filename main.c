@@ -51,30 +51,45 @@
 #include "UART_BT.h"
 #include "UART_TeraTerm.h"
 #include "LCDNokia5110.h"
-#include "queue.h"
-#include "init.h"
 #include "MEM24LC256.h"
 #include "PCF8563.h"
+#include "queue.h"
+#include "init.h"
 #include "timers.h"
 
 
 #define nullValue 208
 
+typedef struct
+{
+	void (*func)(UART_Type *);
+	uint8_t i;
+}Function;
+
 void menus_task(void* args)
 {
     UART_Type * uart = (UART_Type *) args;//elegir a cuál UART enviar
 
-    void (*Pantallas[9])()={LeerM, EscribirM, Ehora, Efecha, Fhora, Lhora, Lfecha, Comunicacion, Eco };//Arreglo de funciones para los distintos menus
+	void (*Pantallas[9])(UART_Type *) = {LeerM, EscribirM, Ehora,
+			Efecha, Fhora, Lhora, Lfecha, Comunicacion, Eco };
+	//Arreglo de funciones para los distintos menus
     MenuInicial(uart);
 
     while(1){
-        uint8 x = pop() ;
-        if((x!=0) && (nullValue!=x) && FALSE==getflagEnter()){//el 208 es un valor que recibe al no presionar nada, si presionamos ENTER no hacemos nada
-            resetContador();//limpiamos cualquier basura de la FIFO
+        UART_MailBoxType* msg;
+        if(UART4==uart)
+        	msg = uart_BT_receive();
+        else
+        	msg = uart_TeraTerm_receive();
+        uint8_t x = *(msg->mailBox);
+        x -= 48;
+        if((0!=x) && (nullValue!=x)){//el 208 es un valor que recibe al no presionar nada, si presionamos ENTER no hacemos nada
+            msg->flagEnter = false;
+        	resetContador();//limpiamos cualquier basura de la FIFO
             Pantallas[x-1](uart);//Entramos al menu seleccinado
             MenuInicial();//Salimos del menu y volvemos al inicial
-            clearflagE();
         }
+    	vPortFree(msg);
         vTaskDelay(pdMS_TO_TICKS(10));
     }
 }

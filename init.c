@@ -17,8 +17,15 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
-#include "queue.h"
 #include "DataTypeDefinitions.h"
+#include "SPI.h"
+#include "DataTypeDefinitions.h"
+#include "PantallaPC.h"
+#include "UART_BT.h"
+#include "UART_TeraTerm.h"
+#include "LCDNokia5110.h"
+#include "MEM24LC256.h"
+#include "PCF8563.h"
 
 
 
@@ -47,16 +54,16 @@
 #define BUFFER_SIZE 8
 #define I2C_CLK 12000000U
 
-QueueHandle_t g_mailbox_queue;
 void menus_task(void* args);
 
 void initTasks ()
 {
 	xTaskCreate(menus_task, "Menus PC", 110, (void*) UART0, configMAX_PRIORITIES-1, NULL);
 	xTaskCreate(menus_task, "Menus BT", 110, (void*) UART4, configMAX_PRIORITIES-1, NULL);
-    g_mailbox_queue = xQueueCreate(3,sizeof(UART_MailBoxType*));
 
-	 vTaskStartScheduler();
+
+
+	vTaskStartScheduler();
 
 }
 

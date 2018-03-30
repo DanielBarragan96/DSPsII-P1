@@ -29,12 +29,13 @@ sint8 formato[2] = {'h','r'};
  * Realiza las dos operaciones para enviar escribir en el serial, primero la posicion y despues los valores
  */
 void escribirP(UART_Type *base, sint8* Posicion,  sint8* string ){
-	if(UART4 == base)
+	if(UART4 == base){
 		uart_BT_send(base, (uint8_t*)string);
+	    uart_BT_send(base, (uint8_t*)Posicion);
+	}
 	else{
 		uart_TeraTerm_send(base, (uint8_t*)Posicion);
 		uart_TeraTerm_send(base, (uint8_t*)string);
-
 	}
 
 
@@ -45,10 +46,11 @@ void escribirP(UART_Type *base, sint8* Posicion,  sint8* string ){
 /*
  * Funcion que espera hasta que terminemos de ingresar los valores que queremos. En otras palabras espera un ENTER
  */
-void ingresoDatos(){
-	while(FALSE == getflagEnter());
-	clearflagE();
-
+void ingresoDatos(UART_Type *base){
+	if(UART0 == base)
+		uart_TeraTerm_receive();
+	else
+		uart_BT_receive();
 }
 
 /*
@@ -85,9 +87,9 @@ void LeerM(UART_Type *uart){
 	uint8 NDatos ;
 	uint8 ContadorDeDatosExtraidos = 0;
 	resetContador();
-	uart_TeraTerm_send(uart,(uint8_t*)"\033[2J");
+	escribirP(uart,"\033[10;10H","\033[2J");
 	escribirP(uart,"\033[10;10H", "Direccion de lectura:");
-	ingresoDatos();
+	ingresoDatos(uart);
 	escribirP(uart,"\033[10;50H", getFIFO());
 	h_decimales = valMemoria();
 	h_decimales = valMemoria();
@@ -99,7 +101,7 @@ void LeerM(UART_Type *uart){
 
 	resetContador();
 	escribirP(uart,"\033[11;10H", "Longitud en bytes:");
-	ingresoDatos();
+	ingresoDatos(uart);
 
 	NDatos = valMemoria();
 	sint8 StringFromMemory[NDatos];
@@ -145,7 +147,7 @@ void EscribirM(UART_Type *uart){
 	uart_TeraTerm_send(uart,(uint8_t*)"\033[2J");
 	escribirP(uart,"\033[10;10H", "Direccion de escritura:");
 	resetContador();
-	ingresoDatos();
+	ingresoDatos(uart);
 	escribirP(uart,"\033[10;50H", getFIFO());
 
 	h_decimales = valMemoria();
@@ -157,7 +159,7 @@ void EscribirM(UART_Type *uart){
 	address = (h_decimales <<12)|(h_unidades <<8)|(l_decimales <<4)|l_unidades;
 	resetContador();
 	escribirP(uart,"\033[11;10H", "Texto a guardar: ");
-	ingresoDatos();
+	ingresoDatos(uart);
 	escribirP(uart,"\033[11;50H", getFIFO());
 
 
@@ -187,7 +189,7 @@ void Ehora(UART_Type *uart){
 	uint8 seg;
 	uart_TeraTerm_send(uart,(uint8_t*)"\033[2J");
 	escribirP(uart,"\033[10;10H", "Escribir hora en hh/mm/ss");
-	ingresoDatos();
+	ingresoDatos(uart);
 	escribirP(uart,"\033[10;50H", getFIFO());
 
 	valor = pop();
@@ -221,7 +223,7 @@ void Efecha(UART_Type *uart){
 	resetContador();
 	uart_TeraTerm_send(uart,(uint8_t*)"\033[2J");
 	escribirP(uart,"\033[10;10H", "Escribir fecha en dd/mm/aa");
-	ingresoDatos();
+	ingresoDatos(uart);
 	escribirP(uart,"\033[10;50H", getFIFO());
 
 	valor = pop();
@@ -251,7 +253,7 @@ void Fhora(UART_Type *uart){
 	uart_TeraTerm_send(uart,(uint8_t*)"\033[2J");
 	escribirP(uart,"\033[10;10H", "El formato actual es 12h");
 	escribirP(uart,"\033[11;10H", "Desea cambiar el formato a 12h si/no?");
-	ingresoDatos();
+	ingresoDatos(uart);
 	escribirP(uart,"\033[11;50H", getFIFO());
 	formato=pop();
 	formato==S || formato== 67? setFlagF():clearFlagF();

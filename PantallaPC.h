@@ -119,7 +119,7 @@ void Lfecha();
  	 \brief	 Funcion de espera hasta que terminemos de ingresar los valores
  	 \return void
  */
-void ingresoDatos();
+void ingresoDatos(UART_Type *base);
 
 //
 /********************************************************************************************/

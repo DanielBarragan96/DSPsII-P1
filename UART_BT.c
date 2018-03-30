@@ -11,6 +11,11 @@
 #include "DataTypeDefinitions.h"
 #include "Fifo.h"
 #include "pin_mux.h"
+#include "FreeRTOS.h"
+#include "task.h"
+#include "event_groups.h"
+#include "queue.h"
+#include "semphr.h"
 
 #define RX_RING_BUFFER_SIZE 20U
 #define ECHO_BUFFER_SIZE 8U
@@ -26,8 +31,7 @@ volatile bool rxBuffer_Empty = true;
 volatile bool txBuffer_Full = false;
 volatile bool tx_OnGoing = false;
 volatile bool rx_OnGoing = false;
-UART_MailBoxType UART0_BT_Mailbox;
-
+QueueHandle_t g_uart4_queue;
 /******************************************************************************/
 /* UART user callback */
 
@@ -64,6 +68,7 @@ void uart_BT_init(){
 	UART_Init(UART4, &config, CLOCK_GetFreq(UART4_CLK_SRC));
 	UART_TransferCreateHandle(UART4, &g_UartHandle, BT_UART_UserCallback, NULL);
 	UART_TransferStartRingBuffer(UART4, &g_UartHandle, g_RxRingBuffer, RX_RING_BUFFER_SIZE);
+	g_uart4_queue = xQueueCreate(3,sizeof(UART_MailBoxType*));
 
 }
 
@@ -85,7 +90,9 @@ void uart_BT_send(UART_Type *base, uint8_t* string){
 
 }
 
-void uart_BT_receive(){
+UART_MailBoxType* uart_BT_receive(){
+
+	UART_MailBoxType *msg;
 	uint8_t receiveData[32];
 	uart_transfer_t xfer;
 	xfer.data = (uint8_t*)receiveData;
@@ -93,20 +100,16 @@ void uart_BT_receive(){
 	rx_OnGoing = true;
 	UART_TransferReceiveNonBlocking(UART4, &g_UartHandle, &xfer, &xfer.dataSize);
 
-		while (rx_OnGoing) {   }
+		while (rx_OnGoing) {
+			vTaskDelay(pdMS_TO_TICKS(20));
+		}
 
-	}
+	msg = pvPortMalloc(sizeof(g_uart4_queue));
+	msg->flagEnter = TRUE;
+	msg->mailBox = receiveData;
+
+	return msg;
 
 
-
-void setflagEnter(){
-	UART0_BT_Mailbox.flagEnter = TRUE;
 }
 
-void clearflagEnter(){
-	UART0_BT_Mailbox.flagEnter = FALSE;
-}
-
-bool getflagEnter(){
-	return UART0_BT_Mailbox.flagEnter;
-}

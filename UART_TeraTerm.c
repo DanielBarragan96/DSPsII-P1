@@ -12,6 +12,11 @@
 #include "Fifo.h"
 #include "LCDNokia5110.h"
 #include "DataTypeDefinitions.h"
+#include "FreeRTOS.h"
+#include "task.h"
+#include "event_groups.h"
+#include "queue.h"
+#include "semphr.h"
 
 #define RX_RING_BUFFER_SIZE 20U
 #define ECHO_BUFFER_SIZE 8U
@@ -29,7 +34,7 @@ volatile bool rxBufferEmpty = true;
 volatile bool txBufferFull = false;
 volatile bool txOnGoing = false;
 volatile bool rxOnGoing = false;
-UART_MailBoxType UART0_MailBox;
+QueueHandle_t g_uart0_queue;
 
 
 /*******************************************************************************
@@ -62,6 +67,7 @@ void uart_TeraTerm_init(){
 
 	UART_Init(UART0, &config, CLOCK_GetFreq(UART0_CLK_SRC));
 	UART_TransferCreateHandle(UART0, &g_uartHandle, TeraTerm_UART_UserCallback, NULL);
+	g_uart0_queue = xQueueCreate(3,sizeof(UART_MailBoxType*));
 
 }
 
@@ -82,7 +88,8 @@ void uart_TeraTerm_send(UART_Type *base, uint8_t* string){
 		}
 }
 
-void uart_TeraTerm_receive(UART_Type *base){
+UART_MailBoxType* uart_TeraTerm_receive(){
+	UART_MailBoxType *msg;
 	uint8_t receiveData[32];
 	uint8_t i=0;
 	uart_transfer_t xfer;
@@ -95,12 +102,17 @@ void uart_TeraTerm_receive(UART_Type *base){
 
 	while (rxOnGoing)
 	      {
-
 		if(ENTER == receiveData[i])
 			    	rxOnGoing = 0;
 		i==31?i=0:i++;
+		vTaskDelay(pdMS_TO_TICKS(20));
 
 	      }
+	msg = pvPortMalloc(sizeof(g_uart0_queue));
+	msg->flagEnter = TRUE;
+	msg->mailBox = ((uint8_t*)receiveData);
+
+	return msg;
 }
 
 void uart_TeraTerm_echo(){
@@ -126,16 +138,6 @@ void uart_TeraTerm_echo(){
 		imprimir_lcd(xfer.data, 2, 0);
 }
 
-void setflagE(){
-	UART0_MailBox.flagEnter = TRUE;
-}
 
-void clearflagE(){
-	UART0_MailBox.flagEnter = FALSE;
-}
-
-bool getflagE(){
-	return UART0_MailBox.flagEnter;
-}
 
 
