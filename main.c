@@ -27,9 +27,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
+ 
 /**
- * @file    P1-1.c
+ * @file    Practica01.c
  * @brief   Application entry point.
  */
 #include <stdio.h>
@@ -39,68 +39,36 @@
 #include "clock_config.h"
 #include "MK64F12.h"
 #include "fsl_debug_console.h"
+#include "SPI.h"
+#include "Fifo.h"
+#include "PantallaPC.h"
+#include "UART_BT.h"
+#include "UART_TeraTerm.h"
+#include "LCDNokia5110.h"
 
-#include "init.h"
-#include "MEM24LC256.h"
-#include "PCF8563.h"
-#include "FreeRTOSConfig.h"
-#include "FreeRTOS.h"
-#include "task.h"
-#include "timers.h"
-/* TODO: insert other include files here. */
+#define nullValue 208
 
-/* TODO: insert other definitions and declarations here. */
+int main(void) {
 
+  	/* Init board hardware. */
+    //BOARD_InitBootPins();
+    BOARD_InitBootClocks();
+    BOARD_InitBootPeripherals();
+  	/* Init FSL debug console. */
+    BOARD_InitDebugConsole();
 
-void task_one()
-{
+    void (*Pantallas[9])()={LeerM, EscribirM, Ehora, Efecha, Fhora, Lhora, Lfecha, Comunicacion, Eco };//Arreglo de funciones para los distintos menus
 
-    //Test mem
-    uint16_t address = 0x05;
-    uint8_t* data = "hola Chung";
+	MenuInicial();
 
-    MEM24LC256_setData (address, data);
-
-    uint8_t dataSize = 7;
-    uint8_t val2[dataSize];
-    uint8_t* data2 = &val2[0];
-    MEM24LC256_getData (address, dataSize, data2);
-
-    init_clk();
-
-    while(1)
-        getTime();
-
-//    uint8_t sec = PCF8563_getSeconds();
-//    uint8_t min = PCF8563_getMinutes();
-//    uint8_t huo = PCF8563_getHours();
-//    while(1)
-//    {
-//        sec = PCF8563_getSeconds();
-//        min = PCF8563_getMinutes();
-//        huo = PCF8563_getHours();
-//    }
-}
-/*
- * @brief   Application entry point.
- */
-int main (void)
-{
-    /* Init board hardware. */
-    BOARD_InitBootPins ();
-    BOARD_InitBootClocks ();
-    BOARD_InitBootPeripherals ();
-    /* Init FSL debug console. */
-    BOARD_InitDebugConsole ();
-
-    initMain ();
-    xTaskCreate(task_one, "I2C test", 250, NULL, configMAX_PRIORITIES-1, NULL);
-    vTaskStartScheduler();
-
-    /* Enter an infinite loop, just incrementing a counter. */
-    while (1)
-    {
-
-    }
-    return 0;
+	while(1){
+   		uint8 x = pop() ;
+   		if((x!=0) && (nullValue!=x) && FALSE==getflagEnter()){//el 208 es un valor que recibe al no presionar nada, si presionamos ENTER no hacemos nada
+   			resetContador();//limpiamos cualquier basura de la FIFO
+   			Pantallas[x-1]();//Entramos al menu seleccinado
+   			MenuInicial();//Salimos del menu y volvemos al inicial
+   			clearflagE();
+   		}
+   	}
+   return 0;
 }
