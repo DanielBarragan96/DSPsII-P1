@@ -89,11 +89,14 @@ void uart_TeraTerm_send(UART_Type *base, uint8_t* string){
 }
 
 UART_MailBoxType* uart_TeraTerm_receive(){
+
+	uart_TeraTerm_init();
+
 	UART_MailBoxType *msg;
 	uint8_t receiveData[32];
 	uint8_t i=0;
 	uart_transfer_t xfer;
-	xfer.data = receiveData;
+	xfer.data = &receiveData[0];
 	xfer.dataSize = sizeof(receiveData)/sizeof(receiveData[0]);
 	rxOnGoing = true;
 	UART_TransferReceiveNonBlocking(UART0, &g_uartHandle, &xfer, &xfer.dataSize);

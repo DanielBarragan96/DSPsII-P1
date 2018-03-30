@@ -98,9 +98,13 @@ UART_MailBoxType* uart_BT_receive(){
 	xfer.data = (uint8_t*)receiveData;
 	xfer.dataSize = sizeof(receiveData)/sizeof(receiveData[0]);
 	rx_OnGoing = true;
+	uint8_t i = 0;
 	UART_TransferReceiveNonBlocking(UART4, &g_UartHandle, &xfer, &xfer.dataSize);
 
 		while (rx_OnGoing) {
+			if(ENTER == receiveData[i])
+				rx_OnGoing = 0;
+			i==31?i=0:i++;
 			vTaskDelay(pdMS_TO_TICKS(20));
 		}
 
