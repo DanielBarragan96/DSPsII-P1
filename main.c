@@ -39,21 +39,45 @@
 #include "clock_config.h"
 #include "MK64F12.h"
 #include "fsl_debug_console.h"
+
+#include "FreeRTOSConfig.h"
+#include "FreeRTOS.h"
+#include "task.h"
+
 #include "SPI.h"
 #include "Fifo.h"
+#include "DataTypeDefinitions.h"
 #include "PantallaPC.h"
 #include "UART_BT.h"
 #include "UART_TeraTerm.h"
 #include "LCDNokia5110.h"
-
+#include "queue.h"
 #include "init.h"
 #include "MEM24LC256.h"
 #include "PCF8563.h"
-#include "FreeRTOSConfig.h"
-#include "FreeRTOS.h"
-#include "task.h"
 #include "timers.h"
 
+
+#define nullValue 208
+
+void menus_task(void* args)
+{
+    UART_Type * uart = (UART_Type *) args;//elegir a cuál UART enviar
+
+    void (*Pantallas[9])()={LeerM, EscribirM, Ehora, Efecha, Fhora, Lhora, Lfecha, Comunicacion, Eco };//Arreglo de funciones para los distintos menus
+    MenuInicial(uart);
+
+    while(1){
+        uint8 x = pop() ;
+        if((x!=0) && (nullValue!=x) && FALSE==getflagEnter()){//el 208 es un valor que recibe al no presionar nada, si presionamos ENTER no hacemos nada
+            resetContador();//limpiamos cualquier basura de la FIFO
+            Pantallas[x-1](uart);//Entramos al menu seleccinado
+            MenuInicial();//Salimos del menu y volvemos al inicial
+            clearflagE();
+        }
+        vTaskDelay(pdMS_TO_TICKS(10));
+    }
+}
 
 int main(void) {
 

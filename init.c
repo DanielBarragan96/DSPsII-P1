@@ -12,20 +12,15 @@
 #include "clock_config.h"
 #include "MK64F12.h"
 #include "fsl_debug_console.h"
-#include "SPI.h"
-#include "Fifo.h"
-#include "PantallaPC.h"
-#include "UART_BT.h"
-#include "UART_TeraTerm.h"
-#include "LCDNokia5110.h"
 
-#include "init.h"
-#include "MEM24LC256.h"
-#include "PCF8563.h"
 #include "FreeRTOSConfig.h"
 #include "FreeRTOS.h"
 #include "task.h"
-#include "timers.h"
+
+#include "queue.h"
+#include "DataTypeDefinitions.h"
+
+
 
 /* I2C source clock */
 #define I2C_MASTER_CLK_SRC I2C0_CLK_SRC
@@ -52,34 +47,18 @@
 #define BUFFER_SIZE 8
 #define I2C_CLK 12000000U
 
-#define nullValue 208
-
+QueueHandle_t g_mailbox_queue;
 void menus_task(void* args);
 
 void initTasks ()
 {
-	 xTaskCreate(menus_task, "Menus PC", 110, (void*) UART0, configMAX_PRIORITIES-1, NULL);
-	 xTaskCreate(menus_task, "Menus BT", 110, (void*) UART4, configMAX_PRIORITIES-1, NULL);
+	xTaskCreate(menus_task, "Menus PC", 110, (void*) UART0, configMAX_PRIORITIES-1, NULL);
+	xTaskCreate(menus_task, "Menus BT", 110, (void*) UART4, configMAX_PRIORITIES-1, NULL);
+    g_mailbox_queue = xQueueCreate(3,sizeof(UART_MailBoxType*));
+
 	 vTaskStartScheduler();
 
 }
 
 
-void menus_task(void* args)
-{
-    UART_Type * uart = (UART_Type *) args;//elegir a cuál UART enviar
 
-    void (*Pantallas[9])()={LeerM, EscribirM, Ehora, Efecha, Fhora, Lhora, Lfecha, Comunicacion, Eco };//Arreglo de funciones para los distintos menus
-    MenuInicial(uart);
-
-    while(1){
-        uint8 x = pop() ;
-        if((x!=0) && (nullValue!=x) && FALSE==getflagEnter()){//el 208 es un valor que recibe al no presionar nada, si presionamos ENTER no hacemos nada
-            resetContador();//limpiamos cualquier basura de la FIFO
-            Pantallas[x-1](uart);//Entramos al menu seleccinado
-            MenuInicial();//Salimos del menu y volvemos al inicial
-            clearflagE();
-        }
-        vTaskDelay(pdMS_TO_TICKS(10));
-    }
-}
