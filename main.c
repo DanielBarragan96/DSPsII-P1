@@ -46,7 +46,14 @@
 #include "UART_TeraTerm.h"
 #include "LCDNokia5110.h"
 
-#define nullValue 208
+#include "init.h"
+#include "MEM24LC256.h"
+#include "PCF8563.h"
+#include "FreeRTOSConfig.h"
+#include "FreeRTOS.h"
+#include "task.h"
+#include "timers.h"
+
 
 int main(void) {
 
@@ -56,19 +63,7 @@ int main(void) {
     BOARD_InitBootPeripherals();
   	/* Init FSL debug console. */
     BOARD_InitDebugConsole();
+    initTasks();
 
-    void (*Pantallas[9])()={LeerM, EscribirM, Ehora, Efecha, Fhora, Lhora, Lfecha, Comunicacion, Eco };//Arreglo de funciones para los distintos menus
-
-	MenuInicial();
-
-	while(1){
-   		uint8 x = pop() ;
-   		if((x!=0) && (nullValue!=x) && FALSE==getflagEnter()){//el 208 es un valor que recibe al no presionar nada, si presionamos ENTER no hacemos nada
-   			resetContador();//limpiamos cualquier basura de la FIFO
-   			Pantallas[x-1]();//Entramos al menu seleccinado
-   			MenuInicial();//Salimos del menu y volvemos al inicial
-   			clearflagE();
-   		}
-   	}
-   return 0;
+     return 0;
 }
