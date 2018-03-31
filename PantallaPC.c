@@ -22,11 +22,21 @@
 #include "FreeRTOSConfig.h"
 #include "FreeRTOS.h"
 #include "task.h"
+#include "semphr.h"
 
 BooleanType Formatohora = FALSE; //bandera para cambiar el formato
 static sint8 string[2] ;
-sint8 formato[2] = {'h','r'};
+static sint8 formato[2] = {'h','r'};
 HoraActual datos;
+SemaphoreHandle_t mutexLeerM;
+SemaphoreHandle_t mutexEscribirM;
+SemaphoreHandle_t mutexEhora;
+SemaphoreHandle_t mutexEfecha;
+SemaphoreHandle_t mutexFhora;
+SemaphoreHandle_t mutexLhora;
+SemaphoreHandle_t mutexLfecha;
+SemaphoreHandle_t mutexEco;
+
 /*
  * Realiza las dos operaciones para enviar escribir en el serial, primero la posicion y despues los valores
  */
@@ -79,6 +89,10 @@ void MenuInicial(UART_Type *uart){
  * valorMem convertimos ese dato en un string para poder imprimirlo en pantalla
  */
 void LeerM(UART_Type *uart){
+
+	escribirP(uart,"\033[9;10H", "Terminal Ocupada");
+	xSemaphoreTake(mutexLeerM,portMAX_DELAY);
+
 	uint16 address;
 	uint8 l_decimales=0;
 	uint8 l_unidades=0;
@@ -122,7 +136,7 @@ void LeerM(UART_Type *uart){
 
 
 //	while(FALSE==getFlagM());
-
+	xSemaphoreGive(mutexLeerM);
 
 }
 
@@ -133,6 +147,11 @@ void LeerM(UART_Type *uart){
  * todos los datos contenidos en la fifo
  */
 void EscribirM(UART_Type *uart){
+
+
+	escribirP(uart,"\033[9;10H", "Terminal Ocupada");
+	xSemaphoreTake(mutexEscribirM,portMAX_DELAY);
+
 	uint16 address;
 	uint8 l_decimales=0;
 	uint8 l_unidades=0;
@@ -174,6 +193,7 @@ void EscribirM(UART_Type *uart){
 
 	//resetContador();
 	escribirP(uart,"\033[13;10H", "Su texto ha sido guardado...");
+	xSemaphoreGive(mutexEscribirM);
 }
 
 /*
@@ -182,6 +202,10 @@ void EscribirM(UART_Type *uart){
  * trabajar con memorias, hacemos un corrimiento y un OR. Al final los guardamos utilizando la funcion del PCF8563
  */
 void Ehora(UART_Type *uart){
+
+
+	escribirP(uart,"\033[9;10H", "Terminal Ocupada");
+	xSemaphoreTake(mutexEhora,portMAX_DELAY);
 	uint8 valor;
 	uint8 valor2;
 	uint8 hora;
@@ -207,6 +231,7 @@ void Ehora(UART_Type *uart){
 //	PCF8563_SetMinutes(PCF8563_configurationStruct(), min);
 //	PCF8563_SetSeconds(PCF8563_configurationStruct(), seg);
 	escribirP(uart,"\033[12;10H", "La hora ha sido cambiada...");
+	xSemaphoreGive(mutexEhora);
 }
 
 /*
@@ -215,6 +240,9 @@ void Ehora(UART_Type *uart){
  * fucion correspondiente del PCF8563
  */
 void Efecha(UART_Type *uart){
+
+	escribirP(uart,"\033[9;10H", "Terminal Ocupada");
+	xSemaphoreTake(mutexEfecha,portMAX_DELAY);
 	uint8 dia;
 	uint8 mes;
 	uint8 aa;
@@ -241,6 +269,7 @@ void Efecha(UART_Type *uart){
 //	PCF8563_SetMonth(PCF8563_configurationStruct(), mes);
 //	PCF8563_SetYear(PCF8563_configurationStruct(), aa);
 	escribirP(uart,"\033[12;10H", "La fecha ha sido cambiada...");
+	xSemaphoreGive(mutexEfecha);
 }
 
 /*
@@ -248,6 +277,10 @@ void Efecha(UART_Type *uart){
  * comparamos si es una S ya sea mayúscula o minúscula y de ser así activamos la flag del formato
  */
 void Fhora(UART_Type *uart){
+
+	escribirP(uart,"\033[9;10H", "Terminal Ocupada");
+	xSemaphoreTake(mutexFhora,portMAX_DELAY);
+
 	uint8 formato;
 	uint8 S = 35;
 	escribirP(uart,"\033[10;10H","\033[2J");
@@ -259,6 +292,7 @@ void Fhora(UART_Type *uart){
 	formato==S || formato== 67? setFlagF():clearFlagF();
 	//resetContador();
 	escribirP(uart,"\033[13;10H", "El formato ha sido cambiado...");
+	xSemaphoreGive(mutexFhora);
 }
 
 /*
@@ -268,6 +302,10 @@ void Fhora(UART_Type *uart){
  * mailbox se active (se presione cualquier tecla)
  */
 void Lhora(UART_Type *uart){
+
+	escribirP(uart,"\033[9;10H", "Terminal Ocupada");
+	xSemaphoreTake(mutexLhora,portMAX_DELAY);
+
 	escribirP(uart,"\033[10;10H","\033[2J");
 	escribirP(uart,"\033[10;10H", "La hora actual es");
 //	escribirP(uart,"\033[12;10H", datos.hora);
@@ -276,6 +314,7 @@ void Lhora(UART_Type *uart){
 //	escribirP(uart,"\033[12;18H", ":");
 //	escribirP(uart,"\033[12;20H", datos.segundos);
 //	escribirP(uart,"\033[12;25H", formato);
+	xSemaphoreGive(mutexLhora);
 }
 
 /*
@@ -285,6 +324,10 @@ void Lhora(UART_Type *uart){
  * mailbox se active (se presione cualquier tecla)
  */
 void Lfecha(UART_Type *uart){
+
+	escribirP(uart,"\033[9;10H", "Terminal Ocupada");
+	xSemaphoreTake(mutexLfecha,portMAX_DELAY);
+
 	uint8 valor;
 	escribirP(uart,"\033[10;10H","\033[2J");
 	escribirP(uart,"\033[10;10H", "La fecha actual es");
@@ -298,19 +341,25 @@ void Lfecha(UART_Type *uart){
 //			escribirP(uart,"\033[12;20H", datos.anio);
 //		}
 //	while(FALSE==getFlagM());//flag del mailbox si está recibiendo datos
-
+	xSemaphoreGive(mutexLfecha);
 }
 
 void Comunicacion(UART_Type *uart){
+
+
 	escribirP(uart,"\033[10;10H","\033[2J");
 	escribirP(uart,"\033[10;10H", "Escribir texto:/n");
 	uart_TeraTerm_echo();
+
 }
 
 void Eco(UART_Type *uart){
+	escribirP(uart,"\033[9;10H", "Terminal Ocupada");
+	xSemaphoreTake(mutexEco,portMAX_DELAY);
 	escribirP(uart,"\033[10;10H","\033[2J");
 	escribirP(uart,"\033[10;10H", "Escribir texto:/n");
 	uart_TeraTerm_echo();
+	xSemaphoreGive(mutexEco);
 }
 
 
@@ -450,4 +499,15 @@ uint8_t escogerMenu(UART_Type *uart){
 	 	 return (leerQueue_TeraTerm() -48);
 	 }
 
+}
+
+void initmutex(){
+	mutexLeerM = xSemaphoreCreateMutex();
+	mutexEscribirM = xSemaphoreCreateMutex();
+	mutexEhora = xSemaphoreCreateMutex();
+	mutexEfecha = xSemaphoreCreateMutex();
+	mutexFhora = xSemaphoreCreateMutex();
+	mutexLhora = xSemaphoreCreateMutex();
+	mutexLfecha = xSemaphoreCreateMutex();
+	mutexEco = xSemaphoreCreateMutex();
 }
