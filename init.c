@@ -58,9 +58,9 @@ void menus_task(void* args);
 
 void initTasks ()
 {
-	xTaskCreate(menus_task, "Menus PC", 110, (void*) UART0, configMAX_PRIORITIES-2, NULL);
-	xTaskCreate(menus_task, "Menus BT", 110, (void*) UART4, configMAX_PRIORITIES-2, NULL);
-	xTaskCreate(Fecha_Hora, "Fecha_LCD", 110, NULL, configMAX_PRIORITIES-3, NULL);
+	xTaskCreate(menus_task, "Menus PC", 110, (void*) UART0, configMAX_PRIORITIES-1, NULL);
+	xTaskCreate(menus_task, "Menus BT", 110, (void*) UART4, configMAX_PRIORITIES-1, NULL);
+	xTaskCreate(Fecha_Hora, "Fecha_LCD", 110, NULL, configMAX_PRIORITIES-2, NULL);
 	initmutex();
 	vTaskStartScheduler();
 

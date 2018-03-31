@@ -45,7 +45,6 @@ SemaphoreHandle_t mutexEco;
 SemaphoreHandle_t mutexComunicacion;
 EventGroupHandle_t g_chat_events;
 
-
 /*
  * Realiza las dos operaciones para enviar escribir en el serial, primero la posicion y despues los valores
  */
@@ -59,6 +58,13 @@ void escribirP( UART_Type *base, sint8* Posicion, sint8* string ) {
 		uart_TeraTerm_send(base, (uint8_t*) Posicion);
 		uart_TeraTerm_send(base, (uint8_t*) string);
 	}
+}
+
+void escribirchat(sint8* Posicion, sint8* string ){
+	uart_BT_send(UART4, (uint8_t*) Posicion);
+			uart_BT_send(UART4, (uint8_t*) string);
+			uart_TeraTerm_send(UART0, (uint8_t*) Posicion);
+					uart_TeraTerm_send(UART0, (uint8_t*) string);
 }
 
 /*
@@ -352,12 +358,12 @@ void Comunicacion( UART_Type *uart ) {
 	{
 		xEventGroupSetBits(g_chat_events, EVENT_UART0);
 		xTaskCreate(chat, "ChatTerminales", 110, (void*) UART0,
-				configMAX_PRIORITIES - 1, NULL);
+				configMAX_PRIORITIES - 2, NULL);
 	} else
 	{
 		xEventGroupSetBits(g_chat_events, EVENT_UART4);
 		xTaskCreate(chat, "ChatTerminales", 110, (void*) UART4,
-				configMAX_PRIORITIES - 1, NULL);
+				configMAX_PRIORITIES - 2, NULL);
 	}
 }
 
@@ -365,7 +371,7 @@ void chat( void* args ) {
 	xEventGroupWaitBits(g_chat_events,
 			EVENT_UART0 | EVENT_UART4,
 			pdTRUE, pdTRUE, portMAX_DELAY);
-
+	escribirchat("\033[10;10H", "\033[2J");
 	bool exit = true;
 	while(exit){
 		xSemaphoreTake(mutexComunicacion, portMAX_DELAY);
@@ -379,14 +385,13 @@ void chat( void* args ) {
 		else
 			mensaje = (sint8*)leerQueue_BT();
 
-		if(ENTER == *mensaje)
-			xSemaphoreGive(mutexComunicacion);
-
 		if(ESC == *mensaje || escBT == *mensaje)
 			exit = false;
 
-		escribirP(uart, "\033[10;10H", mensaje);
+		escribirchat("\033[10;10H", mensaje);
+		xSemaphoreGive(mutexComunicacion);
 	}
+
 }
 
 void Eco( UART_Type *uart ) {
