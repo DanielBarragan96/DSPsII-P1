@@ -188,3 +188,5 @@ uint8 formatoHora(uint8 x);
 void Eco();
 
 void Comunicacion();
+
+uint8_t escogerMenu(UART_Type *uart);

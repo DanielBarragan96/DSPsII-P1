@@ -45,7 +45,6 @@
 #include "task.h"
 
 #include "SPI.h"
-#include "Fifo.h"
 #include "DataTypeDefinitions.h"
 #include "PantallaPC.h"
 #include "UART_BT.h"
@@ -76,20 +75,12 @@ void menus_task(void* args)
     MenuInicial(uart);
 
     while(1){
-        UART_MailBoxType* msg;
-        if(UART4==uart)
-        	msg = uart_BT_receive();
-        else
-        	msg = uart_TeraTerm_receive();
-        uint8_t x = msg->mailBox;
-        x -= 48;
+    	uint8_t x = escogerMenu(uart);
+
         if((0!=x) && (nullValue!=x)){//el 208 es un valor que recibe al no presionar nada, si presionamos ENTER no hacemos nada
-            msg->flagEnter = false;
-        	resetContador();//limpiamos cualquier basura de la FIFO
             Pantallas[x-1](uart);//Entramos al menu seleccinado
             MenuInicial();//Salimos del menu y volvemos al inicial
         }
-    	vPortFree(msg);
         vTaskDelay(pdMS_TO_TICKS(10));
     }
 }

@@ -16,7 +16,8 @@ void BT_UART_UserCallback(UART_Type *base, uart_handle_t *handle, status_t statu
 
 void uart_BT_init();
 
-UART_MailBoxType* uart_BT_receive();
+void uart_BT_receive();
+uint8_t leerQueue_BT();
 void uart_BT_send(UART_Type *base, uint8_t* string);
 
 #endif /* UART_BT_H_ */

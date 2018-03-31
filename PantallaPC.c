@@ -11,7 +11,6 @@
 #include "MK64F12.h"
 #include "pin_mux.h"
 #include "GlobalFunctions.h"
-#include "Fifo.h"
 //#include "PCF8563.h"
 #include "DataTypeDefinitions.h"
 #include "PantallaPC.h"
@@ -33,8 +32,8 @@ sint8 formato[2] = {'h','r'};
  */
 void escribirP(UART_Type *base, sint8* Posicion,  sint8* string ){
 	if(UART4 == base){
-		uart_BT_send(base, (uint8_t*)string);
 	    uart_BT_send(base, (uint8_t*)Posicion);
+		uart_BT_send(base, (uint8_t*)string);
 	}
 	else{
 		uart_TeraTerm_send(base, (uint8_t*)Posicion);
@@ -91,7 +90,7 @@ void LeerM(UART_Type *uart){
 	escribirP(uart,"\033[10;10H","\033[2J");
 	escribirP(uart,"\033[10;10H", "Direccion de lectura: ");
 	ingresoDatos(uart);
-	escribirP(uart,"\033[10;50H", getFIFO());
+	//escribirP(uart,"\033[10;50H", getFIFO());
 	h_decimales = valMemoria();
 	h_decimales = valMemoria();
 	h_decimales = valMemoria();
@@ -100,14 +99,14 @@ void LeerM(UART_Type *uart){
 	l_unidades = valMemoria();
 	address = (h_decimales <<12)|(h_unidades <<8)|(l_decimales <<4)|l_unidades;
 
-	resetContador();
+	//resetContador();
 	escribirP(uart,"\033[11;10H", "Longitud en bytes: ");
 	ingresoDatos(uart);
 
 	NDatos = valMemoria();
 	sint8 StringFromMemory[NDatos];
-	escribirP(uart,"\033[11;50H", getFIFO());
-	resetContador();
+	//escribirP(uart,"\033[11;50H", getFIFO());
+	//resetContador();
 	escribirP(uart,"\033[12;10H", "Contenido");
 //	clearFlagM();
 //
@@ -147,9 +146,9 @@ void EscribirM(UART_Type *uart){
 
 	uart_TeraTerm_send(uart,(uint8_t*)"\033[2J");
 	escribirP(uart,"\033[10;10H", "Direccion de escritura:");
-	resetContador();
+	//resetContador();
 	ingresoDatos(uart);
-	escribirP(uart,"\033[10;50H", getFIFO());
+	//escribirP(uart,"\033[10;50H", getFIFO());
 
 	h_decimales = valMemoria();
 	h_decimales = valMemoria();
@@ -158,13 +157,13 @@ void EscribirM(UART_Type *uart){
 	l_decimales = valMemoria();
 	l_unidades = valMemoria();
 	address = (h_decimales <<12)|(h_unidades <<8)|(l_decimales <<4)|l_unidades;
-	resetContador();
+	//resetContador();
 	escribirP(uart,"\033[11;10H", "Texto a guardar: ");
 	ingresoDatos(uart);
-	escribirP(uart,"\033[11;50H", getFIFO());
+	//escribirP(uart,"\033[11;50H", getFIFO());
 
 
-	x = (pop() + 48);
+	//x = (pop() + 48);
 //	while(x != '\0'){
 //
 //
@@ -173,7 +172,7 @@ void EscribirM(UART_Type *uart){
 //		x = (pop() + 48);
 //	}
 
-	resetContador();
+	//resetContador();
 	escribirP(uart,"\033[13;10H", "Su texto ha sido guardado...");
 }
 
@@ -191,19 +190,19 @@ void Ehora(UART_Type *uart){
 	uart_TeraTerm_send(uart,(uint8_t*)"\033[2J");
 	escribirP(uart,"\033[10;10H", "Escribir hora en hh/mm/ss");
 	ingresoDatos(uart);
-	escribirP(uart,"\033[10;50H", getFIFO());
+	//escribirP(uart,"\033[10;50H", getFIFO());
 
-	valor = pop();
-	valor2 = pop();
+	//valor = pop();
+	//valor2 = pop();
 	hora = (valor<<4)|valor2;
-	valor = pop();
-	valor2 = pop();
+	//valor = pop();
+	//valor2 = pop();
 	min = (valor<<4)|valor2;
-	valor = pop();
-	valor2 = pop();
+	//valor = pop();
+	//valor2 = pop();
 	seg = (valor<<4)|valor2;
 
-	resetContador();
+	//resetContador();
 //	PCF8563_SetHours(PCF8563_configurationStruct(), hora);
 //	PCF8563_SetMinutes(PCF8563_configurationStruct(), min);
 //	PCF8563_SetSeconds(PCF8563_configurationStruct(), seg);
@@ -221,23 +220,23 @@ void Efecha(UART_Type *uart){
 	uint8 aa;
 	uint8 valor;
 	uint8 valor2;
-	resetContador();
+	//resetContador();
 	uart_TeraTerm_send(uart,(uint8_t*)"\033[2J");
 	escribirP(uart,"\033[10;10H", "Escribir fecha en dd/mm/aa");
 	ingresoDatos(uart);
-	escribirP(uart,"\033[10;50H", getFIFO());
+	//escribirP(uart,"\033[10;50H", getFIFO());
 
-	valor = pop();
-	valor2 = pop();
+	//valor = pop();
+	//valor2 = pop();
 	dia = (valor<<4)|valor2;
-	valor = pop();
-	valor2 = pop();
+	//valor = pop();
+	//valor2 = pop();
 	mes = (valor<<4)|valor2;
-	valor = pop();
-	valor2 = pop();
+	//valor = pop();
+	//valor2 = pop();
 	aa =(valor<<4)|valor2;
 
-	resetContador();
+	//resetContador();
 //	PCF8563_SetDay(PCF8563_configurationStruct(), dia);
 //	PCF8563_SetMonth(PCF8563_configurationStruct(), mes);
 //	PCF8563_SetYear(PCF8563_configurationStruct(), aa);
@@ -255,10 +254,10 @@ void Fhora(UART_Type *uart){
 	escribirP(uart,"\033[10;10H", "El formato actual es 12h");
 	escribirP(uart,"\033[11;10H", "Desea cambiar el formato a 12h si/no?");
 	ingresoDatos(uart);
-	escribirP(uart,"\033[11;50H", getFIFO());
-	formato=pop();
+	//escribirP(uart,"\033[11;50H", getFIFO());
+	//formato=pop();
 	formato==S || formato== 67? setFlagF():clearFlagF();
-	resetContador();
+	//resetContador();
 	escribirP(uart,"\033[13;10H", "El formato ha sido cambiado...");
 }
 
@@ -356,14 +355,14 @@ sint8* valorMem(uint8 x){
  *los empieza 7 espacios más arriba, ese es el proposito de la funcion
  */
 uint8 valMemoria(){
-	uint8 variable = pop();
-	if(variable >= 17 && variable <= 22)
-		variable = variable -7;
-	else if (variable >=49 && variable <=54)
-		variable = variable - 39;
-	else variable = variable;
-
-	return variable ;
+	//uint8 variable = pop();
+//	if(variable >= 17 && variable <= 22)
+//		variable = variable -7;
+//	else if (variable >=49 && variable <=54)
+//		variable = variable - 39;
+//	else variable = variable;
+//
+//	return variable ;
 }
 
 /*
@@ -413,3 +412,14 @@ uint8 formatoHora(uint8 x){
 /*VT100 command for clearing the screen
 	UART_putString(uart,"\033[2J");*/
 
+uint8_t escogerMenu(UART_Type *uart){
+	 if(UART4==uart){
+		 uart_BT_receive();
+	 	 return (leerQueue_BT() -48);
+	 }
+	 else{
+	     uart_TeraTerm_receive();
+	 	 return (leerQueue_TeraTerm() -48);
+	 }
+
+}
