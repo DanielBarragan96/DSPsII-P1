@@ -68,8 +68,19 @@ void task_one()
 
     init_clk();
 
-    while(1)
-        getTime();
+    setDate (1, 1, 0);
+    setTime(0x23,0x59,0x59);
+    printDateTeraTerm();
+    PRINTF("\n");
+    vTaskDelay(pdMS_TO_TICKS(1000));
+    printDateTeraTerm();
+    PRINTF("\n");
+    setDate (31, 12, 1);
+    printDateTeraTerm();
+    setTime(0x23,0x59,0x59);
+    PRINTF("\n");
+    vTaskDelay(pdMS_TO_TICKS(1000));
+    printDateTeraTerm();
 }
 /*
  * @brief   Application entry point.

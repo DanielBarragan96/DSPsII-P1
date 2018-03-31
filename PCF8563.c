@@ -10,104 +10,93 @@
 #include "fsl_i2c.h"
 #include "fsl_debug_console.h"
 
-#define SUBADRESS_SIZE 1
-uint8_t dataFromPCF8563[3];
+uint8_t dataFromPCF8563[THREE_BYTE];
+uint8_t time[THREE_BYTE];
+uint8_t date[THREE_BYTE];
 
-uint8_t PCF8563_setSeconds (uint8_t data)
+void init_clk ()
 {
-    return i2c_writes (PCF8563_SLAVE_ADDRESS, PCF8563_SECONDS_ADDRESS,
-            sizeof(data), &data, SUBADRESS_SIZE);
-}
-
-uint8_t PCF8563_getSeconds ()
-{
-    uint8_t* pdataFromPCF8563 = &dataFromPCF8563;
-    i2c_read (PCF8563_SLAVE_ADDRESS, PCF8563_SECONDS_ADDRESS,
-            sizeof(dataFromPCF8563), pdataFromPCF8563, SUBADRESS_SIZE);
-    return dataFromPCF8563[0];
-}
-
-uint8_t PCF8563_setMinutes (uint8_t data)
-{
-    return i2c_writes (PCF8563_SLAVE_ADDRESS, PCF8563_MINUTES_ADDRESS,
-            sizeof(data), &data, SUBADRESS_SIZE);
-}
-
-uint8_t PCF8563_getMinutes ()
-{
-    i2c_read (PCF8563_SLAVE_ADDRESS, PCF8563_MINUTES_ADDRESS,
-            sizeof(dataFromPCF8563), &dataFromPCF8563[0], SUBADRESS_SIZE);
-    return dataFromPCF8563[0];
-}
-
-uint8_t PCF8563_setHours (uint8_t data)
-{
-    return i2c_writes (PCF8563_SLAVE_ADDRESS, PCF8563_HOURS_ADDRESS,
-            sizeof(data), &data, SUBADRESS_SIZE);
-}
-
-uint8_t PCF8563_getHours ()
-{
-    i2c_read (PCF8563_SLAVE_ADDRESS, PCF8563_HOURS_ADDRESS,
-            sizeof(dataFromPCF8563), &dataFromPCF8563[0], SUBADRESS_SIZE);
-    return dataFromPCF8563[0];
-}
-
-uint8_t PCF8563_setYears (uint8_t data)
-{
-    return i2c_writes (PCF8563_SLAVE_ADDRESS, PCF8563_YEARS_ADDRESS,
-            sizeof(data), &data, SUBADRESS_SIZE);
-}
-
-uint8_t PCF8563_getYears ()
-{
-    i2c_read (PCF8563_SLAVE_ADDRESS, PCF8563_YEARS_ADDRESS,
-            sizeof(dataFromPCF8563), &dataFromPCF8563[0], SUBADRESS_SIZE);
-    return dataFromPCF8563[0];
-}
-
-uint8_t PCF8563_setMonths (uint8_t data)
-{
-    return i2c_writes (PCF8563_SLAVE_ADDRESS, PCF8563_MONTHS_ADDRESS,
-            sizeof(data), &data, SUBADRESS_SIZE);
-}
-
-uint8_t PCF8563_getMonths ()
-{
-    i2c_read (PCF8563_SLAVE_ADDRESS, PCF8563_MONTHS_ADDRESS,
-            sizeof(dataFromPCF8563), &dataFromPCF8563[0], SUBADRESS_SIZE);
-    return dataFromPCF8563[0];
-}
-
-uint8_t PCF8563_setDays (uint8_t data)
-{
-    return i2c_writes (PCF8563_SLAVE_ADDRESS, PCF8563_DAYS_ADDRESS,
-            sizeof(data), &data, SUBADRESS_SIZE);
-}
-
-uint8_t PCF8563_getDays ()
-{
-    i2c_read (PCF8563_SLAVE_ADDRESS, PCF8563_DAYS_ADDRESS,
-            sizeof(dataFromPCF8563), &dataFromPCF8563[0], SUBADRESS_SIZE);
-    return dataFromPCF8563[0];
-}
-
-void init_clk()
-{
-    static i2c_master_transfer_t masterXfer;
     static uint8_t buffer = 0x00;
-    i2c_writes(PCF8563_SLAVE_ADDRESS, CLK_REGISTER_ADRESS, ONE_BYTE, &buffer, ONE_BYTE);
-    buffer = 7;
-    i2c_writes(PCF8563_SLAVE_ADDRESS, 0x09, ONE_BYTE, &buffer, ONE_BYTE);
-    buffer = 0;
-    i2c_read(PCF8563_SLAVE_ADDRESS, 0x09, ONE_BYTE, &buffer, ONE_BYTE);
+    i2c_writes (PCF8563_SLAVE_ADDRESS, CLK_REGISTER_ADRESS, ONE_BYTE, &buffer,
+            PCF_SUBADRESS_SIZE);
     return;
 }
 
-uint8_t getTime()
+uint8_t* getTime ()
 {
-    i2c_read (PCF8563_SLAVE_ADDRESS, PCF8563_TIME_ADDRESS,
-                3, &dataFromPCF8563[0], SUBADRESS_SIZE);
-    PRINTF("\r%x : %x : %x ", dataFromPCF8563[2], dataFromPCF8563[1], dataFromPCF8563[0]);
-        return dataFromPCF8563[0];
+    i2c_read (PCF8563_SLAVE_ADDRESS, PCF8563_TIME_ADDRESS, THREE_BYTE, &time[0],
+            PCF_SUBADRESS_SIZE);
+    return &time[0];
+}
+
+void printTimeTeraTerm()
+{
+    getTime();
+    PRINTF ("\r");
+        if(HEX_TEN <= time[2])
+            PRINTF ("%x : ", time[2]);
+        else
+            PRINTF ("0%x : ", time[2]);
+
+        if(HEX_TEN <= time[1])
+            PRINTF ("%x : ", time[1]);
+        else
+            PRINTF ("0%x : ", time[1]);
+
+        if(HEX_TEN <= time[0])
+            PRINTF ("%x  ", time[0]);
+        else
+            PRINTF ("0%x ", time[0]);
+}
+
+uint8_t* getDate ()
+{
+    i2c_read (PCF8563_SLAVE_ADDRESS, PCF8563_DATE_ADDRESS, TWO_BYTE, &date[0],
+            PCF_SUBADRESS_SIZE);
+    uint8_t days = ((0x30 & date[0])>>4)*10;
+    days += (0x0F & date[0]);
+
+    uint8_t month = ((0x10 & date[1])>>4)*10;
+    month += (0x0F & date[1]);
+
+    uint8_t years = (0xC0 & date[0])>>6;
+
+    date[0]=days;
+    date[1]=month;
+    date[2]=years;
+
+    return &date[0];
+}
+
+void printDateTeraTerm()
+{
+    getDate();
+    PRINTF("\r%d / %d / %d", date[0],date[1], date[2]);
+}
+
+uint8_t setTime (uint8_t hours, uint8_t minutes, uint8_t seconds)
+{
+    uint8_t buffer[3];
+    buffer[0]=seconds;
+    buffer[1]=minutes;
+    buffer[2]=hours;
+    return i2c_writes (PCF8563_SLAVE_ADDRESS, PCF8563_TIME_ADDRESS, THREE_BYTE,
+            &buffer[0], PCF_SUBADRESS_SIZE);
+}
+
+uint8_t setDate (uint8_t day, uint8_t month, uint8_t year)
+{
+    uint8_t buffer[2];
+    uint8_t y = ((0x03 & year)<<6);
+    uint8_t dt = ((0x03 & (day/10))<<4);
+    uint8_t du = (0x0F & (day%10));
+
+    buffer[0] = y | dt | du;
+
+    uint8_t mt = ((0x01 & month/10)<<0x4);
+    uint8_t mu = (0x0F & (month%10));
+    buffer[1] = mt | mu;
+
+    return i2c_writes (PCF8563_SLAVE_ADDRESS, PCF8563_DATE_ADDRESS, TWO_BYTE,
+            &buffer[0], PCF_SUBADRESS_SIZE);
 }
