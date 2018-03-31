@@ -1,17 +1,16 @@
 /*
- * UART.h
+ * UART_TeraTerm.h
  *
- *  Created on: Mar 12, 2018
+ *  Created on: Mar 27, 2018
  *      Author: Sergio
  */
 
-#ifndef TERATERM_TASK_UART_H_
-#define TERATERM_TASK_UART_H_
+#ifndef UART_TERATERM_H_
+#define UART_TERATERM_H_
 
 #include "board.h"
 #include "fsl_uart.h"
-#include "pin_mux.h"
-#include "clock_config.h"
+#include "DataTypeDefinitions.h"
 
 
 void uart_TeraTerm_init();
@@ -19,12 +18,9 @@ void uart_TeraTerm_init();
 /* UART user callback */
 void TeraTerm_UART_UserCallback(UART_Type *base, uart_handle_t *handle, status_t status, void *userData);
 void uart_TeraTerm_send(UART_Type *base, uint8_t* string);
-void uart_TeraTerm_receive(UART_Type *base, uint8_t* string);
+void uart_TeraTerm_receive();
 void uart_TeraTerm_echo();
+uint8_t leerQueue_TeraTerm();
 
-void setflagE();
 
-void clearflagE();
-
-bool getflagE();
-#endif /* TERATERM_TASK_UART_H_ */
+#endif /* UART_TERATERM_H_ */

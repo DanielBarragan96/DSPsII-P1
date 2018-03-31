@@ -1,27 +1,23 @@
 /*
- * BT_Task_UART.h
+ * UART_BT.h
  *
- *  Created on: Mar 16, 2018
+ *  Created on: Mar 27, 2018
  *      Author: Sergio
  */
 
-#ifndef BT_TASK_UART_H_
-#define BT_TASK_UART_H_
+#ifndef UART_BT_H_
+#define UART_BT_H_
 
 #include "board.h"
+#include "DataTypeDefinitions.h"
 #include "fsl_uart.h"
-#include "pin_mux.h"
-#include "clock_config.h"
 
 void BT_UART_UserCallback(UART_Type *base, uart_handle_t *handle, status_t status, void *userData);
 
-void setflagEnter();
 void uart_BT_init();
-void clearflagEnter();
-bool getflagEnter();
 
 void uart_BT_receive();
+uint8_t leerQueue_BT();
 void uart_BT_send(UART_Type *base, uint8_t* string);
 
-
-#endif /* BT_TASK_UART_H_ */
+#endif /* UART_BT_H_ */

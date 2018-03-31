@@ -27,9 +27,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
+ 
 /**
- * @file    P1-1.c
+ * @file    Practica01.c
  * @brief   Application entry point.
  */
 #include <stdio.h>
@@ -39,42 +39,61 @@
 #include "clock_config.h"
 #include "MK64F12.h"
 #include "fsl_debug_console.h"
-#include "TeraTerm_Task_UART.h"
-#include "BT_Task_UART.h"
-#include "init.h"
+
+#include "FreeRTOSConfig.h"
+#include "FreeRTOS.h"
+#include "task.h"
+
 #include "SPI.h"
+#include "DataTypeDefinitions.h"
 #include "PantallaPC.h"
+#include "UART_BT.h"
+#include "UART_TeraTerm.h"
+#include "LCDNokia5110.h"
+#include "MEM24LC256.h"
+#include "PCF8563.h"
+#include "queue.h"
+#include "init.h"
+#include "timers.h"
 
-/* TODO: insert other include files here. */
 
-/* TODO: insert other definitions and declarations here. */
+#define nullValue 208
 
-/*
- * @brief   Application entry point.
- */
-
-uint8_t* msg;
-
-int main (void)
+typedef struct
 {
-    /* Init board hardware. */
-    BOARD_InitBootPins ();
-    BOARD_InitBootClocks ();
-    BOARD_InitBootPeripherals ();
-    /* Init FSL debug console. */
-    BOARD_InitDebugConsole ();
+	void (*func)(UART_Type *);
+	uint8_t i;
+}Function;  //Para mandar parametro con el apuntador a funciones
 
-    initMain();
+void menus_task(void* args)
+{
+    UART_Type * uart = (UART_Type *) args;//elegir a cuál UART enviar
 
-    //uart_BT_receive(UART0, msg);
-    //uart_BT_send(UART4,(uint8_t*)"HOLA MUNDO");
-    imprimirPantalla();
+	void (*Pantallas[9])(UART_Type *) = {LeerM, EscribirM, Ehora,
+			Efecha, Fhora, Lhora, Lfecha, Comunicacion, Eco };
+	//Arreglo de funciones para los distintos menus
+    MenuInicial(uart);
 
+    while(1){
+    	uint8_t x = escogerMenu(uart);
 
-    while (1)
-    {
-
-
+        if((0!=x) && (nullValue!=x)){//el 208 es un valor que recibe al no presionar nada, si presionamos ENTER no hacemos nada
+            Pantallas[x-1](uart);//Entramos al menu seleccinado
+            MenuInicial();//Salimos del menu y volvemos al inicial
+        }
+        vTaskDelay(pdMS_TO_TICKS(10));
     }
-    return 0;
+}
+
+int main(void) {
+
+  	/* Init board hardware. */
+    //BOARD_InitBootPins();
+    BOARD_InitBootClocks();
+    BOARD_InitBootPeripherals();
+  	/* Init FSL debug console. */
+    BOARD_InitDebugConsole();
+    initTasks();
+
+     return 0;
 }

@@ -5,17 +5,29 @@
  *      Author: Daniel Barragán
  */
 
-#include "DataTypeDefinitions.h"
-#include "MK64F12.h"
-#include "init.h"
-#include "fsl_clock.h"
-#include "fsl_i2c.h"
-#include "fsl_gpio.h"
+#include <stdio.h>
+#include "board.h"
+#include "peripherals.h"
 #include "pin_mux.h"
-#include "TeraTerm_Task_UART.h"
-#include "BT_Task_UART.h"
+#include "clock_config.h"
+#include "MK64F12.h"
+#include "fsl_debug_console.h"
+
+#include "FreeRTOSConfig.h"
+#include "FreeRTOS.h"
+#include "task.h"
+
+#include "DataTypeDefinitions.h"
 #include "SPI.h"
+#include "DataTypeDefinitions.h"
+#include "PantallaPC.h"
+#include "UART_BT.h"
+#include "UART_TeraTerm.h"
 #include "LCDNokia5110.h"
+#include "MEM24LC256.h"
+#include "PCF8563.h"
+
+
 
 /* I2C source clock */
 #define I2C_MASTER_CLK_SRC I2C0_CLK_SRC
@@ -42,11 +54,16 @@
 #define BUFFER_SIZE 8
 #define I2C_CLK 12000000U
 
-void initMain ()
+void menus_task(void* args);
+
+void initTasks ()
 {
-    //init_i2c();
-    //uart_TeraTerm_init();
-    //uart_BT_init();
-    SPI_init();
-    LCDNokia_init();
+	xTaskCreate(menus_task, "Menus PC", 110, (void*) UART0, configMAX_PRIORITIES-1, NULL);
+	xTaskCreate(menus_task, "Menus BT", 110, (void*) UART4, configMAX_PRIORITIES-1, NULL);
+
+	vTaskStartScheduler();
+
 }
+
+
+

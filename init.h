@@ -8,8 +8,6 @@
 #ifndef INIT_H_
 #define INIT_H_
 
-#include "DataTypeDefinitions.h"
-
 /** Constant that enable the clock of the DAC*/
 #define DAC_SIM 0x1000U
 
@@ -17,11 +15,10 @@
 /********************************************************************************************/
 /********************************************************************************************/
 /*!
- 	 \brief	 This function initializes the necesary componentes of the Kinetis to start the program
+ \brief	 This function initializes the necesary componentes of the Kinetis to start the program
 
- 	 \return void
+ \return void
  */
-void initMain();
-
+void initTasks ();
 
 #endif /* INIT_H_ */

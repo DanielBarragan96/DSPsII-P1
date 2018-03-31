@@ -119,7 +119,7 @@ void Lfecha();
  	 \brief	 Funcion de espera hasta que terminemos de ingresar los valores
  	 \return void
  */
-void ingresoDatos();
+void ingresoDatos(UART_Type *base);
 
 //
 /********************************************************************************************/
@@ -185,6 +185,10 @@ uint8 valMemoria();
  */
 uint8 formatoHora(uint8 x);
 
-void imprimir_lcd(uint8* string,uint8 posicion_x, uint8 posicion_y);
-void limpiar_lcd();
-void imprimirPantalla();
+void Eco();
+
+void Comunicacion();
+
+HoraActual *Fecha_Hora();
+
+uint8_t escogerMenu(UART_Type *uart);

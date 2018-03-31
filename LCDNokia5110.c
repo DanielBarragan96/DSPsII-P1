@@ -206,3 +206,18 @@ void LCD_delay(void)
 	}
 }
 
+void imprimir_lcd(uint8* string,uint8 posicion_x, uint8 posicion_y){
+	LCDNokia_gotoXY(posicion_x,posicion_y); /*! It establishes the position to print the messages in the LCD*/
+	LCDNokia_sendString(string); /*! It print a string stored in an array*/
+	delay(65000);
+}
+
+void limpiar_lcd(){
+	LCDNokia_clear();/*! It clears the information printed in the LCD*/
+	delay(65000);
+	LCDNokia_clear();
+	delay(65000);
+	LCDNokia_clear();
+}
+
+

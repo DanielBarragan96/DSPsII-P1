@@ -77,7 +77,24 @@ typedef struct{
 	uint8_t mailBox; /** it contains the received data*/
 }UART_MailBoxType;
 
+typedef union
+	 	{
+	 		uint8 allBits;
+	 		struct{
+	 			uint8 bit0 :1;
+	 			uint8 bit1 :1;
+	 			uint8 bit2 :1;
+	 		}bitField;
+	 	} Binario;
 
+typedef struct{
+		sint8* hora;
+		sint8* minutos;
+		sint8* segundos;
+		sint8* dia;
+		sint8* mes;
+		sint8* anio;
+}HoraActual;
 
 
 #endif /* DATATYPEDEFINITIONS_H_ */

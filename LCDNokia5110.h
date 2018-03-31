@@ -38,5 +38,7 @@ void LCDNokia_sendString(uint8*);
 void LCD_delay(void);
 
 
+void imprimir_lcd(uint8* string,uint8 posicion_x, uint8 posicion_y);
+void limpiar_lcd();
 
 #endif /* LCDNOKIA5110_H_ */
