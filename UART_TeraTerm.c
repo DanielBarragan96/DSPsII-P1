@@ -20,7 +20,6 @@
 #define RX_RING_BUFFER_SIZE 20U
 #define ENTER 13
 #define ESC 27
-#define finalQueue 160
 
 /*******************************************************************************
  * Variables UART
@@ -144,15 +143,16 @@ void uart_TeraTerm_echo() {
 
 uint8_t leerQueue_TeraTerm() {
 	UART_MailBoxType msgRead;
+	msgRead.mailBox = 0;
 	uint8_t mensaje;
 
-	xQueueGenericReceive(g_uart0_queue, &msgRead, portMAX_DELAY, pdFALSE);
+	xQueueGenericReceive(g_uart0_queue, &msgRead, pdMS_TO_TICKS(100), pdFALSE);
 	mensaje = msgRead.mailBox;
 	msgRead.flagEnter = false;
 
 	if (0 == mensaje)
 	{
-		return finalQueue;
+		return QUEUE_END;
 
 	}
 

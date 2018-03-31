@@ -24,6 +24,8 @@
 #include "semphr.h"
 #include "event_groups.h"
 
+#include "MEM24LC256.h"
+
 #define EVENT_UART0 (1<<0)
 #define EVENT_UART4 (1<<1)
 
@@ -101,13 +103,12 @@ void LeerM( UART_Type *uart ) {
 	uint8 l_unidades = 0;
 	uint8 h_decimales = 0;
 	uint8 h_unidades = 0;
-	uint8 NDatos;
-	uint8 ContadorDeDatosExtraidos = 0;
+	uint8 dataSize = 1;
 	/*LIMPIAR LA QUEUE*/
 	escribirP(uart, "\033[10;10H", "\033[2J");
 	escribirP(uart, "\033[10;10H", "Direccion de lectura: ");
 	ingresoDatos(uart);
-	//escribirP(uart,"\033[10;50H", getFIFO());
+
 	h_decimales = valMemoria();
 	h_unidades = valMemoria();
 	l_decimales = valMemoria();
@@ -115,29 +116,21 @@ void LeerM( UART_Type *uart ) {
 	address = (h_decimales << 12) | (h_unidades << 8) | (l_decimales << 4)
 			| l_unidades;
 
-	//resetContador();
 	escribirP(uart, "\033[11;10H", "Longitud en bytes: ");
 	ingresoDatos(uart);
 
-	NDatos = valMemoria();
-	sint8 StringFromMemory[NDatos];
-	//escribirP(uart,"\033[11;50H", getFIFO());
-	//resetContador();
-	escribirP(uart, "\033[12;10H", "Contenido");
-//	clearFlagM();
-//
-//
-//	for( ContadorDeDatosExtraidos = 0; ContadorDeDatosExtraidos<NDatos ; ContadorDeDatosExtraidos++){
-//
-//		StringFromMemory[ContadorDeDatosExtraidos] = Memoria_24LC256_getValue(get_Memoria_24LC256_ConfigStruct(),(address +ContadorDeDatosExtraidos));
-//	}
+	dataSize = valMemoria();
+	escribirP(uart, "\033[12;10H", "Contenido: ");
 
-	//escribirP(uart,"\033[13;10H", StringFromMemory);
-	escribirP(uart, "\033[14;10H", "Presiona una tecla para continuar...");
+    uint8_t val2[dataSize];
+    uint8_t* data2 = &val2[0];
+    MEM24LC256_getData (address, dataSize, data2);
+    data2 = &val2[dataSize];
+    *(data2) = '\0';
+    escribirP(uart, "\033[14;10H", (sint8*) &val2[0]);
+	escribirP(uart, "\033[16;10H", "Presiona una tecla para continuar... ");
 
 	ingresoDatos(uart);
-
-//	while(FALSE==getFlagM());
 	xSemaphoreGive(mutexLeerM);
 
 }
@@ -160,38 +153,34 @@ void EscribirM( UART_Type *uart ) {
 	uint8 h_unidades = 0;
 	uint8 x;
 
-	uint8 NDatos = 0;
-
 	escribirP(uart, "\033[10;10H", "\033[2J");
 	escribirP(uart, "\033[10;10H", "Direccion de escritura:");
-	//resetContador();
-	ingresoDatos(uart);
-	//escribirP(uart,"\033[10;50H", getFIFO());
 
-	h_decimales = valMemoria();
-	h_decimales = valMemoria();
-	h_decimales = valMemoria();
-	h_unidades = valMemoria();
-	l_decimales = valMemoria();
-	l_unidades = valMemoria();
+	ingresoDatos(uart);
+
+    h_decimales = valMemoria();
+    h_unidades = valMemoria();
+    l_decimales = valMemoria();
+    l_unidades = valMemoria();
 	address = (h_decimales << 12) | (h_unidades << 8) | (l_decimales << 4)
 			| l_unidades;
-	//resetContador();
+
 	escribirP(uart, "\033[11;10H", "Texto a guardar: ");
 	ingresoDatos(uart);
 	//escribirP(uart,"\033[11;50H", getFIFO());
 
-	//x = (pop() + 48);
-//	while(x != '\0'){
-//
-//
-//		while(FALSE == Memoria_24LC256_setValue(get_Memoria_24LC256_ConfigStruct(), (address +NDatos),x));
-//		NDatos +=1;
-//		x = (pop() + 48);
-//	}
+	uint8_t string[32];
+	uint8_t i = 0;
+	do
+	{
+	    x = leerQueue_TeraTerm();
+	    string[i++] = x;
+	}while((QUEUE_END != x));
 
-	//resetContador();
+	MEM24LC256_setData(address, &string[0]);
 	escribirP(uart, "\033[13;10H", "Su texto ha sido guardado...");
+
+	ingresoDatos(uart);
 	xSemaphoreGive(mutexEscribirM);
 }
 

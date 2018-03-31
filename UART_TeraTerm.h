@@ -12,6 +12,7 @@
 #include "fsl_uart.h"
 #include "DataTypeDefinitions.h"
 
+#define QUEUE_END 160
 
 void uart_TeraTerm_init();
 
