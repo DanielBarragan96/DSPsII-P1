@@ -135,6 +135,8 @@ void LeerM( UART_Type *uart ) {
 	//escribirP(uart,"\033[13;10H", StringFromMemory);
 	escribirP(uart, "\033[14;10H", "Presiona una tecla para continuar...");
 
+	ingresoDatos(uart);
+
 //	while(FALSE==getFlagM());
 	xSemaphoreGive(mutexLeerM);
 

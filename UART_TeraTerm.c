@@ -64,7 +64,7 @@ void uart_TeraTerm_init() {
 	UART_Init(UART0, &config, CLOCK_GetFreq(UART0_CLK_SRC));
 	UART_TransferCreateHandle(UART0, &g_uartHandle, TeraTerm_UART_UserCallback,
 			NULL);
-	g_uart0_queue = xQueueCreate(32, sizeof(UART_MailBoxType*));
+	g_uart0_queue = xQueueCreate(32, sizeof(UART_MailBoxType));
 
 }
 
@@ -89,7 +89,6 @@ void uart_TeraTerm_receive() {
 
 	uart_TeraTerm_init();
 
-	UART_MailBoxType *msg;
 	uint8_t receiveData[32] = {0};
 
 	for(uint8_t i = 0; 32 > i; i++)
@@ -111,15 +110,14 @@ void uart_TeraTerm_receive() {
 	}
 
 	i = 0;
-	msg = pvPortMalloc(sizeof(UART_MailBoxType));
-	msg->flagEnter = TRUE;
 	while (ENTER != receiveData[i] && i < 32)
 	{
-		msg->mailBox = receiveData[i];
+	    UART_MailBoxType msg;
+		msg.mailBox = receiveData[i];
+	    msg.flagEnter = TRUE;
 		xQueueSend(g_uart0_queue, &msg, portMAX_DELAY);
 		i++;
 	}
-	vPortFree(msg);
 }
 
 void uart_TeraTerm_echo() {
@@ -145,16 +143,15 @@ void uart_TeraTerm_echo() {
 }
 
 uint8_t leerQueue_TeraTerm() {
-	UART_MailBoxType *msg;
+	UART_MailBoxType msgRead;
 	uint8_t mensaje;
 
-	xQueueReceive(g_uart0_queue, &msg, portMAX_DELAY);
-	mensaje = msg->mailBox;
-	msg->flagEnter = false;
+	xQueueGenericReceive(g_uart0_queue, &msgRead, portMAX_DELAY, pdFALSE);
+	mensaje = msgRead.mailBox;
+	msgRead.flagEnter = false;
 
 	if (0 == mensaje)
 	{
-		vPortFree(msg);
 		return finalQueue;
 
 	}
