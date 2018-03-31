@@ -115,6 +115,7 @@ void uart_TeraTerm_receive() {
 		xQueueSend(g_uart0_queue, &msg, portMAX_DELAY);
 		i++;
 	}
+	vPortFree(msg);
 }
 
 void uart_TeraTerm_echo() {
@@ -148,8 +149,9 @@ uint8_t leerQueue_TeraTerm() {
 
 	if (0 == mensaje)
 	{
-		return finalQueue;
 		vPortFree(msg);
+		return finalQueue;
+
 	}
 
 	else

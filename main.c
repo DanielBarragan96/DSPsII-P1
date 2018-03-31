@@ -79,7 +79,7 @@ void menus_task(void* args)
 
         if((0!=x) && (nullValue!=x)){//el 208 es un valor que recibe al no presionar nada, si presionamos ENTER no hacemos nada
             Pantallas[x-1](uart);//Entramos al menu seleccinado
-            MenuInicial();//Salimos del menu y volvemos al inicial
+            MenuInicial(uart);//Salimos del menu y volvemos al inicial
         }
         vTaskDelay(pdMS_TO_TICKS(10));
     }

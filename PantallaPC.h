@@ -189,6 +189,6 @@ void Eco();
 
 void Comunicacion();
 
-HoraActual *Fecha_Hora();
+void Fecha_Hora();
 
 uint8_t escogerMenu(UART_Type *uart);

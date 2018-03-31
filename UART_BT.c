@@ -91,6 +91,7 @@ void uart_BT_send( UART_Type *base, uint8_t* string ) {
 }
 
 void uart_BT_receive() {
+	uart_BT_init();
 
 	UART_MailBoxType *msg;
 	uint8_t receiveData[32];
@@ -119,7 +120,7 @@ void uart_BT_receive() {
 			xQueueSend(g_uart4_queue, &msg, portMAX_DELAY);
 			i++;
 		}
-
+	vPortFree(msg);
 }
 
 uint8_t leerQueue_BT() {
@@ -132,8 +133,8 @@ uint8_t leerQueue_BT() {
 
 		if (0 == mensaje)
 		{
-			return finalQueue;
 			vPortFree(msg);
+			return finalQueue;
 		}
 
 		else

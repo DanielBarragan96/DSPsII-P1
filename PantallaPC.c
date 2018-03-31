@@ -117,7 +117,7 @@ void LeerM(UART_Type *uart){
 //	}
 
 
-	escribirP(uart,"\033[13;10H", StringFromMemory);
+	//escribirP(uart,"\033[13;10H", StringFromMemory);
 	escribirP(uart,"\033[14;10H", "Presiona una tecla para continuar...");
 
 
@@ -144,7 +144,7 @@ void EscribirM(UART_Type *uart){
 	uint8 NDatos = 0;
 
 
-	uart_TeraTerm_send(uart,(uint8_t*)"\033[2J");
+	escribirP(uart,"\033[10;10H","\033[2J");
 	escribirP(uart,"\033[10;10H", "Direccion de escritura:");
 	//resetContador();
 	ingresoDatos(uart);
@@ -187,7 +187,7 @@ void Ehora(UART_Type *uart){
 	uint8 hora;
 	uint8 min;
 	uint8 seg;
-	uart_TeraTerm_send(uart,(uint8_t*)"\033[2J");
+	escribirP(uart,"\033[10;10H","\033[2J");
 	escribirP(uart,"\033[10;10H", "Escribir hora en hh/mm/ss");
 	ingresoDatos(uart);
 	//escribirP(uart,"\033[10;50H", getFIFO());
@@ -221,7 +221,7 @@ void Efecha(UART_Type *uart){
 	uint8 valor;
 	uint8 valor2;
 	//resetContador();
-	uart_TeraTerm_send(uart,(uint8_t*)"\033[2J");
+	escribirP(uart,"\033[10;10H","\033[2J");
 	escribirP(uart,"\033[10;10H", "Escribir fecha en dd/mm/aa");
 	ingresoDatos(uart);
 	//escribirP(uart,"\033[10;50H", getFIFO());
@@ -250,7 +250,7 @@ void Efecha(UART_Type *uart){
 void Fhora(UART_Type *uart){
 	uint8 formato;
 	uint8 S = 35;
-	uart_TeraTerm_send(uart,(uint8_t*)"\033[2J");
+	escribirP(uart,"\033[10;10H","\033[2J");
 	escribirP(uart,"\033[10;10H", "El formato actual es 12h");
 	escribirP(uart,"\033[11;10H", "Desea cambiar el formato a 12h si/no?");
 	ingresoDatos(uart);
@@ -268,14 +268,13 @@ void Fhora(UART_Type *uart){
  * mailbox se active (se presione cualquier tecla)
  */
 void Lhora(UART_Type *uart){
-	uart_TeraTerm_send(uart,(uint8_t*)"\033[2J");
+	escribirP(uart,"\033[10;10H","\033[2J");
 	escribirP(uart,"\033[10;10H", "La hora actual es");
-//	HoraActual variable = Fecha_Hora();
-//	escribirP(uart,"\033[12;10H", variable.hora);
+//	escribirP(uart,"\033[12;10H", datos.hora);
 //	escribirP(uart,"\033[12;13H", ":");
-//	escribirP(uart,"\033[12;15H", variable.minutos);
+//	escribirP(uart,"\033[12;15H", datos.minutos);
 //	escribirP(uart,"\033[12;18H", ":");
-//	escribirP(uart,"\033[12;20H", variable.segundos);
+//	escribirP(uart,"\033[12;20H", datos.segundos);
 //	escribirP(uart,"\033[12;25H", formato);
 }
 
@@ -287,42 +286,42 @@ void Lhora(UART_Type *uart){
  */
 void Lfecha(UART_Type *uart){
 	uint8 valor;
-	uart_TeraTerm_send(uart,(uint8_t*)"\033[2J");
+	escribirP(uart,"\033[10;10H","\033[2J");
 	escribirP(uart,"\033[10;10H", "La fecha actual es");
 //	HoraActual variable = Fecha_Hora();
 //	clearFlagM();
 //		while(FALSE==getFlagM()){
-//			escribirP(uart,"\033[12;10H", variable.dia);
+//			escribirP(uart,"\033[12;10H", datos.dia);
 //			escribirP(uart,"\033[12;13H", "/");
-//			escribirP(uart,"\033[12;15H", variable.mes);
+//			escribirP(uart,"\033[12;15H", datos.mes);
 //			escribirP(uart,"\033[12;18H", "/");
-//			escribirP(uart,"\033[12;20H", variable.anio);
+//			escribirP(uart,"\033[12;20H", datos.anio);
 //		}
 //	while(FALSE==getFlagM());//flag del mailbox si está recibiendo datos
 
 }
 
 void Comunicacion(UART_Type *uart){
-	uart_TeraTerm_send(uart,(uint8_t*)"\033[2J");
+	escribirP(uart,"\033[10;10H","\033[2J");
 	escribirP(uart,"\033[10;10H", "Escribir texto:/n");
 	uart_TeraTerm_echo();
 }
 
 void Eco(UART_Type *uart){
-	uart_TeraTerm_send(uart,(uint8_t*)"\033[2J");
+	escribirP(uart,"\033[10;10H","\033[2J");
 	escribirP(uart,"\033[10;10H", "Escribir texto:/n");
 	uart_TeraTerm_echo();
 }
 
 
 
-HoraActual *Fecha_Hora(){
+void Fecha_Hora(){
 	uint8 valor;
 	uint8 valor1;
-	uint8 string1[] = "La hora actual es: "; /*! String to be printed in the LCD*/
+	uint8 string1[] = "  Hora"; /*! String to be printed in the LCD*/
 	uint8 string2[] = ":";
-	uint8 string3[] = "La fecha actual es: ";
-	imprimir_lcd(string1, 2, 0);
+	uint8 string3[] = "  Fecha";
+//	imprimir_lcd(string1, 2, 0);
 //	clearFlagM();  FLAG MAILBOX
 //			while(FALSE==getFlagM()){
 //				valor = PCF8563_getHours(PCF8563_configurationStruct());
@@ -352,7 +351,10 @@ HoraActual *Fecha_Hora(){
 //				imprimir_lcd( datos.anio, 6, 3);
 //			}
 //		while(FALSE==getFlagM());
-
+	while(1){
+		imprimir_lcd(string1, 2, 0);
+		vTaskDelay(pdMS_TO_TICKS(1000));
+	}
 }
 
 
