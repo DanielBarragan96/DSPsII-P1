@@ -136,7 +136,7 @@ void LeerM( UART_Type *uart ) {
 	sint8 StringFromMemory[NDatos];
 	//escribirP(uart,"\033[11;50H", getFIFO());
 	//resetContador();
-	escribirP(uart, "\033[12;10H", "Contenido");
+	escribirP(uart, "\033[12;10H", "Contenido ");
 //	clearFlagM();
 //
 //
@@ -174,7 +174,7 @@ void EscribirM( UART_Type *uart ) {
 	uint8 NDatos = 0;
 
 	escribirP(uart, "\033[10;10H", "\033[2J");
-	escribirP(uart, "\033[10;10H", "Direccion de escritura:");
+	escribirP(uart, "\033[10;10H", "Direccion de escritura: ");
 	//resetContador();
 	ingresoDatos(uart);
 	//escribirP(uart,"\033[10;50H", getFIFO());
@@ -221,7 +221,7 @@ void Ehora( UART_Type *uart ) {
 	uint8 min;
 	uint8 seg;
 	escribirP(uart, "\033[10;10H", "\033[2J");
-	escribirP(uart, "\033[10;10H", "Escribir hora en hh/mm/ss");
+	escribirP(uart, "\033[10;10H", "Escribir hora en hh/mm/ss \n");
 	ingresoDatos(uart);
 	//escribirP(uart,"\033[10;50H", getFIFO());
 
@@ -259,7 +259,7 @@ void Efecha( UART_Type *uart ) {
 	uint8 valor2;
 	//resetContador();
 	escribirP(uart, "\033[10;10H", "\033[2J");
-	escribirP(uart, "\033[10;10H", "Escribir fecha en dd/mm/aa");
+	escribirP(uart, "\033[10;10H", "Escribir fecha en dd/mm/aa \n");
 	ingresoDatos(uart);
 	//escribirP(uart,"\033[10;50H", getFIFO());
 
@@ -294,7 +294,7 @@ void Fhora( UART_Type *uart ) {
 	uint8 S = 35;
 	escribirP(uart, "\033[10;10H", "\033[2J");
 	escribirP(uart, "\033[10;10H", "El formato actual es 12h");
-	escribirP(uart, "\033[11;10H", "Desea cambiar el formato a 12h si/no?");
+	escribirP(uart, "\033[11;10H", "Desea cambiar el formato a 12h si/no?\n");
 	ingresoDatos(uart);
 	//escribirP(uart,"\033[11;50H", getFIFO());
 	//formato=pop();
@@ -316,7 +316,7 @@ void Lhora( UART_Type *uart ) {
 	xSemaphoreTake(mutexLhora, portMAX_DELAY);
 
 	escribirP(uart, "\033[10;10H", "\033[2J");
-	escribirP(uart, "\033[10;10H", "La hora actual es");
+	escribirP(uart, "\033[10;10H", "La hora actual es ");
 //	escribirP(uart,"\033[12;10H", datos.hora);
 //	escribirP(uart,"\033[12;13H", ":");
 //	escribirP(uart,"\033[12;15H", datos.minutos);
@@ -339,7 +339,7 @@ void Lfecha( UART_Type *uart ) {
 
 	uint8 valor;
 	escribirP(uart, "\033[10;10H", "\033[2J");
-	escribirP(uart, "\033[10;10H", "La fecha actual es");
+	escribirP(uart, "\033[10;10H", "La fecha actual es ");
 //	HoraActual variable = Fecha_Hora();
 //	clearFlagM();
 //		while(FALSE==getFlagM()){
@@ -358,12 +358,12 @@ void Comunicacion( UART_Type *uart ) {
 	{
 		xEventGroupSetBits(g_chat_events, EVENT_UART0);
 		xTaskCreate(chat, "ChatTerminales", 110, (void*) UART0,
-				configMAX_PRIORITIES - 2, NULL);
+				configMAX_PRIORITIES - 1, NULL);
 	} else
 	{
 		xEventGroupSetBits(g_chat_events, EVENT_UART4);
 		xTaskCreate(chat, "ChatTerminales", 110, (void*) UART4,
-				configMAX_PRIORITIES - 2, NULL);
+				configMAX_PRIORITIES - 1, NULL);
 	}
 }
 
@@ -374,7 +374,7 @@ void chat( void* args ) {
 	escribirchat("\033[10;10H", "\033[2J");
 	bool exit = true;
 	while(exit){
-		xSemaphoreTake(mutexComunicacion, portMAX_DELAY);
+
 
 		UART_Type * uart = (UART_Type *) args;
 		escribirP(uart, "\033[10;10H", "\033[2J");
@@ -389,7 +389,7 @@ void chat( void* args ) {
 			exit = false;
 
 		escribirchat("\033[10;10H", mensaje);
-		xSemaphoreGive(mutexComunicacion);
+
 	}
 
 }
@@ -398,7 +398,7 @@ void Eco( UART_Type *uart ) {
 	escribirP(uart, "\033[9;10H", "Terminal Ocupada");
 	xSemaphoreTake(mutexEco, portMAX_DELAY);
 	escribirP(uart, "\033[10;10H", "\033[2J");
-	escribirP(uart, "\033[10;10H", "Escribir texto:");
+	escribirP(uart, "\033[10;10H", "Escribir texto: ");
 	if (UART0 == uart)
 		uart_TeraTerm_echo();
 	else
