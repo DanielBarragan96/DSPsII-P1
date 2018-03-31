@@ -26,6 +26,9 @@
 
 #define EVENT_UART0 (1<<0)
 #define EVENT_UART4 (1<<1)
+#define ENTER 13
+#define escBT 127
+#define ESC 27
 
 BooleanType Formatohora = FALSE;    //bandera para cambiar el formato
 static sint8 string[2];
@@ -39,7 +42,9 @@ SemaphoreHandle_t mutexFhora;
 SemaphoreHandle_t mutexLhora;
 SemaphoreHandle_t mutexLfecha;
 SemaphoreHandle_t mutexEco;
+SemaphoreHandle_t mutexComunicacion;
 EventGroupHandle_t g_chat_events;
+
 
 /*
  * Realiza las dos operaciones para enviar escribir en el serial, primero la posicion y despues los valores
@@ -344,17 +349,43 @@ void Lfecha( UART_Type *uart ) {
 
 void Comunicacion( UART_Type *uart ) {
 	if (UART0 == uart)
+	{
 		xEventGroupSetBits(g_chat_events, EVENT_UART0);
-	else
+		xTaskCreate(chat, "ChatTerminales", 110, (void*) UART0,
+				configMAX_PRIORITIES - 1, NULL);
+	} else
+	{
 		xEventGroupSetBits(g_chat_events, EVENT_UART4);
+		xTaskCreate(chat, "ChatTerminales", 110, (void*) UART4,
+				configMAX_PRIORITIES - 1, NULL);
+	}
 }
 
-void chat() {
-	while (1)
-	{
-		xEventGroupWaitBits(g_chat_events,
-		EVENT_UART0 | EVENT_UART4,
-		pdTRUE, pdTRUE, portMAX_DELAY);
+void chat( void* args ) {
+	xEventGroupWaitBits(g_chat_events,
+			EVENT_UART0 | EVENT_UART4,
+			pdTRUE, pdTRUE, portMAX_DELAY);
+
+	bool exit = true;
+	while(exit){
+		xSemaphoreTake(mutexComunicacion, portMAX_DELAY);
+
+		UART_Type * uart = (UART_Type *) args;
+		escribirP(uart, "\033[10;10H", "\033[2J");
+		ingresoDatos(uart);
+		sint8* mensaje;
+		if(UART0 == uart)
+			mensaje = (sint8*)leerQueue_TeraTerm();
+		else
+			mensaje = (sint8*)leerQueue_BT();
+
+		if(ENTER == *mensaje)
+			xSemaphoreGive(mutexComunicacion);
+
+		if(ESC == *mensaje || escBT == *mensaje)
+			exit = false;
+
+		escribirP(uart, "\033[10;10H", mensaje);
 	}
 }
 
@@ -518,5 +549,6 @@ void initmutex() {
 	mutexLhora = xSemaphoreCreateMutex();
 	mutexLfecha = xSemaphoreCreateMutex();
 	mutexEco = xSemaphoreCreateMutex();
+	mutexComunicacion = xSemaphoreCreateMutex();
 	g_chat_events = xEventGroupCreate();
 }

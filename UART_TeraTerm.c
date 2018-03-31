@@ -119,7 +119,7 @@ void uart_TeraTerm_receive() {
 }
 
 void uart_TeraTerm_echo() {
-	uint8_t receiveData[32];
+	uint8_t receiveData[32] = {0};
 	uint8_t i = 0;
 	uart_transfer_t xfer;
 	limpiar_lcd();

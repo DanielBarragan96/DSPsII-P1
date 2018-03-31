@@ -19,6 +19,7 @@
 
 #define RX_RING_BUFFER_SIZE 20U
 #define ENTER 13
+#define escBT 127
 #define finalQueue 160
 
 /*******************************************************************************
@@ -95,7 +96,7 @@ void uart_BT_receive() {
 	uart_BT_init();
 
 	UART_MailBoxType *msg;
-	uint8_t receiveData[32];
+	uint8_t receiveData[32] = {0};
 	uart_transfer_t xfer;
 	xfer.data = (uint8_t*) receiveData;
 	xfer.dataSize = sizeof(receiveData) / sizeof(receiveData[0]);
@@ -125,7 +126,7 @@ void uart_BT_receive() {
 }
 
 void uart_BT_echo(){
-	uint8_t receiveData[32];
+	uint8_t receiveData[32] = {0};
 		uint8_t i = 0;
 		uart_transfer_t xfer;
 		limpiar_lcd();
@@ -138,7 +139,7 @@ void uart_BT_echo(){
 		while (rx_OnGoing)
 		{
 
-			if (127 == receiveData[i]) rx_OnGoing = 0;
+			if (escBT == receiveData[i]) rx_OnGoing = 0;
 			i == 31 ? i = 0 : i++;
 			imprimir_lcd(xfer.data, 2, 0);
 		}
