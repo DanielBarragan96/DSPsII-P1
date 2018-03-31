@@ -103,10 +103,11 @@ void LeerM( UART_Type *uart ) {
 	uint8 l_unidades = 0;
 	uint8 h_decimales = 0;
 	uint8 h_unidades = 0;
-	uint8 dataSize = 1;
+	uint8 dataSize = 0;
+	uint8 x = 0;
 	/*LIMPIAR LA QUEUE*/
 	escribirP(uart, "\033[10;10H", "\033[2J");
-	escribirP(uart, "\033[10;10H", "Direccion de lectura: ");
+	escribirP(uart, "\033[10;10H", "Direccion de lectura:   ");
 	ingresoDatos(uart);
 
 	h_decimales = valMemoria();
@@ -116,17 +117,24 @@ void LeerM( UART_Type *uart ) {
 	address = (h_decimales << 12) | (h_unidades << 8) | (l_decimales << 4)
 			| l_unidades;
 
-	escribirP(uart, "\033[11;10H", "Longitud en bytes: ");
+	escribirP(uart, "\033[11;10H", "Longitud en bytes:  ");
 	ingresoDatos(uart);
 
-	dataSize = valMemoria();
+	uint8_t i = 0;
+	do
+	{
+	    dataSize *= 10;
+	    dataSize += x;
+        x = valMemoria();
+	}while(QUEUE_END != x);
+
 	escribirP(uart, "\033[12;10H", "Contenido: ");
 
     uint8_t val2[dataSize];
     uint8_t* data2 = &val2[0];
     MEM24LC256_getData (address, dataSize, data2);
-    data2 = &val2[dataSize];
-    *(data2) = '\0';
+    val2[dataSize] = '\0';
+
     escribirP(uart, "\033[14;10H", (sint8*) &val2[0]);
 	escribirP(uart, "\033[16;10H", "Presiona una tecla para continuar... ");
 
@@ -176,6 +184,7 @@ void EscribirM( UART_Type *uart ) {
 	    x = leerQueue_TeraTerm();
 	    string[i++] = x;
 	}while((QUEUE_END != x));
+	string[i] = '\0';
 
 	MEM24LC256_setData(address, &string[0]);
 	escribirP(uart, "\033[13;10H", "Su texto ha sido guardado...");
@@ -430,7 +439,7 @@ uint8 valMemoria() {
 	uint8 variable = leerQueue_TeraTerm();
 	if(variable >= 17 && variable <= 22)
 		variable = variable -7;
-	else if (variable >=49 && variable <=54)
+	else if (variable >=49 && variable <=57)
 		variable = variable - 48;
 	else variable = variable;
 
