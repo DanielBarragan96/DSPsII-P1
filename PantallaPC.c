@@ -109,8 +109,6 @@ void LeerM( UART_Type *uart ) {
 	ingresoDatos(uart);
 	//escribirP(uart,"\033[10;50H", getFIFO());
 	h_decimales = valMemoria();
-	h_decimales = valMemoria();
-	h_decimales = valMemoria();
 	h_unidades = valMemoria();
 	l_decimales = valMemoria();
 	l_unidades = valMemoria();
@@ -438,14 +436,14 @@ sint8* valorMem( uint8 x ) {
  *los empieza 7 espacios más arriba, ese es el proposito de la funcion
  */
 uint8 valMemoria() {
-	//uint8 variable = pop();
-//	if(variable >= 17 && variable <= 22)
-//		variable = variable -7;
-//	else if (variable >=49 && variable <=54)
-//		variable = variable - 39;
-//	else variable = variable;
-//
-//	return variable ;
+	uint8 variable = leerQueue_TeraTerm();
+	if(variable >= 17 && variable <= 22)
+		variable = variable -7;
+	else if (variable >=49 && variable <=54)
+		variable = variable - 48;
+	else variable = variable;
+
+	return variable ;
 }
 
 /*

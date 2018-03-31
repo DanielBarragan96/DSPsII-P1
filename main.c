@@ -59,12 +59,6 @@
 
 #define nullValue 208
 
-typedef struct
-{
-	void (*func)(UART_Type *);
-	uint8_t i;
-}Function;  //Para mandar parametro con el apuntador a funciones
-
 void menus_task(void* args)
 {
     UART_Type * uart = (UART_Type *) args;//elegir a cuál UART enviar

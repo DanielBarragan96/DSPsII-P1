@@ -90,7 +90,11 @@ void uart_TeraTerm_receive() {
 	uart_TeraTerm_init();
 
 	UART_MailBoxType *msg;
-	uint8_t receiveData[32];
+	uint8_t receiveData[32] = {0};
+
+	for(uint8_t i = 0; 32 > i; i++)
+	    receiveData[i]=0;
+
 	uint8_t i = 0;
 	uart_transfer_t xfer;
 	xfer.data = (uint8_t*) receiveData;
@@ -107,11 +111,11 @@ void uart_TeraTerm_receive() {
 	}
 
 	i = 0;
-	msg = pvPortMalloc(sizeof(g_uart0_queue));
+	msg = pvPortMalloc(sizeof(UART_MailBoxType));
 	msg->flagEnter = TRUE;
 	while (ENTER != receiveData[i] && i < 32)
 	{
-		msg->mailBox = *xfer.data;
+		msg->mailBox = receiveData[i];
 		xQueueSend(g_uart0_queue, &msg, portMAX_DELAY);
 		i++;
 	}
