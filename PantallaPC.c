@@ -25,6 +25,7 @@
 #include "event_groups.h"
 
 #include "MEM24LC256.h"
+#include "PCF8563.h"
 
 #define EVENT_UART0 (1<<0)
 #define EVENT_UART4 (1<<1)
@@ -202,31 +203,24 @@ void Ehora( UART_Type *uart ) {
 
 	escribirP(uart, "\033[9;10H", "Terminal Ocupada");
 	xSemaphoreTake(mutexEhora, portMAX_DELAY);
-	uint8 valor;
-	uint8 valor2;
-	uint8 hora;
-	uint8 min;
-	uint8 seg;
+
 	escribirP(uart, "\033[10;10H", "\033[2J");
-	escribirP(uart, "\033[10;10H", "Escribir hora en hh/mm/ss");
+	escribirP(uart, "\033[10;10H", "Escribir hora en hh:mm:ss");
 	ingresoDatos(uart);
-	//escribirP(uart,"\033[10;50H", getFIFO());
 
-	//valor = pop();
-	//valor2 = pop();
-	hora = (valor << 4) | valor2;
-	//valor = pop();
-	//valor2 = pop();
-	min = (valor << 4) | valor2;
-	//valor = pop();
-	//valor2 = pop();
-	seg = (valor << 4) | valor2;
+	uint8_t hours = valMemoria()*10;
+	hours += valMemoria();
+	valMemoria();
+	uint8_t minutes = valMemoria()*10;
+	minutes += valMemoria();
+	valMemoria();
+	uint8_t seconds = valMemoria()*10;
+	seconds += valMemoria();
 
-	//resetContador();
-//	PCF8563_SetHours(PCF8563_configurationStruct(), hora);
-//	PCF8563_SetMinutes(PCF8563_configurationStruct(), min);
-//	PCF8563_SetSeconds(PCF8563_configurationStruct(), seg);
+	setTime(seconds, minutes, hours);
+
 	escribirP(uart, "\033[12;10H", "La hora ha sido cambiada...");
+	ingresoDatos(uart);
 	xSemaphoreGive(mutexEhora);
 }
 
