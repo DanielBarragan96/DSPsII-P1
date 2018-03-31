@@ -10,15 +10,11 @@
 
 #include "stdint.h"
 
-#define PCF8563_WRITE_DATA_ADDRESS 0x51
+#define PCF8563_SLAVE_ADDRESS 0x51
 #define CLK_REGISTER_ADRESS 0X00
-
 #define ONE_BYTE 1
 
-#define PCF8563_WRITE_ADDRESS 0x51
-#define PCF8563_READ_ADDRESS 0x51
-
-#define PCF8563_TIME_ADDRESS 0x04
+#define PCF8563_TIME_ADDRESS 0x02
 #define PCF8563_DATE_ADDRESS 0x05
 
 #define PCF8563_SECONDS_ADDRESS 0x02
@@ -42,8 +38,6 @@ uint8_t PCF8563_getHours ();
 uint8_t PCF8563_getYears ();
 uint8_t PCF8563_getMonths ();
 uint8_t PCF8563_getDays ();
-
-uint8_t PCF8583_setData (uint8_t address, uint8_t data);
 
 void init_clk();
 
