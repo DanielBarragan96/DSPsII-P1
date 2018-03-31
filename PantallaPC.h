@@ -191,5 +191,6 @@ void Comunicacion();
 
 void Fecha_Hora();
 void initmutex();
+void chat();
 
 uint8_t escogerMenu(UART_Type *uart);

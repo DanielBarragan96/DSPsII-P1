@@ -10,6 +10,7 @@
 #include "fsl_port.h"
 #include "DataTypeDefinitions.h"
 #include "pin_mux.h"
+#include "LCDNokia5110.h"
 #include "FreeRTOS.h"
 #include "task.h"
 #include "event_groups.h"
@@ -122,6 +123,27 @@ void uart_BT_receive() {
 		}
 	vPortFree(msg);
 }
+
+void uart_BT_echo(){
+	uint8_t receiveData[32];
+		uint8_t i = 0;
+		uart_transfer_t xfer;
+		limpiar_lcd();
+		xfer.data = receiveData;
+		xfer.dataSize = sizeof(receiveData) / sizeof(receiveData[0]);
+		rx_OnGoing = true;
+		UART_TransferReceiveNonBlocking(UART4, &g_UartHandle, &xfer,
+				&xfer.dataSize);
+
+		while (rx_OnGoing)
+		{
+
+			if (127 == receiveData[i]) rx_OnGoing = 0;
+			i == 31 ? i = 0 : i++;
+			imprimir_lcd(xfer.data, 2, 0);
+		}
+}
+
 
 uint8_t leerQueue_BT() {
 	UART_MailBoxType *msg;

@@ -122,6 +122,7 @@ void uart_TeraTerm_echo() {
 	uint8_t receiveData[32];
 	uint8_t i = 0;
 	uart_transfer_t xfer;
+	limpiar_lcd();
 	xfer.data = receiveData;
 	xfer.dataSize = sizeof(receiveData) / sizeof(receiveData[0]);
 	rxOnGoing = true;
@@ -133,10 +134,10 @@ void uart_TeraTerm_echo() {
 
 		if (ESC == receiveData[i]) rxOnGoing = 0;
 		i == 31 ? i = 0 : i++;
-
+		imprimir_lcd(xfer.data, 2, 0);
 	}
 
-	imprimir_lcd(xfer.data, 2, 0);
+
 }
 
 uint8_t leerQueue_TeraTerm() {
