@@ -119,7 +119,7 @@ void Lfecha();
  	 \brief	 Funcion de espera hasta que terminemos de ingresar los valores
  	 \return void
  */
-void ingresoDatos();
+void ingresoDatos(UART_Type *base);
 
 //
 /********************************************************************************************/
@@ -188,3 +188,9 @@ uint8 formatoHora(uint8 x);
 void Eco();
 
 void Comunicacion();
+
+void Fecha_Hora();
+void initmutex();
+void chat();
+
+uint8_t escogerMenu(UART_Type *uart);

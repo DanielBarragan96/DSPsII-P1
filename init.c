@@ -5,16 +5,29 @@
  *      Author: Daniel Barragán
  */
 
+#include <stdio.h>
+#include "board.h"
+#include "peripherals.h"
+#include "pin_mux.h"
+#include "clock_config.h"
 #include "MK64F12.h"
-#include "init.h"
+#include "fsl_debug_console.h"
+
+#include "FreeRTOSConfig.h"
+#include "FreeRTOS.h"
+#include "task.h"
+
+#include "DataTypeDefinitions.h"
+#include "SPI.h"
+#include "DataTypeDefinitions.h"
+#include "PantallaPC.h"
+#include "UART_BT.h"
+#include "UART_TeraTerm.h"
+#include "LCDNokia5110.h"
 #include "MEM24LC256.h"
 #include "PCF8563.h"
-#include "fsl_clock.h"
-#include "fsl_i2c.h"
-#include "fsl_gpio.h"
-#include "pin_mux.h"
 
-#include "I2C.h"
+
 
 /* I2C source clock */
 #define I2C_MASTER_CLK_SRC I2C0_CLK_SRC
@@ -41,34 +54,18 @@
 #define BUFFER_SIZE 8
 #define I2C_CLK 12000000U
 
-void initMain ()
+void menus_task(void* args);
+
+void initTasks ()
 {
-    CLOCK_EnableClock (kCLOCK_PortB);
-    init_i2c ();
-
-//	TODO init UART
-//	/**Configures UART 0 to transmit/receive at 11520 bauds with a 21 MHz of clock core*/
-//	UART_init (UART_0,  60000000, BD_115200);
-//	/**Enables the UART 0 interrupt*/
-//	UART0_interruptEnable(UART_0);
-//   /**Enables the clock of PortB in order to configures TX and RX of UART peripheral*/
-//   CLOCK_EnableClock (kCLOCK_PortB);
-//
-//  /**Configures the pin control register of pin16 in PortB as UART RX*/
-//  PORTB->PCR[16] = PORT_PCR_MUX(3);
-//  /**Configures the pin control register of pin16 in PortB as UART TX*/
-//  PORTB->PCR[17] = PORT_PCR_MUX(3);
-
-//  TODO init NVIC
-//	/**Sets the threshold for interrupts, if the interrupt has higher priority constant that the BASEPRI, the interrupt will not be attended*/
-//	NVIC_setBASEPRI_threshold(PRIORITY_5);
-//	/**Enables the UART 0 interrupt in the NVIC*/
-//	NVIC_enableInterruptAndPriotity(UART0_IRQ, PRIORITY_3);
-//	/**Enables interrupts*/
-//	EnableInterrupts;
-
-//	TODO init TeraTerm
-//	/**Print menu by the Serial output*/
-//	printTTMainMenu();
+	xTaskCreate(menus_task, "Menus PC", 110, (void*) UART0, configMAX_PRIORITIES-1, NULL);
+	xTaskCreate(menus_task, "Menus BT", 110, (void*) UART4, configMAX_PRIORITIES-1, NULL);
+	xTaskCreate(Fecha_Hora, "Fecha_LCD", 110, NULL, configMAX_PRIORITIES-2, NULL);
+	xTaskCreate(chat, "ChatTerminales", 110, NULL, configMAX_PRIORITIES-2, NULL);
+	initmutex();
+	vTaskStartScheduler();
 
 }
+
+
+

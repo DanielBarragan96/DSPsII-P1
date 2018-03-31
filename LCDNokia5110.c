@@ -221,5 +221,3 @@ void limpiar_lcd(){
 }
 
 
-
-

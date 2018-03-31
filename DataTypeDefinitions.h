@@ -87,5 +87,14 @@ typedef union
 	 		}bitField;
 	 	} Binario;
 
+typedef struct{
+		sint8* hora;
+		sint8* minutos;
+		sint8* segundos;
+		sint8* dia;
+		sint8* mes;
+		sint8* anio;
+}HoraActual;
+
 
 #endif /* DATATYPEDEFINITIONS_H_ */
