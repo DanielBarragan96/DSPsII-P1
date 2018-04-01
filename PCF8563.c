@@ -1,8 +1,8 @@
 /*
  * PCF8583.c
  *
- *  Created on: 03/11/2017
- *      Author: ALEX
+ *  Created on: 21/03/2018
+ *      Author: Daniel Barragán Alvarez
  */
 
 #include "PCF8563.h"
@@ -10,20 +10,25 @@
 #include "fsl_i2c.h"
 #include "fsl_debug_console.h"
 
+//array to store readed values of time
 uint8_t time[THREE_BYTE];
+//array to store readed values of date
 uint8_t date[THREE_BYTE];
-
+//string for time
 uint8_t g_time_s[11];
+//string for date
 uint8_t g_date_s[8];
-
 //format en 0 es 24, en 1 es am/pm
 volatile static uint8_t format;
 
+//this function changes the variable val from decimal format to hexadecimal
 uint16_t decToHex(uint8_t val)
 {
+    //separate the number by the higher byte
     uint16_t hb = (val/10) << 0x04;
+    //separate the number by the lower byte
     uint16_t lb = (0x0F & (val%10));
-
+    //combine bytes
     uint16_t valHex = hb | lb;
 
     return valHex;
@@ -31,7 +36,7 @@ uint16_t decToHex(uint8_t val)
 
 void init_clk ()
 {
-    static uint8_t buffer = 0x00;
+    static uint8_t buffer = 0x00;//write cero in register 0 to start PCF8563
     i2c_writes (PCF8563_SLAVE_ADDRESS, CLK_REGISTER_ADRESS, ONE_BYTE, &buffer,
             PCF_SUBADRESS_SIZE);
     return;
@@ -40,15 +45,15 @@ void init_clk ()
 uint8_t setTimeFormat(uint8_t newFormat)
 {
     if(1 == newFormat)
-    {
+    {//toggle format value
         format ^= 0x01;
         return 0;
-    }
+    }//if other value than one was sent
     return -1;
 }
 
 uint8_t* getTime ()
-{
+{//update time array values
     i2c_read (PCF8563_SLAVE_ADDRESS, PCF8563_TIME_ADDRESS, THREE_BYTE, &time[0],
             PCF_SUBADRESS_SIZE);
     return &time[0];
@@ -56,21 +61,24 @@ uint8_t* getTime ()
 
 uint8_t* generateTimeString()
 {
+    //update time variables
     getTime();
-
+    //change hours to decimal format
     uint8_t hd =((0xF0 & time[2])>>4);
     uint8_t hu = (0x0F & time[2]);
     uint8_t hours = (hd*10) + hu;
-
+    //if am/pm format is needed
     if(format){
+        //must change hours variables iun the array
+        // also the am/pm sections
         if(12>=hours)
-        {
+        {//if less than 12 hours the its am
             g_time_s[0] = (hours / 10) +48;
             g_time_s[1] = (hours % 10) +48;
             g_time_s[9] = 'A';
         }
         else
-        {
+        {//if morethan 12 hours the its pm
             g_time_s[0] = ((hours-12) / 10) +48;
             g_time_s[1] = ((hours-12) % 10) +48;
             g_time_s[9] = 'P';
@@ -81,9 +89,11 @@ uint8_t* generateTimeString()
     {
         g_time_s[0] = ((0xF0 & time[2])>>4) +48;
         g_time_s[1] = (0x0F & time[2]) +48;
+        //am/pm section with spaces
         g_time_s[9] = ' ';
         g_time_s[10] = ' ';
     }
+    //other time variables casted to ASCII
         g_time_s[2] = ':';
         g_time_s[3] = ((0xF0 & time[1])>>4) +48;
         g_time_s[4] = (0x0F & time[1]) +48;
@@ -91,15 +101,19 @@ uint8_t* generateTimeString()
         g_time_s[6] = ((0xF0 & time[0])>>4) +48;
         g_time_s[7] = (0x0F & time[0]) +48;
         g_time_s[8] = ' ';
+        //indicate end of the string
         g_time_s[11] = '\0';
-
+     //return direction of the first element of the string
      return &g_time_s[0];
 }
 
 uint8_t* getDate ()
 {
+    //update date variables
     i2c_read (PCF8563_SLAVE_ADDRESS, PCF8563_DATE_ADDRESS, TWO_BYTE, &date[0],
             PCF_SUBADRESS_SIZE);
+
+    //Cast date variables to deciaml format
     uint8_t days = ((0x30 & date[0])>>4)*10;
     days += (0x0F & date[0]);
 
@@ -108,6 +122,7 @@ uint8_t* getDate ()
 
     uint8_t years = (0xC0 & date[0])>>6;
 
+    //store decimal formats in the date array
     date[0]=days;
     date[1]=month;
     date[2]=years;
@@ -117,7 +132,9 @@ uint8_t* getDate ()
 
 uint8_t* generateDateString()
 {
+    //update date variables
     getDate();
+    //cast array of date to a string
     g_date_s[0] = (date[0]/10) +48;
     g_date_s[1] = (date[0]%10) +48;
     g_date_s[2] = '/';
@@ -126,17 +143,20 @@ uint8_t* generateDateString()
     g_date_s[5] = '/';
     g_date_s[6] = (date[2]/10) +48;
     g_date_s[7] = (date[2]%10) +48;
+    //indicate end of the string
     g_date_s[8] = '\0';
-
+    //return direction of the first element of the string
     return &g_date_s[0];
 }
 
 uint8_t setTime (uint8_t hours, uint8_t minutes, uint8_t seconds)
 {
     uint8_t buffer[3];
+    //change time variables sent to hex format
     buffer[0] = decToHex(seconds);
     buffer[1] = decToHex(minutes);
     buffer[2] = decToHex(hours);
+    //update the time using I2C
     return i2c_writes (PCF8563_SLAVE_ADDRESS, PCF8563_TIME_ADDRESS, THREE_BYTE,
             &buffer[0], PCF_SUBADRESS_SIZE);
 }
@@ -144,16 +164,18 @@ uint8_t setTime (uint8_t hours, uint8_t minutes, uint8_t seconds)
 uint8_t setDate (uint8_t day, uint8_t month, uint8_t year)
 {
     uint8_t buffer[2];
+    //change date variables according to data sheet directions
     uint8_t y = ((0x03 & year)<<6);
     uint8_t dt = ((0x03 & (day/10))<<4);
     uint8_t du = (0x0F & (day%10));
-
+    //combine all variables
     buffer[0] = y | dt | du;
-
+    //change date variables according to data sheet directions
     uint8_t mt = ((0x01 & month/10)<<0x4);
     uint8_t mu = (0x0F & (month%10));
+    //combine all variables
     buffer[1] = mt | mu;
-
+    //update date using I2C
     return i2c_writes (PCF8563_SLAVE_ADDRESS, PCF8563_DATE_ADDRESS, TWO_BYTE,
             &buffer[0], PCF_SUBADRESS_SIZE);
 }

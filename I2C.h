@@ -1,8 +1,8 @@
 /*
  * I2C.h
  *
- *  Created on: Feb 7, 2018
- *      Author: lei-n
+ *  Created on: 14/3/2018
+ *      Author: Daniel Barragan
  */
 
 #ifndef I2C_H_
@@ -15,8 +15,7 @@
 /***************************************************************************/
 /***************************************************************************/
 /*!
- \brief	 Start the necessary peripherals to use the I2C and read the
- accelerometer.
+ \brief	 Start the necessary peripherals to use the I2C.
  \return TRUE if there was no problem
  */
 int8_t init_i2c ();
@@ -24,11 +23,13 @@ int8_t init_i2c ();
 /***************************************************************************/
 /***************************************************************************/
 /*!
- \brief	 This function reads the status of the accelerometer, and also
- manages the status of the LED sequence
- \param[in] subaddress devicce adress
- \param[in] dataSize
- \return TRUE if there was no problem
+ \brief	 This function uses the I2C to read from a slave.
+ \param[in] slaveAdress the device adress
+ \param[in] subaddress adress inside the devuice
+ \param[in] dataSize how many bytes to read
+ \param[in] bufferOut where the read info is stored
+ \param[in] the device subadress size
+ \return TRUE if there was no problem, or -1 if there was an error with the i2c
  */
 int8_t i2c_read (uint8_t slaveAdress, uint8_t subaddress, uint8_t dataSize,
         uint8_t* bufferOut, uint8_t subaddressSize);
@@ -36,14 +37,15 @@ int8_t i2c_read (uint8_t slaveAdress, uint8_t subaddress, uint8_t dataSize,
 /***************************************************************************/
 /***************************************************************************/
 /*!
- \brief  This function reads the status of the accelerometer, and also
- manages the status of the LED sequence
- \param[in] subaddress devicce adress
- \param[in] dataSize
- \param[in] buffer[dataSize] cointains the information to write
- \return TRUE if there was no problem
+ \brief  This function uses the I2C to write to a slave.
+ \param[in] slaveAdress the device adress
+ \param[in] subaddress adress inside the devuice
+ \param[in] dataSize how many bytes to read
+ \param[in] bufferOut where the read info is stored
+ \param[in] the device subadress size
+ \return TRUE if there was no problem, or -1 if there was an error with the i2c
  */
 int8_t i2c_writes (uint8_t slaveAdress, uint8_t subaddress, uint8_t dataSize,
         uint8_t* buffer, uint8_t subaddressSize);
 
-#endif /* I2C_H_ */
+ #endif /* I2C_H_ */
