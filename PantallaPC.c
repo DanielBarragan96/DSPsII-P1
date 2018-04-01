@@ -30,10 +30,6 @@
 #define EVENT_UART0 (1<<0)
 #define EVENT_UART4 (1<<1)
 
-BooleanType Formatohora = FALSE;    //bandera para cambiar el formato
-static sint8 string[2];
-static sint8 formato[2] = { 'h', 'r' };
-HoraActual datos;
 SemaphoreHandle_t mutexLeerM;
 SemaphoreHandle_t mutexEscribirM;
 SemaphoreHandle_t mutexEhora;
@@ -43,6 +39,9 @@ SemaphoreHandle_t mutexLhora;
 SemaphoreHandle_t mutexLfecha;
 SemaphoreHandle_t mutexEco;
 EventGroupHandle_t g_chat_events;
+
+static bool show_time = false;
+static bool show_date = false;
 
 /*
  * Realiza las dos operaciones para enviar escribir en el serial, primero la posicion y despues los valores
@@ -217,12 +216,15 @@ void Ehora( UART_Type *uart ) {
 	uint8_t seconds = valMemoria()*10;
 	seconds += valMemoria();
 
-	if(0 == setTime(seconds, minutes, hours))
+	if(0 == setTime(hours, minutes, seconds))
 	    escribirP(uart, "\033[13;10H", "La hora ha sido cambiada...\n");
 	else
 	    escribirP(uart, "\033[13;10H", "Error, no se estableció la hora\n");
 
+	show_time = true;
+
 	ingresoDatos(uart);
+	show_time = false;
 	xSemaphoreGive(mutexEhora);
 }
 
@@ -254,7 +256,10 @@ void Efecha( UART_Type *uart ) {
     else
             escribirP(uart, "\033[12;10H", "Error. La fecha no ha sido cambiada...");
 
+    show_date = true;
+
     ingresoDatos(uart);
+    show_date = false;
 	xSemaphoreGive(mutexEfecha);
 }
 
@@ -299,10 +304,10 @@ void Lhora( UART_Type *uart ) {
 	escribirP(uart, "\033[10;10H", "\033[2J");
 	escribirP(uart, "\033[10;10H", "La hora actual es: \n");
 
-	while(1)
-	    printTimeTeraTerm();
+	show_time = true;
 
 	ingresoDatos(uart);
+	show_time = false;
 	xSemaphoreGive(mutexLhora);
 }
 
@@ -322,10 +327,10 @@ void Lfecha( UART_Type *uart ) {
 	escribirP(uart, "\033[10;10H", "La fecha actual es:\n");
 
 
-    while(1)
-        printDateTeraTerm();
+    show_date = true;
 
 	ingresoDatos(uart);
+	show_date = false;
 	xSemaphoreGive(mutexLfecha);
 }
 
@@ -444,4 +449,14 @@ void initmutex() {
 	mutexLfecha = xSemaphoreCreateMutex();
 	mutexEco = xSemaphoreCreateMutex();
 	g_chat_events = xEventGroupCreate();
+}
+
+bool getShowTime()
+{
+    return show_time;
+}
+
+bool getShowDate()
+{
+    return show_date;
 }

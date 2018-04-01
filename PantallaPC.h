@@ -194,3 +194,7 @@ void initmutex();
 void chat();
 
 uint8_t escogerMenu(UART_Type *uart);
+
+bool getShowTime();
+
+bool getShowDate();

@@ -17,6 +17,9 @@
 #include "queue.h"
 #include "semphr.h"
 
+#include "PantallaPC.h"
+#include "PCF8563.h"
+
 #define RX_RING_BUFFER_SIZE 20U
 #define ENTER 13
 #define ESC 27
@@ -90,9 +93,6 @@ void uart_TeraTerm_receive() {
 
 	uint8_t receiveData[32] = {0};
 
-	for(uint8_t i = 0; 32 > i; i++)
-	    receiveData[i]=0;
-
 	uint8_t i = 0;
 	uart_transfer_t xfer;
 	xfer.data = (uint8_t*) receiveData;
@@ -103,7 +103,12 @@ void uart_TeraTerm_receive() {
 
 	while (rxOnGoing)
 	{
-		if (ENTER == receiveData[i]) rxOnGoing = 0;
+	    if (ENTER == receiveData[i])
+	        rxOnGoing = 0;
+	    if(getShowTime())
+	        escribirP(UART0, "\033[11;10H", (sint8 *) generateTimeString());
+	    else if(getShowDate())
+            escribirP(UART0, "\033[11;10H", (sint8 *) generateDateString());
 		i == 31 ? i = 0 : i++;
 		vTaskDelay(pdMS_TO_TICKS(20));
 	}
