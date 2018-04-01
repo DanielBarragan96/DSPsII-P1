@@ -10,9 +10,23 @@
 #include "fsl_i2c.h"
 #include "fsl_debug_console.h"
 
-uint8_t dataFromPCF8563[THREE_BYTE];
 uint8_t time[THREE_BYTE];
 uint8_t date[THREE_BYTE];
+
+static Time currentTime;
+static Date currentDate;
+
+volatile static uint8_t format;
+
+uint16_t decToHex(uint8_t val)
+{
+    uint16_t hb = (val/10) << 0x04;
+    uint16_t lb = (0x0F & (val%10));
+
+    uint16_t valHex = hb | lb;
+
+    return valHex;
+}
 
 void init_clk ()
 {
@@ -20,6 +34,16 @@ void init_clk ()
     i2c_writes (PCF8563_SLAVE_ADDRESS, CLK_REGISTER_ADRESS, ONE_BYTE, &buffer,
             PCF_SUBADRESS_SIZE);
     return;
+}
+
+uint8_t setTimeFormat(uint8_t newFormat)
+{
+    if(0 <= newFormat && 1 >= newFormat)
+    {
+        format = newFormat;
+        return 0;
+    }
+    return -1;
 }
 
 uint8_t* getTime ()
@@ -77,9 +101,9 @@ void printDateTeraTerm()
 uint8_t setTime (uint8_t hours, uint8_t minutes, uint8_t seconds)
 {
     uint8_t buffer[3];
-    buffer[0]=seconds;
-    buffer[1]=minutes;
-    buffer[2]=hours;
+    buffer[0] = decToHex(seconds);
+    buffer[1] = decToHex(minutes);
+    buffer[2] = decToHex(hours);
     return i2c_writes (PCF8563_SLAVE_ADDRESS, PCF8563_TIME_ADDRESS, THREE_BYTE,
             &buffer[0], PCF_SUBADRESS_SIZE);
 }

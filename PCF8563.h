@@ -22,8 +22,23 @@
 #define PCF8563_DATE_ADDRESS 0x05
 #define PCF8563_MONTH_ADDRESS 0x06
 
+typedef struct
+{
+    uint8_t seconds;
+    uint8_t minutes;
+    uint8_t hours;
+}Time;
+
+typedef struct
+{
+    uint8_t day;
+    uint8_t moht;
+    uint8_t year;
+}Date;
 
 void init_clk();
+
+uint8_t setTimeFormat(uint8_t newFormat);
 
 uint8_t* getTime();
 

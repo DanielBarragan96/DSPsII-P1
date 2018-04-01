@@ -276,10 +276,10 @@ void Fhora( UART_Type *uart ) {
 
 	uint8_t format = (valMemoria());
 
-//	if(0 == setTimeFormat(format))
-//	    escribirP(uart, "\033[13;10H", "El formato ha sido cambiado... ");
-//	else
-//	    escribirP(uart, "\033[13;10H", "Error. El formato no ha sido cambiado. ");
+	if(0 == setTimeFormat(format))
+	    escribirP(uart, "\033[13;10H", "El formato ha sido cambiado... ");
+	else
+	    escribirP(uart, "\033[13;10H", "Error. El formato no ha sido cambiado. ");
 
 	ingresoDatos(uart);
 	xSemaphoreGive(mutexFhora);
@@ -411,7 +411,7 @@ uint8 valMemoria() {
 	uint8 variable = leerQueue_TeraTerm();
 	if(variable >= 17 && variable <= 22)
 		variable = variable -7;
-	else if (variable >=49 && variable <=57)
+	else if (variable >= 48 && variable <= 57)
 		variable = variable - 48;
 	else variable = variable;
 
