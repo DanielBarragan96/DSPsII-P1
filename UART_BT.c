@@ -165,3 +165,8 @@ uint8_t leerQueue_BT() {
 			return mensaje;
 }
 
+uint8_t longitud_Queue_BT(){
+	uint8_t valor = uxQueueMessagesWaiting(g_uart4_queue);
+		return valor;
+}
+

@@ -21,6 +21,7 @@ void uart_TeraTerm_send(UART_Type *base, uint8_t* string);
 void uart_TeraTerm_receive();
 void uart_TeraTerm_echo();
 uint8_t leerQueue_TeraTerm();
+uint8_t longitud_Queue_TeraTerm();
 
 
 #endif /* UART_TERATERM_H_ */

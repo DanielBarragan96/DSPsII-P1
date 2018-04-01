@@ -61,9 +61,9 @@ void escribirP( UART_Type *base, sint8* Posicion, sint8* string ) {
 
 void escribirchat(sint8* Posicion, sint8* string ){
 	uart_BT_send(UART4, (uint8_t*) Posicion);
-			uart_BT_send(UART4, (uint8_t*) string);
-			uart_TeraTerm_send(UART0, (uint8_t*) Posicion);
-					uart_TeraTerm_send(UART0, (uint8_t*) string);
+	uart_BT_send(UART4, (uint8_t*) string);
+	uart_TeraTerm_send(UART0, (uint8_t*) Posicion);
+	uart_TeraTerm_send(UART0, (uint8_t*) string);
 }
 
 /*
@@ -366,19 +366,33 @@ void chat( UART_Type *uart ) {
 				EVENT_UART0 | EVENT_UART4,
 				pdTRUE, pdTRUE, portMAX_DELAY);
 	escribirchat("\033[10;10H", "\033[2J");
+
+	uint8_t longitud;
 	bool bandera = true;
 	while(true == bandera){
+		uart_BT_send(UART4,(uint8_t*) "\033[10;10H");
+		uart_TeraTerm_send(UART0, (uint8_t*) "\033[10;10H");
 		ingresoDatos(uart);
-		sint8* mensaje;
-		if(UART0 == uart)
-			mensaje = (sint8*)leerQueue_TeraTerm();
-		else
-			mensaje = (sint8*)leerQueue_BT();
+		if(UART0 == uart){
+			longitud = longitud_Queue_TeraTerm();
+			uint8_t g_tipStringT[longitud];
+			for(uint8_t i=0;i<longitud;i++){
+				g_tipStringT[i] = (leerQueue_TeraTerm() + 32);
 
-		if(escBT == *mensaje || ESC == *mensaje)
-			bandera = false;
-		escribirchat("\033[11;10H", mensaje);
-
+				bandera = (ESC == g_tipStringT[i])? false:bandera;
+			}
+			escribirP(UART4,"\033[11;10H", (sint8*)g_tipStringT);
+		}
+		else{
+			longitud = longitud_Queue_BT();
+			uint8_t g_tipStringB[longitud];
+			for(uint8_t i=0;i<longitud;i++){
+				g_tipStringB[i] = (leerQueue_BT() - 48);
+				bandera = (escBT == g_tipStringB[i])? false:bandera;
+			}
+			escribirP(UART0,"\033[11;10H", (sint8*)g_tipStringB);
+		}
+		vTaskDelay(pdMS_TO_TICKS(20));
 	}
 
 }

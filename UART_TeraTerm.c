@@ -153,9 +153,14 @@ uint8_t leerQueue_TeraTerm() {
 		return finalQueue;
 
 	}
-
 	else
 		return mensaje;
-
 }
+
+uint8_t longitud_Queue_TeraTerm(){
+	uint8_t valor = uxQueueMessagesWaiting(g_uart0_queue);
+	return valor;
+}
+
+
 
