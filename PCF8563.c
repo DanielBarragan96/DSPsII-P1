@@ -13,9 +13,10 @@
 uint8_t time[THREE_BYTE];
 uint8_t date[THREE_BYTE];
 
-uint8_t g_time_s[8];
+uint8_t g_time_s[11];
 uint8_t g_date_s[8];
 
+//format en 0 es 24, en 1 es am/pm
 volatile static uint8_t format;
 
 uint16_t decToHex(uint8_t val)
@@ -38,9 +39,9 @@ void init_clk ()
 
 uint8_t setTimeFormat(uint8_t newFormat)
 {
-    if(0 <= newFormat && 1 >= newFormat)
+    if(1 == newFormat)
     {
-        format = newFormat;
+        format ^= 0x01;
         return 0;
     }
     return -1;
@@ -57,15 +58,40 @@ uint8_t* generateTimeString()
 {
     getTime();
 
-    g_time_s[0] = ((0xF0 & time[2])>>4) +48;
-    g_time_s[1] = (0x0F & time[2]) +48;
-    g_time_s[2] = ':';
-    g_time_s[3] = ((0xF0 & time[1])>>4) +48;
-    g_time_s[4] = (0x0F & time[1]) +48;
-    g_time_s[5] = ':';
-    g_time_s[6] = ((0xF0 & time[0])>>4) +48;
-    g_time_s[7] = (0x0F & time[0]) +48;
-    g_time_s[8] = '\0';
+    uint8_t hd =((0xF0 & time[2])>>4);
+    uint8_t hu = (0x0F & time[2]);
+    uint8_t hours = (hd*10) + hu;
+
+    if(format){
+        if(12>=hours)
+        {
+            g_time_s[0] = (hours / 10) +48;
+            g_time_s[1] = (hours % 10) +48;
+            g_time_s[9] = 'A';
+        }
+        else
+        {
+            g_time_s[0] = ((hours-12) / 10) +48;
+            g_time_s[1] = ((hours-12) % 10) +48;
+            g_time_s[9] = 'P';
+        }
+        g_time_s[10] = 'M';
+    }
+    else
+    {
+        g_time_s[0] = ((0xF0 & time[2])>>4) +48;
+        g_time_s[1] = (0x0F & time[2]) +48;
+        g_time_s[9] = ' ';
+        g_time_s[10] = ' ';
+    }
+        g_time_s[2] = ':';
+        g_time_s[3] = ((0xF0 & time[1])>>4) +48;
+        g_time_s[4] = (0x0F & time[1]) +48;
+        g_time_s[5] = ':';
+        g_time_s[6] = ((0xF0 & time[0])>>4) +48;
+        g_time_s[7] = (0x0F & time[0]) +48;
+        g_time_s[8] = ' ';
+        g_time_s[11] = '\0';
 
      return &g_time_s[0];
 }
