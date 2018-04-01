@@ -193,6 +193,6 @@ void Comunicacion();
 
 void Fecha_Hora();
 void initmutex();
-void chat( void* args );
+void chat( UART_Type *uart );
 
 uint8_t escogerMenu(UART_Type *uart);
