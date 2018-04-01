@@ -17,12 +17,10 @@
 #include "queue.h"
 #include "semphr.h"
 
-#include "PantallaPC.h"
-#include "PCF8563.h"
-
 #define RX_RING_BUFFER_SIZE 20U
 #define ENTER 13
 #define ESC 27
+#define finalQueue 160
 
 /*******************************************************************************
  * Variables UART
@@ -88,11 +86,8 @@ void uart_TeraTerm_send( UART_Type *base, uint8_t* string ) {
 }
 
 void uart_TeraTerm_receive() {
-
-	uart_TeraTerm_init();
-
 	uint8_t receiveData[32] = {0};
-
+	uart_TeraTerm_init();
 	uint8_t i = 0;
 	uart_transfer_t xfer;
 	xfer.data = (uint8_t*) receiveData;
@@ -103,12 +98,7 @@ void uart_TeraTerm_receive() {
 
 	while (rxOnGoing)
 	{
-	    if (ENTER == receiveData[i])
-	        rxOnGoing = 0;
-	    if(getShowTime())
-	        escribirP(UART0, "\033[11;10H", (sint8 *) generateTimeString());
-	    else if(getShowDate())
-            escribirP(UART0, "\033[11;10H", (sint8 *) generateDateString());
+		if (ENTER == receiveData[i]) rxOnGoing = 0;
 		i == 31 ? i = 0 : i++;
 		vTaskDelay(pdMS_TO_TICKS(20));
 	}
@@ -116,15 +106,17 @@ void uart_TeraTerm_receive() {
 	i = 0;
 	while (ENTER != receiveData[i] && i < 32)
 	{
-	    UART_MailBoxType msg;
+		UART_MailBoxType msg;
 		msg.mailBox = receiveData[i];
-	    msg.flagEnter = TRUE;
+		msg.flagEnter = true;
 		xQueueSend(g_uart0_queue, &msg, portMAX_DELAY);
 		i++;
 	}
 }
 
 void uart_TeraTerm_echo() {
+	uart_TeraTerm_init();
+
 	uint8_t receiveData[32];
 	uint8_t i = 0;
 	uart_transfer_t xfer;
@@ -139,30 +131,36 @@ void uart_TeraTerm_echo() {
 	{
 
 		if (ESC == receiveData[i]) rxOnGoing = 0;
-		i == 31 ? i = 0 : i++;
+
 		imprimir_lcd(xfer.data, 2, 0);
+		i == 31 ? i = 0 : i++;
 	}
 
 
 }
 
 uint8_t leerQueue_TeraTerm() {
-	UART_MailBoxType msgRead;
-	msgRead.mailBox = 0;
+	UART_MailBoxType msg;
 	uint8_t mensaje;
 
-	xQueueGenericReceive(g_uart0_queue, &msgRead, pdMS_TO_TICKS(100), pdFALSE);
-	mensaje = msgRead.mailBox;
-	msgRead.flagEnter = false;
+	xQueueReceive(g_uart0_queue, &msg, portMAX_DELAY);
+	mensaje = msg.mailBox;
+	msg.flagEnter = false;
 
 	if (0 == mensaje)
 	{
-		return QUEUE_END;
+
+		return finalQueue;
 
 	}
-
 	else
 		return mensaje;
-
 }
+
+uint8_t longitud_Queue_TeraTerm(){
+	uint8_t valor = uxQueueMessagesWaiting(g_uart0_queue);
+	return valor;
+}
+
+
 

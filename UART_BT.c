@@ -19,6 +19,7 @@
 
 #define RX_RING_BUFFER_SIZE 20U
 #define ENTER 13
+#define escBT 127
 #define finalQueue 160
 
 /*******************************************************************************
@@ -69,7 +70,7 @@ void uart_BT_init() {
 
 	UART_Init(UART4, &config, CLOCK_GetFreq(UART4_CLK_SRC));
 	UART_TransferCreateHandle(UART4, &g_UartHandle, BT_UART_UserCallback, NULL);
-	g_uart4_queue = xQueueCreate(32, sizeof(UART_MailBoxType*));
+	g_uart4_queue = xQueueCreate(32, sizeof(UART_MailBoxType));
 
 }
 
@@ -94,8 +95,7 @@ void uart_BT_send( UART_Type *base, uint8_t* string ) {
 void uart_BT_receive() {
 	uart_BT_init();
 
-	UART_MailBoxType *msg;
-	uint8_t receiveData[32];
+	uint8_t receiveData[32]= {0};
 	uart_transfer_t xfer;
 	xfer.data = (uint8_t*) receiveData;
 	xfer.dataSize = sizeof(receiveData) / sizeof(receiveData[0]);
@@ -113,18 +113,20 @@ void uart_BT_receive() {
 	}
 
 	i = 0;
-	msg = pvPortMalloc(sizeof(g_uart4_queue));
-	msg->flagEnter = true;
+
 	while (ENTER != receiveData[i] && i < 32)
 		{
-			msg->mailBox = *xfer.data;
-			xQueueSend(g_uart4_queue, &msg, portMAX_DELAY);
-			i++;
+		UART_MailBoxType msg;
+		msg.mailBox = receiveData[i];
+		msg.flagEnter = true;
+		xQueueSend(g_uart4_queue, &msg, portMAX_DELAY);
+		i++;
 		}
-	vPortFree(msg);
 }
 
 void uart_BT_echo(){
+	uart_BT_init();
+
 	uint8_t receiveData[32];
 		uint8_t i = 0;
 		uart_transfer_t xfer;
@@ -138,28 +140,33 @@ void uart_BT_echo(){
 		while (rx_OnGoing)
 		{
 
-			if (127 == receiveData[i]) rx_OnGoing = 0;
-			i == 31 ? i = 0 : i++;
+			if (escBT == receiveData[i]) rx_OnGoing = 0;
+
 			imprimir_lcd(xfer.data, 2, 0);
+			i == 31 ? i = 0 : i++;
 		}
 }
 
 
 uint8_t leerQueue_BT() {
-	UART_MailBoxType *msg;
+	UART_MailBoxType msg;
 		uint8_t mensaje;
 
 		xQueueReceive(g_uart4_queue, &msg, portMAX_DELAY);
-		mensaje = msg->mailBox;
-		msg->flagEnter = false;
+		mensaje = msg.mailBox;
+		msg.flagEnter = false;
 
 		if (0 == mensaje)
 		{
-			vPortFree(msg);
 			return finalQueue;
 		}
 
 		else
 			return mensaje;
+}
+
+uint8_t longitud_Queue_BT(){
+	uint8_t valor = uxQueueMessagesWaiting(g_uart4_queue);
+		return valor;
 }
 
