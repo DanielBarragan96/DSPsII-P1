@@ -10,43 +10,46 @@
 
 #include "stdint.h"
 
-#define PCF8563_WRITE_DATA_ADDRESS 0x51
+#define PCF8563_SLAVE_ADDRESS 0x51
 #define CLK_REGISTER_ADRESS 0X00
-
+#define PCF_SUBADRESS_SIZE 1
 #define ONE_BYTE 1
-
-#define PCF8563_WRITE_ADDRESS 0x51
-#define PCF8563_READ_ADDRESS 0x51
+#define TWO_BYTE 2
+#define THREE_BYTE 3
+#define HEX_TEN 0x10
 
 #define PCF8563_TIME_ADDRESS 0x02
 #define PCF8563_DATE_ADDRESS 0x05
+#define PCF8563_MONTH_ADDRESS 0x06
 
-#define PCF8563_SECONDS_ADDRESS 0x02
-#define PCF8563_MINUTES_ADDRESS 0x03
-#define PCF8563_HOURS_ADDRESS 0x04
+typedef struct
+{
+    uint8_t seconds;
+    uint8_t minutes;
+    uint8_t hours;
+}Time;
 
-#define PCF8563_DAYS_ADDRESS 0x05
-#define PCF8563_MONTHS_ADDRESS 0x07
-#define PCF8563_YEARS_ADDRESS 0x08
-
-uint8_t PCF8563_setSeconds (uint8_t data);
-uint8_t PCF8563_setMinutes (uint8_t data);
-uint8_t PCF8563_setHours (uint8_t data);
-uint8_t PCF8563_setYears (uint8_t data);
-uint8_t PCF8563_setMonths (uint8_t data);
-uint8_t PCF8563_setDays (uint8_t data);
-
-uint8_t PCF8563_getSeconds ();
-uint8_t PCF8563_getMinutes ();
-uint8_t PCF8563_getHours ();
-uint8_t PCF8563_getYears ();
-uint8_t PCF8563_getMonths ();
-uint8_t PCF8563_getDays ();
-
-uint8_t PCF8583_setData (uint8_t address, uint8_t data);
+typedef struct
+{
+    uint8_t day;
+    uint8_t moht;
+    uint8_t year;
+}Date;
 
 void init_clk();
 
-uint8_t getTime();
+uint8_t setTimeFormat(uint8_t newFormat);
+
+uint8_t* getTime();
+
+void printTimeTeraTerm();
+
+uint8_t* getDate();
+
+void printDateTeraTerm();
+
+uint8_t setTime (uint8_t hours, uint8_t minutes, uint8_t seconds);
+
+uint8_t setDate (uint8_t day, uint8_t month, uint8_t year);
 
 #endif /* PCF8563_H_ */

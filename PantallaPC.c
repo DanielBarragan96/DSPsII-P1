@@ -25,6 +25,7 @@
 #include "event_groups.h"
 
 #include "MEM24LC256.h"
+#include "PCF8563.h"
 
 #define EVENT_UART0 (1<<0)
 #define EVENT_UART4 (1<<1)
@@ -202,31 +203,26 @@ void Ehora( UART_Type *uart ) {
 
 	escribirP(uart, "\033[9;10H", "Terminal Ocupada");
 	xSemaphoreTake(mutexEhora, portMAX_DELAY);
-	uint8 valor;
-	uint8 valor2;
-	uint8 hora;
-	uint8 min;
-	uint8 seg;
+
 	escribirP(uart, "\033[10;10H", "\033[2J");
-	escribirP(uart, "\033[10;10H", "Escribir hora en hh/mm/ss");
+	escribirP(uart, "\033[10;10H", "Escribir hora en hh:mm:ss \n");
 	ingresoDatos(uart);
-	//escribirP(uart,"\033[10;50H", getFIFO());
 
-	//valor = pop();
-	//valor2 = pop();
-	hora = (valor << 4) | valor2;
-	//valor = pop();
-	//valor2 = pop();
-	min = (valor << 4) | valor2;
-	//valor = pop();
-	//valor2 = pop();
-	seg = (valor << 4) | valor2;
+	uint8_t hours = valMemoria()*10;
+	hours += valMemoria();
+	valMemoria();
+	uint8_t minutes = valMemoria()*10;
+	minutes += valMemoria();
+	valMemoria();
+	uint8_t seconds = valMemoria()*10;
+	seconds += valMemoria();
 
-	//resetContador();
-//	PCF8563_SetHours(PCF8563_configurationStruct(), hora);
-//	PCF8563_SetMinutes(PCF8563_configurationStruct(), min);
-//	PCF8563_SetSeconds(PCF8563_configurationStruct(), seg);
-	escribirP(uart, "\033[12;10H", "La hora ha sido cambiada...");
+	if(0 == setTime(seconds, minutes, hours))
+	    escribirP(uart, "\033[13;10H", "La hora ha sido cambiada...\n");
+	else
+	    escribirP(uart, "\033[13;10H", "Error, no se estableció la hora\n");
+
+	ingresoDatos(uart);
 	xSemaphoreGive(mutexEhora);
 }
 
@@ -239,32 +235,26 @@ void Efecha( UART_Type *uart ) {
 
 	escribirP(uart, "\033[9;10H", "Terminal Ocupada");
 	xSemaphoreTake(mutexEfecha, portMAX_DELAY);
-	uint8 dia;
-	uint8 mes;
-	uint8 aa;
-	uint8 valor;
-	uint8 valor2;
-	//resetContador();
+
 	escribirP(uart, "\033[10;10H", "\033[2J");
 	escribirP(uart, "\033[10;10H", "Escribir fecha en dd/mm/aa");
 	ingresoDatos(uart);
-	//escribirP(uart,"\033[10;50H", getFIFO());
 
-	//valor = pop();
-	//valor2 = pop();
-	dia = (valor << 4) | valor2;
-	//valor = pop();
-	//valor2 = pop();
-	mes = (valor << 4) | valor2;
-	//valor = pop();
-	//valor2 = pop();
-	aa = (valor << 4) | valor2;
+    uint8_t day = valMemoria()*10;
+    day += valMemoria();
+    valMemoria();
+    uint8_t month = valMemoria()*10;
+    month += valMemoria();
+    valMemoria();
+    uint8_t year = valMemoria()*10;
+    year += valMemoria();
 
-	//resetContador();
-//	PCF8563_SetDay(PCF8563_configurationStruct(), dia);
-//	PCF8563_SetMonth(PCF8563_configurationStruct(), mes);
-//	PCF8563_SetYear(PCF8563_configurationStruct(), aa);
-	escribirP(uart, "\033[12;10H", "La fecha ha sido cambiada...");
+    if(0 == setDate(day, month, year))
+            escribirP(uart, "\033[12;10H", "La fecha ha sido cambiada...");
+    else
+            escribirP(uart, "\033[12;10H", "Error. La fecha no ha sido cambiada...");
+
+    ingresoDatos(uart);
 	xSemaphoreGive(mutexEfecha);
 }
 
@@ -281,13 +271,17 @@ void Fhora( UART_Type *uart ) {
 	uint8 S = 35;
 	escribirP(uart, "\033[10;10H", "\033[2J");
 	escribirP(uart, "\033[10;10H", "El formato actual es 12h");
-	escribirP(uart, "\033[11;10H", "Desea cambiar el formato a 12h si/no?");
+	escribirP(uart, "\033[11;10H", "Desea cambiar el formato a 12h si(1)/no(0)? \n");
 	ingresoDatos(uart);
-	//escribirP(uart,"\033[11;50H", getFIFO());
-	//formato=pop();
-	formato == S || formato == 67 ? setFlagF() : clearFlagF();
-	//resetContador();
-	escribirP(uart, "\033[13;10H", "El formato ha sido cambiado...");
+
+	uint8_t format = (valMemoria());
+
+	if(0 == setTimeFormat(format))
+	    escribirP(uart, "\033[13;10H", "El formato ha sido cambiado... ");
+	else
+	    escribirP(uart, "\033[13;10H", "Error. El formato no ha sido cambiado. ");
+
+	ingresoDatos(uart);
 	xSemaphoreGive(mutexFhora);
 }
 
@@ -303,13 +297,12 @@ void Lhora( UART_Type *uart ) {
 	xSemaphoreTake(mutexLhora, portMAX_DELAY);
 
 	escribirP(uart, "\033[10;10H", "\033[2J");
-	escribirP(uart, "\033[10;10H", "La hora actual es");
-//	escribirP(uart,"\033[12;10H", datos.hora);
-//	escribirP(uart,"\033[12;13H", ":");
-//	escribirP(uart,"\033[12;15H", datos.minutos);
-//	escribirP(uart,"\033[12;18H", ":");
-//	escribirP(uart,"\033[12;20H", datos.segundos);
-//	escribirP(uart,"\033[12;25H", formato);
+	escribirP(uart, "\033[10;10H", "La hora actual es: \n");
+
+	while(1)
+	    printTimeTeraTerm();
+
+	ingresoDatos(uart);
 	xSemaphoreGive(mutexLhora);
 }
 
@@ -326,17 +319,13 @@ void Lfecha( UART_Type *uart ) {
 
 	uint8 valor;
 	escribirP(uart, "\033[10;10H", "\033[2J");
-	escribirP(uart, "\033[10;10H", "La fecha actual es");
-//	HoraActual variable = Fecha_Hora();
-//	clearFlagM();
-//		while(FALSE==getFlagM()){
-//			escribirP(uart,"\033[12;10H", datos.dia);
-//			escribirP(uart,"\033[12;13H", "/");
-//			escribirP(uart,"\033[12;15H", datos.mes);
-//			escribirP(uart,"\033[12;18H", "/");
-//			escribirP(uart,"\033[12;20H", datos.anio);
-//		}
-//	while(FALSE==getFlagM());//flag del mailbox si está recibiendo datos
+	escribirP(uart, "\033[10;10H", "La fecha actual es:\n");
+
+
+    while(1)
+        printDateTeraTerm();
+
+	ingresoDatos(uart);
 	xSemaphoreGive(mutexLfecha);
 }
 
@@ -414,23 +403,6 @@ void Fecha_Hora() {
 }
 
 /*
- * Fucion para convertir de enteros a string
- * Esta funcion es utilizada para convertir las horas, minutos, segundos, años, meses, dias
- * estos valores llegan como un entero y lo dividimos en decenas y unidades guardando por
- * separado estos valores en un string el cual es el valor que retorna.
- */
-sint8* valorMem( uint8 x ) {
-
-	uint8 DecString = (uint8) (x / 10 + 48);
-	uint8 UniString = (uint8) (x - 10 * (x / 10) + 48);
-
-	string[0] = DecString;
-	string[1] = UniString;
-	return &string[0];
-
-}
-
-/*
  *Esta funcion corrige la diferencia en el orden de los valores en ASCII a hexadecimal. Si queremos convertir
  *los numeros, simplemente restamos 48 pero si tenemos por ejemplo una A -48 no nos da 10, el valor de las letras
  *los empieza 7 espacios más arriba, ese es el proposito de la funcion
@@ -439,58 +411,13 @@ uint8 valMemoria() {
 	uint8 variable = leerQueue_TeraTerm();
 	if(variable >= 17 && variable <= 22)
 		variable = variable -7;
-	else if (variable >=49 && variable <=57)
+	else if (variable >= 48 && variable <= 57)
 		variable = variable - 48;
 	else variable = variable;
 
 	return variable ;
 }
 
-/*
- * Limpiar bandera del formato hora
- */
-void clearFlagF() {
-	Formatohora = FALSE;
-}
-
-/*
- * Encender bandera del formato hora
- */
-void setFlagF() {
-	Formatohora = TRUE;
-}
-
-/*
- * Obtener el estado de la bandera
- */
-BooleanType getFlagF() {
-	return Formatohora;
-}
-
-/*
- * En esta funcion hacemos uso de la bandera de formato hora, comparamos si se activó, restamos 12 al valor
- * y cambiamos el string formato ya sea para escribir en pantalla am o pm
- */
-uint8 formatoHora( uint8 x ) {
-	formato[0] = 'h';
-	formato[1] = 'r';
-	/*if(x>11){
-	 formato[0] = 'p';
-	 formato[1] = 'm';
-	 }
-	 */
-	if (TRUE == getFlagF() && x > 12)
-	{
-		x = x - 12;
-		formato[0] = 'p';
-		formato[1] = 'm';
-	} else if (TRUE == getFlagF() && x < 12)
-	{
-		formato[0] = 'a';
-		formato[1] = 'm';
-	}
-	return x;
-}
 /*VT100 command for clearing the screen
  UART_putString(uart,"\033[2J");*/
 
