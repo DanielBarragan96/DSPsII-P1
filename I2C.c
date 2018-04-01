@@ -29,8 +29,8 @@
  */
 
 /**
- * @file    imu_read.c
- * @brief   Application entry point.
+ * @file    I2C.c
+ * @brief   I2C module.
  */
 #include <stdio.h>
 #include "board.h"
@@ -49,6 +49,7 @@
 #include "timers.h"
 #include "semphr.h"
 
+//Bits used for the I2C
 #define BIT2 2
 #define BIT3 3
 
@@ -58,14 +59,17 @@ volatile bool g_MasterCompletionFlag = false;
 uint8_t data_buffer = 0x01;
 uint8_t read_data;
 
+//I2C handle
 i2c_master_handle_t g_m_handle;
+//indicate if the I2C isn't responding
 volatile bool g_i2c_nw = false;
-
+//mutex to protect the I2C
 SemaphoreHandle_t mutex;
-TimerHandle_t g_timer; //global para que todas las tareas puedan usarlo.
+//timer to indicate if the I2C isn't working
+TimerHandle_t g_timer;
 
 void TimerCallback (TimerHandle_t timeIn)
-{
+{ //when the I2C isn't working
     g_i2c_nw = true;
 }
 
@@ -129,10 +133,10 @@ void i2c_ReleaseBus ()
 
 static void i2c_master_callback (I2C_Type *base, i2c_master_handle_t *handle,
         status_t status, void * userData)
-{
+{ //when there is an interruption
     if (status == kStatus_Success)
-    {
-        g_MasterCompletionFlag = true;
+    { //if the I2C worked
+        g_MasterCompletionFlag = true; //indicate end of waiting
     }
 }
 
@@ -144,32 +148,32 @@ int8_t init_i2c ()
     /* Init FSL debug console. */
     i2c_ReleaseBus ();
     BOARD_InitDebugConsole ();
-
+    //initialize I2C for using the I2C
     CLOCK_EnableClock (kCLOCK_PortB);
     CLOCK_EnableClock (kCLOCK_PortE);
     CLOCK_EnableClock (kCLOCK_I2c0);
 
+    //I2C configuration
     port_pin_config_t config_i2c =
     { kPORT_PullUp, kPORT_FastSlewRate, kPORT_PassiveFilterDisable,
             kPORT_OpenDrainEnable, kPORT_LowDriveStrength, kPORT_MuxAlt2,
             kPORT_UnlockRegister, };
-
+    //I2C Pin configuration
     PORT_SetPinConfig (PORTB, BIT2, &config_i2c); //SCL
     PORT_SetPinConfig (PORTB, BIT3, &config_i2c); //SDA
 
     // Get default configuration for master.
     i2c_master_config_t masterConfig;
     I2C_MasterGetDefaultConfig (&masterConfig);
-
+    //initialize I2C
     I2C_MasterInit (I2C0, &masterConfig, CLOCK_GetFreq (kCLOCK_BusClk));
-
+    //create I2C handle
     I2C_MasterTransferCreateHandle (I2C0, &g_m_handle, i2c_master_callback,
     NULL);
-
+    //enable I2C interrupts
     I2C_Enable (I2C0, true);
     I2C_EnableInterrupts (I2C0, kI2C_GlobalInterruptEnable);
-
-    //I2C nw
+    //I2C nw configuration
     const TickType_t g_xTimerPeriod = pdMS_TO_TICKS(1000); //periodo a interrumpir
     //Interrupt I2C nw
     const char *pcTimerName = "Timer";    //nombre
@@ -181,7 +185,9 @@ int8_t init_i2c ()
     g_timer = xTimerCreate (pcTimerName, g_xTimerPeriod, uxAutoReload,
             pvTimerID, pxCallbackFunction);
 
+    //create mutex
     mutex = xSemaphoreCreateMutex();
+    //start mutex in signilized status
     xSemaphoreGive(mutex);
 
     return 0;
@@ -200,25 +206,28 @@ int8_t i2c_read (uint8_t slaveAdress, uint8_t subaddress, uint8_t dataSize,
     masterXfer.dataSize = dataSize;
     masterXfer.flags = kI2C_TransferDefaultFlag;
 
-    xSemaphoreTake(mutex,portMAX_DELAY);
-
+    //tkae the I2C mutex
+    xSemaphoreTake(mutex, portMAX_DELAY);
+    // Get default configuration for slave.
     i2c_master_config_t masterConfig;
     I2C_MasterGetDefaultConfig (&masterConfig);
-
+    //initialize I2C
     I2C_MasterInit (I2C0, &masterConfig, CLOCK_GetFreq (kCLOCK_BusClk));
-
+    //start timer to verify I2C working
     xTimerStart(g_timer, portMAX_DELAY);
+    //initialize transmit
     I2C_MasterTransferNonBlocking (I2C0, &g_m_handle, &masterXfer);
     while (!g_MasterCompletionFlag && !g_i2c_nw)
-    {
+    { //while the I2C hasn't finishi¿ed or the timer is still counting
         vTaskDelay (pdMS_TO_TICKS(I2C_TRANS_DELAY));
     }
+    //stop I2C and timer
     xTimerStop(g_timer, portMAX_DELAY);
-    I2C_MasterStop(I2C0);
+    I2C_MasterStop (I2C0);
     g_MasterCompletionFlag = false;
-
+    //give I2C mutex
     xSemaphoreGive(mutex);
-
+    //handle if the I2C didn't worked as desired
     if (g_i2c_nw)
     {
         g_i2c_nw = false;
@@ -241,25 +250,28 @@ int8_t i2c_writes (uint8_t slaveAdress, uint8_t subaddress, uint8_t dataSize,
     masterXfer.dataSize = dataSize;
     masterXfer.flags = kI2C_TransferDefaultFlag;
 
-    xSemaphoreTake(mutex,portMAX_DELAY);
+    //tkae the I2C mutex
+    xSemaphoreTake(mutex, portMAX_DELAY);
     // Get default configuration for master.
     i2c_master_config_t masterConfig;
     I2C_MasterGetDefaultConfig (&masterConfig);
-
+    //initialize I2C
     I2C_MasterInit (I2C0, &masterConfig, CLOCK_GetFreq (kCLOCK_BusClk));
-
+    //start timer to verify I2C working
     xTimerStart(g_timer, portMAX_DELAY);
+    //initialize transmit
     I2C_MasterTransferNonBlocking (I2C0, &g_m_handle, &masterXfer);
     while (!g_MasterCompletionFlag && !g_i2c_nw)
-    {
+    {    //while the I2C hasn't finishi¿ed or the timer is still counting
         vTaskDelay (pdMS_TO_TICKS(I2C_TRANS_DELAY));
     }
+    //stop I2C and timer
     xTimerStop(g_timer, portMAX_DELAY);
-    I2C_MasterStop(I2C0);
+    I2C_MasterStop (I2C0);
     g_MasterCompletionFlag = false;
-
+    //give I2C mutex
     xSemaphoreGive(mutex);
-
+    //handle if the I2C didn't worked as desired
     if (g_i2c_nw)
     {
         g_i2c_nw = false;

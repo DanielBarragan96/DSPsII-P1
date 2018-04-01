@@ -5,15 +5,17 @@
  *  Created on: 2 nov. 2017
  *      Author: Avelar Díaz José Francisco
  *      		Chung Correa Sergio Raúl
+ *      		Barragán Alvarez Daniel
  */
+
 #include "board.h"
 #include "MK64F12.h"
 #include "pin_mux.h"
 #include "GlobalFunctions.h"
-//#include "PCF8563.h"
+
 #include "DataTypeDefinitions.h"
 #include "PantallaPC.h"
-//#include "MEM24LC256.h"
+
 #include "fsl_uart.h"
 #include "UART_BT.h"
 #include "LCDNokia5110.h"
