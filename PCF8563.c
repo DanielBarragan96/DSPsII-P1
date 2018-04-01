@@ -13,8 +13,8 @@
 uint8_t time[THREE_BYTE];
 uint8_t date[THREE_BYTE];
 
-static Time currentTime;
-static Date currentDate;
+uint8_t g_time_s[8];
+uint8_t g_date_s[8];
 
 volatile static uint8_t format;
 
@@ -53,24 +53,21 @@ uint8_t* getTime ()
     return &time[0];
 }
 
-void printTimeTeraTerm()
+uint8_t* generateTimeString()
 {
     getTime();
-    PRINTF ("\r");
-        if(HEX_TEN <= time[2])
-            PRINTF ("%x : ", time[2]);
-        else
-            PRINTF ("0%x : ", time[2]);
 
-        if(HEX_TEN <= time[1])
-            PRINTF ("%x : ", time[1]);
-        else
-            PRINTF ("0%x : ", time[1]);
+    g_time_s[0] = ((0xF0 & time[2])>>4) +48;
+    g_time_s[1] = (0x0F & time[2]) +48;
+    g_time_s[2] = ':';
+    g_time_s[3] = ((0xF0 & time[1])>>4) +48;
+    g_time_s[4] = (0x0F & time[1]) +48;
+    g_time_s[5] = ':';
+    g_time_s[6] = ((0xF0 & time[0])>>4) +48;
+    g_time_s[7] = (0x0F & time[0]) +48;
+    g_time_s[8] = '\0';
 
-        if(HEX_TEN <= time[0])
-            PRINTF ("%x  ", time[0]);
-        else
-            PRINTF ("0%x ", time[0]);
+     return &g_time_s[0];
 }
 
 uint8_t* getDate ()
@@ -92,10 +89,20 @@ uint8_t* getDate ()
     return &date[0];
 }
 
-void printDateTeraTerm()
+uint8_t* generateDateString()
 {
     getDate();
-    PRINTF("\r%d / %d / %d", date[0],date[1], date[2]);
+    g_date_s[0] = (date[0]/10) +48;
+    g_date_s[1] = (date[0]%10) +48;
+    g_date_s[2] = '/';
+    g_date_s[3] = (date[1]/10) +48;
+    g_date_s[4] = (date[1]%10) +48;
+    g_date_s[5] = '/';
+    g_date_s[6] = (date[2]/10) +48;
+    g_date_s[7] = (date[2]%10) +48;
+    g_date_s[8] = '\0';
+
+    return &g_date_s[0];
 }
 
 uint8_t setTime (uint8_t hours, uint8_t minutes, uint8_t seconds)
