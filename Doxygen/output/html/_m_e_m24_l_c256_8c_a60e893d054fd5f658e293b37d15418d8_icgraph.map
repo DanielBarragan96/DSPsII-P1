@@ -1,0 +1,7 @@
+<map id="MEM24LC256_setData" name="MEM24LC256_setData">
+<area shape="rect" id="node2" href="$_pantalla_p_c_8c.html#adc570c4364dc057c016d056873c7d7cf" title="EscribirM" alt="" coords="209,31,287,57"/>
+<area shape="rect" id="node3" href="$main_8c.html#a50dc2d7cdfa7404d23494d9536c7df73" title="menus_task" alt="" coords="335,31,428,57"/>
+<area shape="rect" id="node4" href="$init_8c.html#a2faa8000121a9774eefa457960d96464" title="spi_butons" alt="" coords="476,5,561,32"/>
+<area shape="rect" id="node5" href="$init_8h.html#a7ddfa05f6251ebe96b87c760bee8f009" title="This function initializes the necesary componentes of the Kinetis to start the program. " alt="" coords="609,31,684,57"/>
+<area shape="rect" id="node6" href="$main_8c.html#a840291bc02cba5474a4cb46a9b9566fe" title="main" alt="" coords="732,31,783,57"/>
+</map>

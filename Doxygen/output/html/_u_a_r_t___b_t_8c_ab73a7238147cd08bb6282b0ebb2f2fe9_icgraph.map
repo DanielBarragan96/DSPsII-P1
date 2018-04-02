@@ -1,0 +1,21 @@
+<map id="BT_UART_UserCallback" name="BT_UART_UserCallback">
+<area shape="rect" id="node2" href="$_u_a_r_t___b_t_8h.html#adefbaa2cea104c368c91242e01317945" title="uart_BT_init" alt="" coords="216,31,307,57"/>
+<area shape="rect" id="node3" href="$_u_a_r_t___b_t_8h.html#a85ceb7990e003b6ff06df69e8f33ff38" title="uart_BT_receive" alt="" coords="355,56,469,83"/>
+<area shape="rect" id="node19" href="$_u_a_r_t___b_t_8h.html#aea4f4eb8d02605b769f3e7946e78a6df" title="uart_BT_echo" alt="" coords="361,5,463,32"/>
+<area shape="rect" id="node4" href="$_pantalla_p_c_8h.html#aad2a30820c7433bfa61f244c327d3fb3" title="Funcion de espera hasta que terminemos de ingresar los valores. " alt="" coords="518,259,617,285"/>
+<area shape="rect" id="node18" href="$_pantalla_p_c_8h.html#ad10c4be9d7ad687436a8ad5149f08cc1" title="Permite cambiar entre diferentes menús. " alt="" coords="517,56,617,83"/>
+<area shape="rect" id="node5" href="$_pantalla_p_c_8c.html#a3c1d9afa5dbe213b0fd0161dc42b7e07" title="LeerM" alt="" coords="796,309,855,336"/>
+<area shape="rect" id="node10" href="$_pantalla_p_c_8c.html#adc570c4364dc057c016d056873c7d7cf" title="EscribirM" alt="" coords="787,360,864,387"/>
+<area shape="rect" id="node11" href="$_pantalla_p_c_8c.html#abc6fb6b9be6b3a093c81504cdb6b62ef" title="Ehora" alt="" coords="797,512,853,539"/>
+<area shape="rect" id="node12" href="$_pantalla_p_c_8c.html#ad82df1986282060fcfd6b70787cca69a" title="Efecha" alt="" coords="794,107,857,133"/>
+<area shape="rect" id="node13" href="$_pantalla_p_c_8c.html#ae40e17da3d8c2c8eaf6a018c7818044c" title="Fhora" alt="" coords="668,157,723,184"/>
+<area shape="rect" id="node14" href="$_pantalla_p_c_8c.html#aa093d2b673d8b5fc9435c6d5a97b0426" title="Lhora" alt="" coords="668,208,723,235"/>
+<area shape="rect" id="node15" href="$_pantalla_p_c_8c.html#a1663c3720730ee9888f1f936b4113e78" title="Lfecha" alt="" coords="665,259,725,285"/>
+<area shape="rect" id="node16" href="$_pantalla_p_c_8h.html#ab393fc0f37b72a076a028b775ca1fba3" title="chat" alt="" coords="672,411,719,437"/>
+<area shape="rect" id="node6" href="$main_8c.html#a50dc2d7cdfa7404d23494d9536c7df73" title="menus_task" alt="" coords="925,259,1019,285"/>
+<area shape="rect" id="node7" href="$init_8c.html#a2faa8000121a9774eefa457960d96464" title="spi_butons" alt="" coords="1067,309,1152,336"/>
+<area shape="rect" id="node8" href="$init_8h.html#a7ddfa05f6251ebe96b87c760bee8f009" title="This function initializes the necesary componentes of the Kinetis to start the program. " alt="" coords="1200,309,1275,336"/>
+<area shape="rect" id="node9" href="$main_8c.html#a840291bc02cba5474a4cb46a9b9566fe" title="main" alt="" coords="1323,309,1373,336"/>
+<area shape="rect" id="node17" href="$_pantalla_p_c_8c.html#ab73e3eae2a0c79aae5213c92b19c73bc" title="Comunicacion" alt="" coords="773,411,877,437"/>
+<area shape="rect" id="node20" href="$_pantalla_p_c_8c.html#a15e61a2f0e798dff3a9bfde738bee2b6" title="Eco" alt="" coords="545,5,590,32"/>
+</map>

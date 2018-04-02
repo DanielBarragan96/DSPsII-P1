@@ -1,0 +1,7 @@
+<map id="PantallaPC.h" name="PantallaPC.h">
+<area shape="rect" id="node2" href="$init_8c.html" title="init.c" alt="" coords="5,80,56,107"/>
+<area shape="rect" id="node3" href="$main_8c.html" title="main.c" alt="" coords="80,80,141,107"/>
+<area shape="rect" id="node4" href="$_pantalla_p_c_8c.html" title="PantallaPC.c" alt="" coords="165,80,264,107"/>
+<area shape="rect" id="node5" href="$_u_a_r_t___b_t_8c.html" title="UART_BT.c" alt="" coords="288,80,379,107"/>
+<area shape="rect" id="node6" href="$_u_a_r_t___tera_term_8c.html" title="UART_TeraTerm.c" alt="" coords="403,80,531,107"/>
+</map>

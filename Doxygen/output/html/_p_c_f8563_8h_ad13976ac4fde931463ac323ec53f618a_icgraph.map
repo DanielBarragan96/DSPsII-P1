@@ -1,0 +1,7 @@
+<map id="setTime" name="setTime">
+<area shape="rect" id="node2" href="$_pantalla_p_c_8c.html#abc6fb6b9be6b3a093c81504cdb6b62ef" title="Ehora" alt="" coords="121,31,177,57"/>
+<area shape="rect" id="node3" href="$main_8c.html#a50dc2d7cdfa7404d23494d9536c7df73" title="menus_task" alt="" coords="225,31,319,57"/>
+<area shape="rect" id="node4" href="$init_8c.html#a2faa8000121a9774eefa457960d96464" title="spi_butons" alt="" coords="367,5,452,32"/>
+<area shape="rect" id="node5" href="$init_8h.html#a7ddfa05f6251ebe96b87c760bee8f009" title="This function initializes the necesary componentes of the Kinetis to start the program. " alt="" coords="500,31,575,57"/>
+<area shape="rect" id="node6" href="$main_8c.html#a840291bc02cba5474a4cb46a9b9566fe" title="main" alt="" coords="623,31,673,57"/>
+</map>

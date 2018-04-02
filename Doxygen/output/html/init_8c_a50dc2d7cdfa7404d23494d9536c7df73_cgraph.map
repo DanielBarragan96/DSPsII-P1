@@ -1,0 +1,51 @@
+<map id="menus_task" name="menus_task">
+<area shape="rect" id="node2" href="$_p_c_f8563_8c.html#a819fb1ccff0cfa43efe6bbb0317deb5e" title="This function initialize the PCF8563 clock. " alt="" coords="167,302,230,329"/>
+<area shape="rect" id="node4" href="$_pantalla_p_c_8c.html#a3c1d9afa5dbe213b0fd0161dc42b7e07" title="LeerM" alt="" coords="308,138,367,165"/>
+<area shape="rect" id="node23" href="$_pantalla_p_c_8c.html#adc570c4364dc057c016d056873c7d7cf" title="EscribirM" alt="" coords="299,468,376,494"/>
+<area shape="rect" id="node26" href="$_pantalla_p_c_8c.html#abc6fb6b9be6b3a093c81504cdb6b62ef" title="Ehora" alt="" coords="309,544,365,570"/>
+<area shape="rect" id="node29" href="$_pantalla_p_c_8c.html#ad82df1986282060fcfd6b70787cca69a" title="Efecha" alt="" coords="306,594,369,621"/>
+<area shape="rect" id="node31" href="$_pantalla_p_c_8c.html#ae40e17da3d8c2c8eaf6a018c7818044c" title="Fhora" alt="" coords="310,645,365,672"/>
+<area shape="rect" id="node33" href="$_pantalla_p_c_8c.html#aa093d2b673d8b5fc9435c6d5a97b0426" title="Lhora" alt="" coords="310,696,365,722"/>
+<area shape="rect" id="node34" href="$_pantalla_p_c_8c.html#a1663c3720730ee9888f1f936b4113e78" title="Lfecha" alt="" coords="307,746,367,773"/>
+<area shape="rect" id="node35" href="$_pantalla_p_c_8c.html#ab73e3eae2a0c79aae5213c92b19c73bc" title="Comunicacion" alt="" coords="147,873,251,900"/>
+<area shape="rect" id="node40" href="$_pantalla_p_c_8c.html#a15e61a2f0e798dff3a9bfde738bee2b6" title="Eco" alt="" coords="488,1260,533,1286"/>
+<area shape="rect" id="node49" href="$_pantalla_p_c_8c.html#a0307fe7f6576534c655ed12b1c7cd18f" title="MenuInicial" alt="" coords="155,94,242,121"/>
+<area shape="rect" id="node50" href="$_pantalla_p_c_8c.html#ad10c4be9d7ad687436a8ad5149f08cc1" title="Permite cambiar entre diferentes menús. " alt="" coords="461,1152,561,1178"/>
+<area shape="rect" id="node3" href="$_i2_c_8c.html#a3c079b83239e54059aa817364cbb39bb" title="This function uses the I2C to write to a slave. " alt="" coords="681,341,761,368"/>
+<area shape="rect" id="node5" href="$_pantalla_p_c_8c.html#ada50e0f0a062a6f29846e54de908579d" title="Funcion que manda las instrucciones al Teraterm de posicion y los datos a imprimir. " alt="" coords="876,848,949,874"/>
+<area shape="rect" id="node8" href="$_pantalla_p_c_8c.html#aad2a30820c7433bfa61f244c327d3fb3" title="Funcion de espera hasta que terminemos de ingresar los valores. " alt="" coords="461,696,560,722"/>
+<area shape="rect" id="node18" href="$_pantalla_p_c_8c.html#a1e5487ccbfd9937c98e1469cb1ef3ad0" title="valMemoria" alt="" coords="467,594,554,621"/>
+<area shape="rect" id="node21" href="$_m_e_m24_l_c256_8c.html#ae53482fee56536390ef822109b63fd91" title="This function uses the I2C to send the write instruction to be able to write the address high and low..." alt="" coords="433,88,589,114"/>
+<area shape="rect" id="node6" href="$_u_a_r_t___b_t_8c.html#a8640a657bf088088c40c870fe61122cc" title="uart_BT_send" alt="" coords="1077,962,1180,989"/>
+<area shape="rect" id="node7" href="$_u_a_r_t___tera_term_8c.html#a105aa654170c6f61464a7270e4858e06" title="uart_TeraTerm_send" alt="" coords="1059,1076,1199,1102"/>
+<area shape="rect" id="node9" href="$_u_a_r_t___tera_term_8c.html#ac384ba7da73ea822057203098dcdfb1e" title="uart_TeraTerm_receive" alt="" coords="645,1101,797,1128"/>
+<area shape="rect" id="node16" href="$_u_a_r_t___b_t_8c.html#a85ceb7990e003b6ff06df69e8f33ff38" title="uart_BT_receive" alt="" coords="664,1152,779,1178"/>
+<area shape="rect" id="node10" href="$_u_a_r_t___tera_term_8c.html#a286d8365e945dd17f0bba93dc6304134" title="uart_TeraTerm_init" alt="" coords="848,1253,977,1280"/>
+<area shape="rect" id="node12" href="$_pantalla_p_c_8c.html#a0131e785a6be3ffc3447f4c1ab5b8808" title="Retorna el valor de shor_time. " alt="" coords="863,1050,963,1077"/>
+<area shape="rect" id="node13" href="$_p_c_f8563_8c.html#a381ba82ca6de0e7750cb229140a5702f" title="This function updates the time variables. " alt="" coords="845,1101,980,1128"/>
+<area shape="rect" id="node14" href="$_pantalla_p_c_8c.html#aca2201e5bd38a0b64051ee90ce70dd64" title="Retorna el valor de shor_date. " alt="" coords="863,1152,962,1178"/>
+<area shape="rect" id="node15" href="$_p_c_f8563_8c.html#a7724c34082537abb9d4c1561532e3cad" title="This function updates the date variables. " alt="" coords="846,1000,979,1026"/>
+<area shape="rect" id="node11" href="$_u_a_r_t___tera_term_8c.html#abfc2ac7b03445c9da1693444596c1756" title="TeraTerm_UART_UserCallback" alt="" coords="1028,1253,1229,1280"/>
+<area shape="rect" id="node17" href="$_u_a_r_t___b_t_8c.html#adefbaa2cea104c368c91242e01317945" title="uart_BT_init" alt="" coords="867,1304,958,1330"/>
+<area shape="rect" id="node19" href="$_u_a_r_t___tera_term_8c.html#a72c463ef5087a04f037509396a95bfd5" title="leerQueue_TeraTerm" alt="" coords="650,721,793,748"/>
+<area shape="rect" id="node20" href="$_u_a_r_t___b_t_8c.html#ac406fff94c74793a72ebad3955af5236" title="leerQueue_BT" alt="" coords="669,949,773,976"/>
+<area shape="rect" id="node22" href="$_i2_c_8c.html#a60f94b01e39a7c274aa31cb3021977e4" title="This function uses the I2C to read from a slave. " alt="" coords="686,88,757,114"/>
+<area shape="rect" id="node24" href="$_m_e_m24_l_c256_8c.html#a60e893d054fd5f658e293b37d15418d8" title="This function uses the I2C to send the write instruction to be able to write the address high and low..." alt="" coords="433,290,589,317"/>
+<area shape="rect" id="node25" href="$_m_e_m24_l_c256_8c.html#a71e141fd86a3183eca7403edc14472c1" title="checkStringSize" alt="" coords="663,290,780,317"/>
+<area shape="rect" id="node27" href="$_p_c_f8563_8c.html#ad13976ac4fde931463ac323ec53f618a" title="This function changes the time in the PCF8563 The variables sent, must be in decimal format..." alt="" coords="477,392,545,418"/>
+<area shape="rect" id="node28" href="$_p_c_f8563_8c.html#a19576cce4efaa050defb0c5d05b225b5" title="decToHex" alt="" coords="681,392,761,418"/>
+<area shape="rect" id="node30" href="$_p_c_f8563_8c.html#aedcfb270b8bd60f528327e7e0a6839f8" title="This function changes the date in the PCF8563 The variables sent, must be in decimal format..." alt="" coords="477,341,544,368"/>
+<area shape="rect" id="node32" href="$_p_c_f8563_8c.html#a679d05874f12d8e2c6523ab83866545b" title="This function changes the displayed time format. " alt="" coords="456,746,565,773"/>
+<area shape="rect" id="node36" href="$_pantalla_p_c_8c.html#ab393fc0f37b72a076a028b775ca1fba3" title="chat" alt="" coords="314,972,361,998"/>
+<area shape="rect" id="node37" href="$_pantalla_p_c_8c.html#a970e6afc92f5a3004cd6b53ccf27b531" title="escribirchat" alt="" coords="868,1202,957,1229"/>
+<area shape="rect" id="node38" href="$_u_a_r_t___tera_term_8c.html#ac418a8a52c0abc36a796b9facf0c2b08" title="longitud_Queue_TeraTerm" alt="" coords="424,1101,597,1128"/>
+<area shape="rect" id="node39" href="$_u_a_r_t___b_t_8c.html#abd3d108f506d7b316b1182bfe7b498d1" title="longitud_Queue_BT" alt="" coords="443,1050,578,1077"/>
+<area shape="rect" id="node41" href="$_u_a_r_t___tera_term_8c.html#a54cf2283a9d4cdc81a5da70ea400e110" title="uart_TeraTerm_echo" alt="" coords="651,1266,791,1293"/>
+<area shape="rect" id="node48" href="$_u_a_r_t___b_t_8c.html#aea4f4eb8d02605b769f3e7946e78a6df" title="uart_BT_echo" alt="" coords="670,1342,773,1369"/>
+<area shape="rect" id="node42" href="$_l_c_d_nokia5110_8c.html#a97149bc433e9fb593252bf82ee2ed1b0" title="limpiar_lcd" alt="" coords="871,1405,955,1432"/>
+<area shape="rect" id="node46" href="$_l_c_d_nokia5110_8c.html#aa03e6af9f447216023c4187aa65eb577" title="imprimir_lcd" alt="" coords="867,1354,959,1381"/>
+<area shape="rect" id="node43" href="$_l_c_d_nokia5110_8c.html#adc1fba60e5f678b64c83928f2acfdd92" title="LCDNokia_clear" alt="" coords="1071,1456,1186,1482"/>
+<area shape="rect" id="node45" href="$_global_functions_8c.html#aa7fa622ced5687f8351d589e9402b251" title="This function works as a delay according to the received value. " alt="" coords="1102,1405,1155,1432"/>
+<area shape="rect" id="node44" href="$_l_c_d_nokia5110_8c.html#af085490833b1a94ed83e54437d345317" title="LCDNokia_gotoXY" alt="" coords="1277,1380,1405,1406"/>
+<area shape="rect" id="node47" href="$_l_c_d_nokia5110_8c.html#a534c0c8c4ff8293daac8a069f5c42b38" title="LCDNokia_sendString" alt="" coords="1054,1354,1203,1381"/>
+</map>

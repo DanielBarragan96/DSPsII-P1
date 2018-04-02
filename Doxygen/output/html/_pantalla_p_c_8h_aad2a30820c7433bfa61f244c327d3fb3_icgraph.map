@@ -1,0 +1,15 @@
+<map id="ingresoDatos" name="ingresoDatos">
+<area shape="rect" id="node2" href="$_pantalla_p_c_8c.html#a3c1d9afa5dbe213b0fd0161dc42b7e07" title="LeerM" alt="" coords="283,5,341,32"/>
+<area shape="rect" id="node7" href="$_pantalla_p_c_8c.html#adc570c4364dc057c016d056873c7d7cf" title="EscribirM" alt="" coords="273,56,351,83"/>
+<area shape="rect" id="node8" href="$_pantalla_p_c_8c.html#abc6fb6b9be6b3a093c81504cdb6b62ef" title="Ehora" alt="" coords="284,107,340,133"/>
+<area shape="rect" id="node9" href="$_pantalla_p_c_8c.html#ad82df1986282060fcfd6b70787cca69a" title="Efecha" alt="" coords="281,157,343,184"/>
+<area shape="rect" id="node10" href="$_pantalla_p_c_8c.html#ae40e17da3d8c2c8eaf6a018c7818044c" title="Fhora" alt="" coords="155,208,209,235"/>
+<area shape="rect" id="node11" href="$_pantalla_p_c_8c.html#aa093d2b673d8b5fc9435c6d5a97b0426" title="Lhora" alt="" coords="155,259,209,285"/>
+<area shape="rect" id="node12" href="$_pantalla_p_c_8c.html#a1663c3720730ee9888f1f936b4113e78" title="Lfecha" alt="" coords="152,309,212,336"/>
+<area shape="rect" id="node13" href="$_pantalla_p_c_8h.html#ab393fc0f37b72a076a028b775ca1fba3" title="chat" alt="" coords="159,360,205,387"/>
+<area shape="rect" id="node3" href="$main_8c.html#a50dc2d7cdfa7404d23494d9536c7df73" title="menus_task" alt="" coords="412,208,505,235"/>
+<area shape="rect" id="node4" href="$init_8c.html#a2faa8000121a9774eefa457960d96464" title="spi_butons" alt="" coords="553,208,639,235"/>
+<area shape="rect" id="node5" href="$init_8h.html#a7ddfa05f6251ebe96b87c760bee8f009" title="This function initializes the necesary componentes of the Kinetis to start the program. " alt="" coords="687,259,761,285"/>
+<area shape="rect" id="node6" href="$main_8c.html#a840291bc02cba5474a4cb46a9b9566fe" title="main" alt="" coords="809,259,860,285"/>
+<area shape="rect" id="node14" href="$_pantalla_p_c_8c.html#ab73e3eae2a0c79aae5213c92b19c73bc" title="Comunicacion" alt="" coords="260,360,364,387"/>
+</map>

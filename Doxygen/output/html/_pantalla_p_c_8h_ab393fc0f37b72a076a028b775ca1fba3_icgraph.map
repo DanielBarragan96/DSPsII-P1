@@ -1,0 +1,7 @@
+<map id="chat" name="chat">
+<area shape="rect" id="node2" href="$init_8h.html#a7ddfa05f6251ebe96b87c760bee8f009" title="This function initializes the necesary componentes of the Kinetis to start the program. " alt="" coords="527,31,601,57"/>
+<area shape="rect" id="node4" href="$_pantalla_p_c_8c.html#ab73e3eae2a0c79aae5213c92b19c73bc" title="Comunicacion" alt="" coords="100,31,204,57"/>
+<area shape="rect" id="node3" href="$main_8c.html#a840291bc02cba5474a4cb46a9b9566fe" title="main" alt="" coords="649,31,700,57"/>
+<area shape="rect" id="node5" href="$main_8c.html#a50dc2d7cdfa7404d23494d9536c7df73" title="menus_task" alt="" coords="252,31,345,57"/>
+<area shape="rect" id="node6" href="$init_8c.html#a2faa8000121a9774eefa457960d96464" title="spi_butons" alt="" coords="393,81,479,108"/>
+</map>

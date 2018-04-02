@@ -1,0 +1,25 @@
+<map id="EscribirM" name="EscribirM">
+<area shape="rect" id="node2" href="$_pantalla_p_c_8c.html#ada50e0f0a062a6f29846e54de908579d" title="Funcion que manda las instrucciones al Teraterm de posicion y los datos a imprimir. " alt="" coords="565,56,639,83"/>
+<area shape="rect" id="node5" href="$_pantalla_p_c_8c.html#aad2a30820c7433bfa61f244c327d3fb3" title="Funcion de espera hasta que terminemos de ingresar los valores. " alt="" coords="159,157,258,184"/>
+<area shape="rect" id="node19" href="$_pantalla_p_c_8c.html#a1e5487ccbfd9937c98e1469cb1ef3ad0" title="valMemoria" alt="" coords="165,259,252,285"/>
+<area shape="rect" id="node20" href="$_u_a_r_t___tera_term_8c.html#a72c463ef5087a04f037509396a95bfd5" title="leerQueue_TeraTerm" alt="" coords="339,208,482,235"/>
+<area shape="rect" id="node22" href="$_m_e_m24_l_c256_8c.html#a60e893d054fd5f658e293b37d15418d8" title="This function uses the I2C to send the write instruction to be able to write the address high and low..." alt="" coords="131,309,287,336"/>
+<area shape="rect" id="node3" href="$_u_a_r_t___b_t_8c.html#a8640a657bf088088c40c870fe61122cc" title="uart_BT_send" alt="" coords="767,107,869,133"/>
+<area shape="rect" id="node4" href="$_u_a_r_t___tera_term_8c.html#a105aa654170c6f61464a7270e4858e06" title="uart_TeraTerm_send" alt="" coords="748,56,888,83"/>
+<area shape="rect" id="node6" href="$_u_a_r_t___tera_term_8c.html#ac384ba7da73ea822057203098dcdfb1e" title="uart_TeraTerm_receive" alt="" coords="335,157,487,184"/>
+<area shape="rect" id="node16" href="$_u_a_r_t___b_t_8c.html#a85ceb7990e003b6ff06df69e8f33ff38" title="uart_BT_receive" alt="" coords="353,107,468,133"/>
+<area shape="rect" id="node7" href="$_u_a_r_t___tera_term_8c.html#a286d8365e945dd17f0bba93dc6304134" title="uart_TeraTerm_init" alt="" coords="537,309,667,336"/>
+<area shape="rect" id="node9" href="$_pantalla_p_c_8c.html#a0131e785a6be3ffc3447f4c1ab5b8808" title="Retorna el valor de shor_time. " alt="" coords="552,107,652,133"/>
+<area shape="rect" id="node10" href="$_p_c_f8563_8c.html#a381ba82ca6de0e7750cb229140a5702f" title="This function updates the time variables. " alt="" coords="535,208,669,235"/>
+<area shape="rect" id="node13" href="$_pantalla_p_c_8c.html#aca2201e5bd38a0b64051ee90ce70dd64" title="Retorna el valor de shor_date. " alt="" coords="553,259,651,285"/>
+<area shape="rect" id="node14" href="$_p_c_f8563_8c.html#a7724c34082537abb9d4c1561532e3cad" title="This function updates the date variables. " alt="" coords="535,157,669,184"/>
+<area shape="rect" id="node8" href="$_u_a_r_t___tera_term_8c.html#abfc2ac7b03445c9da1693444596c1756" title="TeraTerm_UART_UserCallback" alt="" coords="717,309,919,336"/>
+<area shape="rect" id="node11" href="$_p_c_f8563_8c.html#aa92e63a9a9aba888fc755e1e6351b076" title="This function updates the time variables. " alt="" coords="784,208,852,235"/>
+<area shape="rect" id="node12" href="$_i2_c_8c.html#a60f94b01e39a7c274aa31cb3021977e4" title="This function uses the I2C to read from a slave. " alt="" coords="967,183,1037,209"/>
+<area shape="rect" id="node15" href="$_p_c_f8563_8c.html#ab1442246e787695970a58fd4d27d0c9c" title="This function updates the date variables. " alt="" coords="785,157,851,184"/>
+<area shape="rect" id="node17" href="$_u_a_r_t___b_t_8c.html#adefbaa2cea104c368c91242e01317945" title="uart_BT_init" alt="" coords="557,5,647,32"/>
+<area shape="rect" id="node18" href="$_u_a_r_t___b_t_8c.html#ab73a7238147cd08bb6282b0ebb2f2fe9" title="BT_UART_UserCallback" alt="" coords="737,5,899,32"/>
+<area shape="rect" id="node21" href="$_u_a_r_t___b_t_8c.html#ac406fff94c74793a72ebad3955af5236" title="leerQueue_BT" alt="" coords="359,259,463,285"/>
+<area shape="rect" id="node23" href="$_m_e_m24_l_c256_8c.html#a71e141fd86a3183eca7403edc14472c1" title="checkStringSize" alt="" coords="352,360,469,387"/>
+<area shape="rect" id="node24" href="$_i2_c_8c.html#a3c079b83239e54059aa817364cbb39bb" title="This function uses the I2C to write to a slave. " alt="" coords="371,309,451,336"/>
+</map>

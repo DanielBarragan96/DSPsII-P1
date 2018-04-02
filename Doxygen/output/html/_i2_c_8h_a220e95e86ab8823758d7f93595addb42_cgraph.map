@@ -1,0 +1,6 @@
+<map id="init_i2c" name="init_i2c">
+<area shape="rect" id="node2" href="$_i2_c_8c.html#a3e6e88f7d5427e2cb0dd3f4cb4c021e6" title="i2c_ReleaseBus" alt="" coords="129,5,245,32"/>
+<area shape="rect" id="node4" href="$_i2_c_8c.html#a8a7cd4beac6f5f2c723c33a54166b3dd" title="i2c_master_callback" alt="" coords="116,56,257,83"/>
+<area shape="rect" id="node5" href="$_i2_c_8c.html#a06a494be11506b49d987a3e7a7aed9cf" title="TimerCallback" alt="" coords="135,107,239,133"/>
+<area shape="rect" id="node3" href="$_i2_c_8c.html#a7f7816383300ac6172b76349792d6dde" title="i2c_release_bus_delay" alt="" coords="305,5,460,32"/>
+</map>

@@ -1,0 +1,6 @@
+<map id="clearflagB" name="clearflagB">
+<area shape="rect" id="node2" href="$_botones_8h.html#a1fb49c02d0a14d1ba84daa999a4c928a" title="Esta funcion regresa el valor del botón presionado. " alt="" coords="132,5,231,32"/>
+<area shape="rect" id="node3" href="$init_8c.html#a2faa8000121a9774eefa457960d96464" title="spi_butons" alt="" coords="279,5,364,32"/>
+<area shape="rect" id="node4" href="$init_8h.html#a7ddfa05f6251ebe96b87c760bee8f009" title="This function initializes the necesary componentes of the Kinetis to start the program. " alt="" coords="412,5,487,32"/>
+<area shape="rect" id="node5" href="$main_8c.html#a840291bc02cba5474a4cb46a9b9566fe" title="main" alt="" coords="535,5,585,32"/>
+</map>

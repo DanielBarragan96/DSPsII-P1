@@ -1,0 +1,5 @@
+<map id="LCDNokia_sendString" name="LCDNokia_sendString">
+<area shape="rect" id="node2" href="$_l_c_d_nokia5110_8c.html#adeb3d7e72d16d8e07997e78d2607e4d6" title="LCDNokia_sendChar" alt="" coords="203,5,345,32"/>
+<area shape="rect" id="node3" href="$_l_c_d_nokia5110_8c.html#ab9ec78e9bc7b791df3de6f1756ea1878" title="LCDNokia_writeByte" alt="" coords="393,5,535,32"/>
+<area shape="rect" id="node4" href="$_s_p_i_8c.html#aa39a86d78cf7a52c3669642002c7f06e" title="SPI_sendOneByte" alt="" coords="583,5,712,32"/>
+</map>

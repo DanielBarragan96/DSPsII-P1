@@ -1,0 +1,11 @@
+<map id="valMemoria" name="valMemoria">
+<area shape="rect" id="node2" href="$_pantalla_p_c_8c.html#a3c1d9afa5dbe213b0fd0161dc42b7e07" title="LeerM" alt="" coords="149,5,208,32"/>
+<area shape="rect" id="node7" href="$_pantalla_p_c_8c.html#adc570c4364dc057c016d056873c7d7cf" title="EscribirM" alt="" coords="140,56,217,83"/>
+<area shape="rect" id="node8" href="$_pantalla_p_c_8c.html#abc6fb6b9be6b3a093c81504cdb6b62ef" title="Ehora" alt="" coords="151,107,207,133"/>
+<area shape="rect" id="node9" href="$_pantalla_p_c_8c.html#ad82df1986282060fcfd6b70787cca69a" title="Efecha" alt="" coords="147,157,210,184"/>
+<area shape="rect" id="node10" href="$_pantalla_p_c_8c.html#ae40e17da3d8c2c8eaf6a018c7818044c" title="Fhora" alt="" coords="151,208,206,235"/>
+<area shape="rect" id="node3" href="$main_8c.html#a50dc2d7cdfa7404d23494d9536c7df73" title="menus_task" alt="" coords="265,107,359,133"/>
+<area shape="rect" id="node4" href="$init_8c.html#a2faa8000121a9774eefa457960d96464" title="spi_butons" alt="" coords="407,81,492,108"/>
+<area shape="rect" id="node5" href="$init_8h.html#a7ddfa05f6251ebe96b87c760bee8f009" title="This function initializes the necesary componentes of the Kinetis to start the program. " alt="" coords="540,107,615,133"/>
+<area shape="rect" id="node6" href="$main_8c.html#a840291bc02cba5474a4cb46a9b9566fe" title="main" alt="" coords="663,107,713,133"/>
+</map>

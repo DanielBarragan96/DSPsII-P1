@@ -1,0 +1,5 @@
+<map id="obtenerBoton" name="obtenerBoton">
+<area shape="rect" id="node2" href="$init_8c.html#a2faa8000121a9774eefa457960d96464" title="spi_butons" alt="" coords="152,5,237,32"/>
+<area shape="rect" id="node3" href="$init_8h.html#a7ddfa05f6251ebe96b87c760bee8f009" title="This function initializes the necesary componentes of the Kinetis to start the program. " alt="" coords="285,5,360,32"/>
+<area shape="rect" id="node4" href="$main_8c.html#a840291bc02cba5474a4cb46a9b9566fe" title="main" alt="" coords="408,5,459,32"/>
+</map>

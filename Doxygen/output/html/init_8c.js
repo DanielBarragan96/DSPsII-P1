@@ -1,0 +1,26 @@
+var init_8c =
+[
+    [ "BUFFER_SIZE", "init_8c.html#a6b20d41d6252e9871430c242cb1a56e7", null ],
+    [ "CLK0_TYPE", "init_8c.html#a57b23a4a08917373b6baaf44b7107627", null ],
+    [ "CLK_FREQ_HZ", "init_8c.html#a89bf1cb7ece86f095f3809b15a60e29c", null ],
+    [ "CRYSTAL_OSC", "init_8c.html#a0d4569f00223adb0ecf9698f4940b8d4", null ],
+    [ "EXAMPLE_I2C_MASTER_BASEADDR", "init_8c.html#a3bda53359dbbca01f799959322c59d35", null ],
+    [ "EXTERNAL_CLOCK", "init_8c.html#ae9d5d3d0882e298dbe8f4d5c5152c960", null ],
+    [ "FAST_IRC_FREQ", "init_8c.html#a6fd785ecf523a29f0e9e4d5f131f7435", null ],
+    [ "I2C_BAUDRATE", "init_8c.html#a31568ea8caf00a3ec699c01652c771d0", null ],
+    [ "I2C_CLK", "init_8c.html#ab5f0572ec4591ff6f7763fe13cdbe364", null ],
+    [ "I2C_DATA_LENGTH", "init_8c.html#a1d7cd4b7016538b77f3235ee3fcf06b3", null ],
+    [ "I2C_MASTER_CLK_FREQ", "init_8c.html#a39fad002cda68dc3820558e081c88304", null ],
+    [ "I2C_MASTER_CLK_SRC", "init_8c.html#af53cb05c42828cb3c17d3a63d0cdd362", null ],
+    [ "I2C_MASTER_SLAVE_ADDR_7BIT", "init_8c.html#a318fb36bf0713f72f1d4ff9647b88d78", null ],
+    [ "LOW_POWER", "init_8c.html#a35a08f33b3ae8fa5b76a37802c29bd05", null ],
+    [ "PLL0_PRDIV", "init_8c.html#ac800eac792d5caba48d8b41096789958", null ],
+    [ "PLL0_VDIV", "init_8c.html#aed05026be56da6ed2af1b3ee2e6b9eb6", null ],
+    [ "PLL_DISABLE", "init_8c.html#ad0f602a92b7758dc258bd2616eb383e8", null ],
+    [ "PLL_ENABLE", "init_8c.html#a9a5ad2abdb35e9541d6596722869220c", null ],
+    [ "SLOW_IRC", "init_8c.html#ac63a4efd5c025b6504d40ff059a664a4", null ],
+    [ "SLOW_IRC_FREQ", "init_8c.html#a1917266ca87eed67366cdc20bb1c5f0f", null ],
+    [ "initTasks", "init_8c.html#a7ddfa05f6251ebe96b87c760bee8f009", null ],
+    [ "menus_task", "init_8c.html#a50dc2d7cdfa7404d23494d9536c7df73", null ],
+    [ "spi_butons", "init_8c.html#a2faa8000121a9774eefa457960d96464", null ]
+];
