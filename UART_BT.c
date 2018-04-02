@@ -21,7 +21,7 @@
 #include "PCF8563.h"
 
 #define RX_RING_BUFFER_SIZE 20U
-#define ENTER 13
+#define ENTER 10
 #define QUEUE_END 160
 #define ESC 127
 
