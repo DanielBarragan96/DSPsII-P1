@@ -35,7 +35,7 @@ typedef struct
     uint8_t hour;
     uint8_t minute;
     uint8_t second;
-}Epoc;
+} Epoc;
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
@@ -43,7 +43,7 @@ typedef struct
  \brief This function initialize the PCF8563 clock
  \return void
  */
-void init_clk();
+void init_clk ();
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
@@ -52,7 +52,7 @@ void init_clk();
  \param[in]  newFormat indicate if we want to change the hour format
  \return the data from the memory address we give as a param.
  */
-uint8_t setTimeFormat(uint8_t newFormat);
+uint8_t setTimeFormat (uint8_t newFormat);
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
@@ -60,7 +60,7 @@ uint8_t setTimeFormat(uint8_t newFormat);
  \brief This function updates the time variables
  \return the direction of the first element of the time array.
  */
-uint8_t* getTime();
+uint8_t* getTime ();
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
@@ -68,7 +68,7 @@ uint8_t* getTime();
  \brief This function updates the time variables
  \return a string of the time.
  */
-uint8_t* generateTimeString();
+uint8_t* generateTimeString ();
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
@@ -76,7 +76,7 @@ uint8_t* generateTimeString();
  \brief This function updates the date variables
  \return the direction of the first element of the date array.
  */
-uint8_t* getDate();
+uint8_t* getDate ();
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
@@ -84,13 +84,13 @@ uint8_t* getDate();
  \brief This function updates the date variables
  \return a string of the date.
  */
-uint8_t* generateDateString();
+uint8_t* generateDateString ();
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
 /*!
  \brief This function changes the time in the PCF8563
-        The variables sent, must be in decimal format
+ The variables sent, must be in decimal format
  \param[in]  hours
  \param[in]  minutes
  \param[in]  seconds
@@ -102,7 +102,7 @@ uint8_t setTime (uint8_t hours, uint8_t minutes, uint8_t seconds);
 /********************************************************************************************/
 /*!
  \brief This function changes the date in the PCF8563
-        The variables sent, must be in decimal format
+ The variables sent, must be in decimal format
  \param[in]  day
  \param[in]  month
  \param[in]  year
@@ -116,6 +116,6 @@ uint8_t setDate (uint8_t day, uint8_t month, uint8_t year);
  \brief This function updates the date variables
  \return a string of the date.
  */
-Epoc getEpoc();
+Epoc getEpoc ();
 
 #endif /* PCF8563_H_ */
