@@ -31,6 +31,9 @@
 
 #define EVENT_UART0 (1<<0)
 #define EVENT_UART4 (1<<1)
+#define escBT 127
+#define ESC 27
+#define QUEUE_END 160
 
 SemaphoreHandle_t mutexLeerM;
 SemaphoreHandle_t mutexEscribirM;
@@ -58,6 +61,13 @@ void escribirP( UART_Type *base, sint8* Posicion, sint8* string ) {
 		uart_TeraTerm_send(base, (uint8_t*) Posicion);
 		uart_TeraTerm_send(base, (uint8_t*) string);
 	}
+}
+
+void escribirchat(sint8* Posicion, sint8* string ){
+    uart_BT_send(UART4, (uint8_t*) Posicion);
+    uart_BT_send(UART4, (uint8_t*) string);
+    uart_TeraTerm_send(UART0, (uint8_t*) Posicion);
+    uart_TeraTerm_send(UART0, (uint8_t*) string);
 }
 
 /*
@@ -341,15 +351,44 @@ void Comunicacion( UART_Type *uart ) {
 		xEventGroupSetBits(g_chat_events, EVENT_UART0);
 	else
 		xEventGroupSetBits(g_chat_events, EVENT_UART4);
+
+	chat(uart);
 }
 
-void chat() {
-	while (1)
-	{
-		xEventGroupWaitBits(g_chat_events,
-		EVENT_UART0 | EVENT_UART4,
-		pdTRUE, pdTRUE, portMAX_DELAY);
-	}
+void chat(UART_Type *uart) {
+    xEventGroupWaitBits(g_chat_events,
+                        EVENT_UART0 | EVENT_UART4,
+                        pdTRUE, pdTRUE, portMAX_DELAY);
+            escribirchat("\033[10;10H", "\033[2J");
+
+            uint8_t longitud;
+            bool bandera = true;
+            while(true == bandera){
+                escribirP(UART4,"\033[10;10H", "Usuario1: ");
+                escribirP(UART0,"\033[10;10H", "Usuario2: ");
+                ingresoDatos(uart);
+                if(UART0 == uart){
+                    longitud = longitud_Queue_TeraTerm();
+                    uint8_t g_tipStringT[longitud];
+                    for(uint8_t i=0;i<longitud;i++){
+                        g_tipStringT[i] = (leerQueue_TeraTerm() );
+                        bandera = (ESC == g_tipStringT[i])? false:bandera;
+                    }
+                    escribirP(UART4,"\033[11;10H", "Usuario2: ");
+                    escribirP(UART4,"\033[11;20H", (sint8*)g_tipStringT);
+                }
+                else{
+                    longitud = longitud_Queue_BT();
+                    uint8_t g_tipStringB[longitud];
+                    for(uint8_t i=0;i<longitud;i++){
+                        g_tipStringB[i] = (leerQueue_BT() );
+                        bandera = (escBT == g_tipStringB[i])? false:bandera;
+                    }
+                    escribirP(UART0,"\033[11;10H", "Usuario1: ");
+                    escribirP(UART0,"\033[11;20H", (sint8*)g_tipStringB);
+                }
+                vTaskDelay(pdMS_TO_TICKS(20));
+            }
 }
 
 void Eco( UART_Type *uart ) {
@@ -365,48 +404,22 @@ void Eco( UART_Type *uart ) {
 	xSemaphoreGive(mutexEco);
 }
 
-void Fecha_Hora() {
-	uint8 valor;
-	uint8 valor1;
-	uint8 string1[] = "  Hora"; /*! String to be printed in the LCD*/
-	uint8 string2[] = ":";
-	uint8 string3[] = "  Fecha";
-//	imprimir_lcd(string1, 2, 0);
-//	clearFlagM();  FLAG MAILBOX
-//			while(FALSE==getFlagM()){
-//				valor = PCF8563_getHours(PCF8563_configurationStruct());
-//				valor1 = formatoHora(valor);
-//				datos.hora =(valorMem(valor1));
-//				imprimir_lcd(datos.hora, 2, 1);
-//				imprimir_lcd(string2, 3, 1);
-//				valor = PCF8563_getMinutes(PCF8563_configurationStruct());
-//				datos.minutos =(valorMem(valor));
-//				imprimir_lcd(datos.minutos, 4, 1);
-//				imprimir_lcd(string2, 5, 1);
-//				valor = PCF8563_getSeconds(PCF8563_configurationStruct());
-//				datos.segundos =(valorMem(valor));
-//				imprimir_lcd(datos.segundos, 6, 1);
-//				imprimir_lcd(formato, 7, 1);
-//				imprimir_lcd(string3, 2, 2);
-//				valor = PCF8563_getDay(PCF8563_configurationStruct());
-//				datos.dia=(valorMem(valor));
-//				imprimir_lcd(datos.dia, 2, 3);
-//				imprimir_lcd("/", 3, 3);
-//				valor = PCF8563_getMonth(PCF8563_configurationStruct());
-//				datos.mes=(valorMem(valor));
-//				imprimir_lcd(datos.mes, 4, 3);
-//				imprimir_lcd( "/", 5, 3);
-//				valor = PCF8563_getYear(PCF8563_configurationStruct());
-//				datos.anio=(valorMem(valor));
-//				imprimir_lcd( datos.anio, 6, 3);
-//			}
-//		while(FALSE==getFlagM());
-	while (1)
-	{
-		limpiar_lcd();
-		imprimir_lcd(string1, 2, 0);
-		vTaskDelay(pdMS_TO_TICKS(1000));
-	}
+void Fecha_Hora()
+{
+    uint8 string1[] = "  Hora"; /*! String to be printed in the LCD*/
+    uint8 string3[] = "  Fecha";
+
+
+
+    while (1)
+    {
+        limpiar_lcd();
+        imprimir_lcd(string1, 2, 0);
+        imprimir_lcd(getTime(), 2, 1);
+        imprimir_lcd(string3, 2, 2);
+        imprimir_lcd(getTime(), 2, 3);
+        vTaskDelay(pdMS_TO_TICKS(1000));
+    }
 }
 
 /*
@@ -420,7 +433,6 @@ uint8 valMemoria() {
 		variable = variable -7;
 	else if (variable >= 48 && variable <= 57)
 		variable = variable - 48;
-	else variable = variable;
 
 	return variable ;
 }

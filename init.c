@@ -26,7 +26,7 @@
 #include "LCDNokia5110.h"
 #include "MEM24LC256.h"
 #include "PCF8563.h"
-
+#include "Botones.h"
 
 
 /* I2C source clock */
@@ -56,12 +56,26 @@
 
 void menus_task(void* args);
 
+void spi_butons()
+{
+    Butons bottom;
+    while(1)
+    {
+        if(getflagB())
+            bottom = obtenerBoton();
+        vTaskDelay(pdMS_TO_TICKS(100));
+    }
+}
+
+void menus_task(void* args);
+
 void initTasks ()
 {
 	xTaskCreate(menus_task, "Menus PC", 110, (void*) UART0, configMAX_PRIORITIES-1, NULL);
 	xTaskCreate(menus_task, "Menus BT", 110, (void*) UART4, configMAX_PRIORITIES-1, NULL);
 	xTaskCreate(Fecha_Hora, "Fecha_LCD", 110, NULL, configMAX_PRIORITIES-2, NULL);
 	xTaskCreate(chat, "ChatTerminales", 110, NULL, configMAX_PRIORITIES-2, NULL);
+	xTaskCreate(spi_butons, "Butons", 110, NULL, configMAX_PRIORITIES-1, NULL);
 	initmutex();
 	vTaskStartScheduler();
 

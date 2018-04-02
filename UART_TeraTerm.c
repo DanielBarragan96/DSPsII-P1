@@ -22,6 +22,7 @@
 
 #define RX_RING_BUFFER_SIZE 20U
 #define ENTER 13
+#define QUEUE_END 160
 #define ESC 27
 
 /*******************************************************************************
@@ -41,7 +42,6 @@ QueueHandle_t g_uart0_queue;
 /* UART user callback */
 void TeraTerm_UART_UserCallback( UART_Type *base, uart_handle_t *handle,
 		status_t status, void *userData ) {
-	userData = userData;
 
 	if (kStatus_UART_TxIdle == status)
 	{
@@ -125,25 +125,25 @@ void uart_TeraTerm_receive() {
 }
 
 void uart_TeraTerm_echo() {
-	uint8_t receiveData[32];
-	uint8_t i = 0;
-	uart_transfer_t xfer;
-	limpiar_lcd();
-	xfer.data = receiveData;
-	xfer.dataSize = sizeof(receiveData) / sizeof(receiveData[0]);
-	rxOnGoing = true;
-	UART_TransferReceiveNonBlocking(UART0, &g_uartHandle, &xfer,
-			&xfer.dataSize);
+    uart_TeraTerm_init();
 
-	while (rxOnGoing)
-	{
+    uint8_t receiveData[32];
+    uint8_t i = 0;
+    uart_transfer_t xfer;
+    limpiar_lcd();
+    xfer.data = receiveData;
+    xfer.dataSize = sizeof(receiveData) / sizeof(receiveData[0]);
+    rxOnGoing = true;
+    UART_TransferReceiveNonBlocking(UART0, &g_uartHandle, &xfer,
+            &xfer.dataSize);
 
-		if (ESC == receiveData[i]) rxOnGoing = 0;
-		i == 31 ? i = 0 : i++;
-		imprimir_lcd(xfer.data, 2, 0);
-	}
+    while (rxOnGoing)
+    {
+        if (ESC == receiveData[i]) rxOnGoing = 0;
 
-
+        imprimir_lcd(xfer.data, 2, 0);
+        i == 31 ? i = 0 : i++;
+    }
 }
 
 uint8_t leerQueue_TeraTerm() {
@@ -163,6 +163,10 @@ uint8_t leerQueue_TeraTerm() {
 
 	else
 		return mensaje;
+}
 
+uint8_t longitud_Queue_TeraTerm(){
+    uint8_t valor = uxQueueMessagesWaiting(g_uart0_queue);
+    return valor;
 }
 
