@@ -28,7 +28,6 @@
 #include "PCF8563.h"
 #include "Botones.h"
 
-
 /* I2C source clock */
 #define I2C_MASTER_CLK_SRC I2C0_CLK_SRC
 #define I2C_MASTER_CLK_FREQ CLOCK_GetFreq(I2C0_CLK_SRC)
@@ -54,39 +53,26 @@
 #define BUFFER_SIZE 8
 #define I2C_CLK 12000000U
 
-void menus_task(void* args);
-
-/*Funcion para obtener el valor del boton*/
-void spi_butons()
-{
-    Butons bottom;
-    while(1)
-    {
-        if(getflagB())
-            bottom = obtenerBoton();
-        vTaskDelay(pdMS_TO_TICKS(100));
-    }
-}
-
-void menus_task(void* args);
+void menus_task (void* args);
 
 /*Creamos las tareas a utiliar
  * menus_task va a ser la tarea principal para controlar los menus
  * fecha_hora es la tarea para imprimir constantemente estos valores en el LCD_Nokia
  * butons es la tarea para editar los valores de fecha y hora mediante push buttons
  * inicializamos los mutex que utilizamos
-*/
+ */
 void initTasks ()
 {
-	xTaskCreate(menus_task, "Menus PC", 110, (void*) UART0, configMAX_PRIORITIES-1, NULL);
-	xTaskCreate(menus_task, "Menus BT", 110, (void*) UART4, configMAX_PRIORITIES-1, NULL);
-	xTaskCreate(Fecha_Hora, "Fecha_LCD", 110, NULL, configMAX_PRIORITIES-2, NULL);
-	xTaskCreate(chat, "ChatTerminales", 110, NULL, configMAX_PRIORITIES-2, NULL);
-	xTaskCreate(spi_butons, "Butons", 110, NULL, configMAX_PRIORITIES-1, NULL);
-	initmutex();
-	vTaskStartScheduler();
+    xTaskCreate (menus_task, "Menus PC", 110, (void*) UART0,
+            configMAX_PRIORITIES - 1, NULL);
+    xTaskCreate (menus_task, "Menus BT", 110, (void*) UART4,
+            configMAX_PRIORITIES - 1, NULL);
+    xTaskCreate (Fecha_Hora, "Fecha_LCD", 110, NULL, configMAX_PRIORITIES - 2,
+            NULL);
+    xTaskCreate (chat, "ChatTerminales", 110, NULL, configMAX_PRIORITIES - 2,
+            NULL);
+    initmutex ();
+    vTaskStartScheduler ();
 
 }
-
-
 

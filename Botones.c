@@ -32,13 +32,13 @@ void PORTC_IRQHandler (void)
     { 0 };
 
     /*Se leen los pines y se guardan en la estructura*/
-    numero.bitField.bit0 = GPIO_PinRead (GPIOC, BIT5);//B0
-    numero.bitField.bit1 = GPIO_PinRead (GPIOC, BIT7);//B1
-    numero.bitField.bit2 = GPIO_PinRead (GPIOC, BIT0);//B2
+    numero.bitField.bit0 = GPIO_PinRead (GPIOC, BIT5); //B0
+    numero.bitField.bit1 = GPIO_PinRead (GPIOC, BIT7); //B1
+    numero.bitField.bit2 = GPIO_PinRead (GPIOC, BIT0); //B2
 
     uint32 x = numero.allBits;
 
-    uint32_t bits_irq = PORT_GetPinsInterruptFlags(PORTC);
+    uint32_t bits_irq = PORT_GetPinsInterruptFlags (PORTC);
 
     /*Dependiendo del botón, la funcion regresará 0,1,2,3,4 or 5*/
     if (BOTON_B0_MASK & x)
@@ -60,7 +60,7 @@ void PORTC_IRQHandler (void)
     {
         valorBoton = NO_BUTTON;
     }
-    bits_irq = PORT_GetPinsInterruptFlags(PORTC);
+    bits_irq = PORT_GetPinsInterruptFlags (PORTC);
     setflagB ();
 }
 
@@ -85,9 +85,9 @@ void inicializacionBotones ()
     GPIO_PinInit (GPIOC, BIT0, &button_config_gpio);
 
     /* Init input switch GPIO. */
-    PORT_SetPinInterruptConfig(PORTC, BIT5, kPORT_InterruptRisingEdge);
-    PORT_SetPinInterruptConfig(PORTC, BIT7, kPORT_InterruptRisingEdge);
-    PORT_SetPinInterruptConfig(PORTC, BIT0, kPORT_InterruptRisingEdge);
+    PORT_SetPinInterruptConfig (PORTC, BIT5, kPORT_InterruptRisingEdge);
+    PORT_SetPinInterruptConfig (PORTC, BIT7, kPORT_InterruptRisingEdge);
+    PORT_SetPinInterruptConfig (PORTC, BIT0, kPORT_InterruptRisingEdge);
     /*Se habilitan sus interrupciones*/
     NVIC_EnableIRQ (PORTC_IRQn);
     NVIC_SetPriority (PORTC_IRQn, 2);
