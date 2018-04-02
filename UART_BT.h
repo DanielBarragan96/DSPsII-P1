@@ -20,5 +20,6 @@ void uart_BT_receive();
 void uart_BT_echo();
 uint8_t leerQueue_BT();
 void uart_BT_send(UART_Type *base, uint8_t* string);
+uint8_t longitud_Queue_BT();
 
 #endif /* UART_BT_H_ */

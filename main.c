@@ -61,7 +61,7 @@
 
 void menus_task(void* args)
 {
-    init_clk ();
+    //init_clk ();
     UART_Type * uart = (UART_Type *) args;//elegir a cuál UART enviar
 
 	void (*Pantallas[9])(UART_Type *) = {LeerM, EscribirM, Ehora,
