@@ -95,9 +95,9 @@ void i2c_ReleaseBus ()
 
     pin_config.pinDirection = kGPIO_DigitalOutput;
     pin_config.outputLogic = 1U;
-    CLOCK_EnableClock (kCLOCK_PortE);
-    PORT_SetPinConfig (PORTE, 24, &i2c_pin_config);
-    PORT_SetPinConfig (PORTE, 25, &i2c_pin_config);
+//    CLOCK_EnableClock (kCLOCK_PortE);
+//    PORT_SetPinConfig (PORTE, 24, &i2c_pin_config);
+//    PORT_SetPinConfig (PORTE, 25, &i2c_pin_config);
 
     GPIO_PinInit (GPIOE, 24, &pin_config);
     GPIO_PinInit (GPIOE, 25, &pin_config);
@@ -149,8 +149,6 @@ int8_t init_i2c ()
     i2c_ReleaseBus ();
     BOARD_InitDebugConsole ();
     //initialize I2C for using the I2C
-    CLOCK_EnableClock (kCLOCK_PortB);
-    CLOCK_EnableClock (kCLOCK_PortE);
     CLOCK_EnableClock (kCLOCK_I2c0);
 
     //I2C configuration

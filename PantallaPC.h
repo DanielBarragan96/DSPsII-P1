@@ -163,6 +163,7 @@ void Fecha_Hora();
      \return void
  */
 void initmutex();
+
 void chat(UART_Type *uart);
 
 //
