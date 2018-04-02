@@ -56,25 +56,33 @@
 #include "init.h"
 #include "timers.h"
 
-
+/*Valor que retorn el TeraTerm al no presionar ninguna tecla */
 #define nullValue 208
 
+/*
+ * Utilizando un arreglo de funciones el cual contiene la funcion correspondiente a los
+ * cinco menus disponibles, mediante su apuntador a funciones ingresamos a cada manu segun
+ * sea el valor ingresado ya se por medio del TeraTerm o BT(BlueTooth)
+ */
 void menus_task(void* args)
 {
-    //init_clk ();
-    UART_Type * uart = (UART_Type *) args;//elegir a cuál UART enviar
+    init_clk ();
+    /*Va a contener el valor de las UARTs a utilizar (UART0, UART4) */
+    UART_Type * uart = (UART_Type *) args;
 
 	void (*Pantallas[9])(UART_Type *) = {LeerM, EscribirM, Ehora,
 			Efecha, Fhora, Lhora, Lfecha, Comunicacion, Eco };
-	//Arreglo de funciones para los distintos menus
+
+	/*Imprimimos el menu inicial en las dos terminales */
     MenuInicial(uart);
 
     while(1){
+    /*Se obtiene el valor del Menu seleccionado */
     	uint8_t x = escogerMenu(uart);
 
-        if((0!=x) && (nullValue!=x)){//el 208 es un valor que recibe al no presionar nada, si presionamos ENTER no hacemos nada
-            Pantallas[x-1](uart);//Entramos al menu seleccinado
-            MenuInicial(uart);//Salimos del menu y volvemos al inicial
+        if((0!=x) && (nullValue!=x)){
+            Pantallas[x-1](uart);
+            MenuInicial(uart); //Salimos del menu seleccionado y volvemos al inicial
         }
         vTaskDelay(pdMS_TO_TICKS(10));
     }
@@ -83,11 +91,11 @@ void menus_task(void* args)
 int main(void) {
 
   	/* Init board hardware. */
-    //BOARD_InitBootPins();
     BOARD_InitBootClocks();
     BOARD_InitBootPeripherals();
   	/* Init FSL debug console. */
     BOARD_InitDebugConsole();
+    /*Creamos tareas e inicializamos el scheduler */
     initTasks();
 
      return 0;

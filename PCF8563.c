@@ -9,6 +9,8 @@
 #include "I2C.h"
 #include "fsl_i2c.h"
 #include "fsl_debug_console.h"
+#include "FreeRTOS.h"
+#include "semphr.h"
 
 //array to store readed values of time
 uint8_t time[THREE_BYTE];
@@ -20,6 +22,7 @@ uint8_t g_time_s[11];
 uint8_t g_date_s[8];
 //format en 0 es 24, en 1 es am/pm
 volatile static uint8_t format;
+SemaphoreHandle_t mutex_time;
 
 //this function changes the variable val from decimal format to hexadecimal
 uint16_t decToHex(uint8_t val)
@@ -39,6 +42,7 @@ void init_clk ()
     static uint8_t buffer = 0x00;//write cero in register 0 to start PCF8563
     i2c_writes (PCF8563_SLAVE_ADDRESS, CLK_REGISTER_ADRESS, ONE_BYTE, &buffer,
             PCF_SUBADRESS_SIZE);
+    mutex_time = xSemaphoreCreateMutex();
     return;
 }
 
@@ -46,7 +50,9 @@ uint8_t setTimeFormat(uint8_t newFormat)
 {
     if(1 == newFormat)
     {//toggle format value
+        xSemaphoreTake(mutex_time, portMAX_DELAY);
         format ^= 0x01;
+        xSemaphoreGive(mutex_time);
         return 0;
     }//if other value than one was sent
     return -1;
@@ -61,6 +67,7 @@ uint8_t* getTime ()
 
 uint8_t* generateTimeString()
 {
+    xSemaphoreTake(mutex_time, portMAX_DELAY);
     //update time variables
     getTime();
     //change hours to decimal format
@@ -103,6 +110,7 @@ uint8_t* generateTimeString()
         g_time_s[8] = ' ';
         //indicate end of the string
         g_time_s[11] = '\0';
+        xSemaphoreGive(mutex_time);
      //return direction of the first element of the string
      return &g_time_s[0];
 }
@@ -152,13 +160,16 @@ uint8_t* generateDateString()
 uint8_t setTime (uint8_t hours, uint8_t minutes, uint8_t seconds)
 {
     uint8_t buffer[3];
+    xSemaphoreTake(mutex_time, portMAX_DELAY);
     //change time variables sent to hex format
     buffer[0] = decToHex(seconds);
     buffer[1] = decToHex(minutes);
     buffer[2] = decToHex(hours);
     //update the time using I2C
-    return i2c_writes (PCF8563_SLAVE_ADDRESS, PCF8563_TIME_ADDRESS, THREE_BYTE,
+    uint8_t val = i2c_writes (PCF8563_SLAVE_ADDRESS, PCF8563_TIME_ADDRESS, THREE_BYTE,
             &buffer[0], PCF_SUBADRESS_SIZE);
+    xSemaphoreGive(mutex_time);
+    return val;
 }
 
 uint8_t setDate (uint8_t day, uint8_t month, uint8_t year)

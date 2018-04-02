@@ -121,9 +121,8 @@ static const uint8_t ASCII[][5] =
 ,{0x78, 0x46, 0x41, 0x46, 0x78} // 7f
 };
 
-
+/* Inicializamos puertos y configuramos pines para el LCD */
 void LCDNokia_init(void) {
-	CLOCK_EnableClock(kCLOCK_PortD);
 
 	port_pin_config_t config_lcd = { kPORT_PullDisable, kPORT_SlowSlewRate,
 					kPORT_PassiveFilterDisable, kPORT_OpenDrainDisable,

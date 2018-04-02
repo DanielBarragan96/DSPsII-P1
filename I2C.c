@@ -64,7 +64,7 @@ i2c_master_handle_t g_m_handle;
 //indicate if the I2C isn't responding
 volatile bool g_i2c_nw = false;
 //mutex to protect the I2C
-SemaphoreHandle_t mutex;
+SemaphoreHandle_t mutex_i2c;
 //timer to indicate if the I2C isn't working
 TimerHandle_t g_timer;
 
@@ -95,39 +95,38 @@ void i2c_ReleaseBus ()
 
     pin_config.pinDirection = kGPIO_DigitalOutput;
     pin_config.outputLogic = 1U;
-//    CLOCK_EnableClock (kCLOCK_PortE);
-//    PORT_SetPinConfig (PORTE, 24, &i2c_pin_config);
-//    PORT_SetPinConfig (PORTE, 25, &i2c_pin_config);
+    PORT_SetPinConfig (PORTB, 19, &i2c_pin_config);
+    PORT_SetPinConfig (PORTB, 18, &i2c_pin_config);
 
-    GPIO_PinInit (GPIOE, 24, &pin_config);
-    GPIO_PinInit (GPIOE, 25, &pin_config);
+    GPIO_PinInit (GPIOB, 19, &pin_config);
+    GPIO_PinInit (GPIOB, 18, &pin_config);
 
-    GPIO_PinWrite (GPIOE, 25, 0U);
+    GPIO_PinWrite (GPIOB, 18, 0U);
     i2c_release_bus_delay ();
 
     for (i = 0; i < 9; i++)
     {
-        GPIO_PinWrite (GPIOE, 24, 0U);
+        GPIO_PinWrite (GPIOB, 19, 0U);
         i2c_release_bus_delay ();
 
-        GPIO_PinWrite (GPIOE, 25, 1U);
+        GPIO_PinWrite (GPIOB, 18, 1U);
         i2c_release_bus_delay ();
 
-        GPIO_PinWrite (GPIOE, 24, 1U);
+        GPIO_PinWrite (GPIOB, 19, 1U);
         i2c_release_bus_delay ();
         i2c_release_bus_delay ();
     }
 
-    GPIO_PinWrite (GPIOE, 24, 0U);
+    GPIO_PinWrite (GPIOB, 19, 0U);
     i2c_release_bus_delay ();
 
-    GPIO_PinWrite (GPIOE, 25, 0U);
+    GPIO_PinWrite (GPIOB, 18, 0U);
     i2c_release_bus_delay ();
 
-    GPIO_PinWrite (GPIOE, 24, 1U);
+    GPIO_PinWrite (GPIOB, 19, 1U);
     i2c_release_bus_delay ();
 
-    GPIO_PinWrite (GPIOE, 25, 1U);
+    GPIO_PinWrite (GPIOB, 18, 1U);
     i2c_release_bus_delay ();
 }
 
@@ -147,7 +146,6 @@ int8_t init_i2c ()
 {
     /* Init FSL debug console. */
     i2c_ReleaseBus ();
-    BOARD_InitDebugConsole ();
     //initialize I2C for using the I2C
     CLOCK_EnableClock (kCLOCK_I2c0);
 
@@ -184,9 +182,9 @@ int8_t init_i2c ()
             pvTimerID, pxCallbackFunction);
 
     //create mutex
-    mutex = xSemaphoreCreateMutex();
+    mutex_i2c = xSemaphoreCreateMutex();
     //start mutex in signilized status
-    xSemaphoreGive(mutex);
+    xSemaphoreGive(mutex_i2c);
 
     return 0;
 }
@@ -205,7 +203,7 @@ int8_t i2c_read (uint8_t slaveAdress, uint8_t subaddress, uint8_t dataSize,
     masterXfer.flags = kI2C_TransferDefaultFlag;
 
     //tkae the I2C mutex
-    xSemaphoreTake(mutex, portMAX_DELAY);
+    xSemaphoreTake(mutex_i2c, portMAX_DELAY);
     // Get default configuration for slave.
     i2c_master_config_t masterConfig;
     I2C_MasterGetDefaultConfig (&masterConfig);
@@ -224,7 +222,7 @@ int8_t i2c_read (uint8_t slaveAdress, uint8_t subaddress, uint8_t dataSize,
     I2C_MasterStop (I2C0);
     g_MasterCompletionFlag = false;
     //give I2C mutex
-    xSemaphoreGive(mutex);
+    xSemaphoreGive(mutex_i2c);
     //handle if the I2C didn't worked as desired
     if (g_i2c_nw)
     {
@@ -249,7 +247,7 @@ int8_t i2c_writes (uint8_t slaveAdress, uint8_t subaddress, uint8_t dataSize,
     masterXfer.flags = kI2C_TransferDefaultFlag;
 
     //tkae the I2C mutex
-    xSemaphoreTake(mutex, portMAX_DELAY);
+    xSemaphoreTake(mutex_i2c, portMAX_DELAY);
     // Get default configuration for master.
     i2c_master_config_t masterConfig;
     I2C_MasterGetDefaultConfig (&masterConfig);
@@ -268,7 +266,7 @@ int8_t i2c_writes (uint8_t slaveAdress, uint8_t subaddress, uint8_t dataSize,
     I2C_MasterStop (I2C0);
     g_MasterCompletionFlag = false;
     //give I2C mutex
-    xSemaphoreGive(mutex);
+    xSemaphoreGive(mutex_i2c);
     //handle if the I2C didn't worked as desired
     if (g_i2c_nw)
     {

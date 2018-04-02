@@ -56,6 +56,7 @@
 
 void menus_task(void* args);
 
+/*Funcion para obtener el valor del boton*/
 void spi_butons()
 {
     Butons bottom;
@@ -69,6 +70,12 @@ void spi_butons()
 
 void menus_task(void* args);
 
+/*Creamos las tareas a utiliar
+ * menus_task va a ser la tarea principal para controlar los menus
+ * fecha_hora es la tarea para imprimir constantemente estos valores en el LCD_Nokia
+ * butons es la tarea para editar los valores de fecha y hora mediante push buttons
+ * inicializamos los mutex que utilizamos
+*/
 void initTasks ()
 {
 	xTaskCreate(menus_task, "Menus PC", 110, (void*) UART0, configMAX_PRIORITIES-1, NULL);

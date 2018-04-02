@@ -21,7 +21,7 @@
 #include "PCF8563.h"
 
 #define RX_RING_BUFFER_SIZE 20U
-#define ENTER 10
+#define ENTER 13
 #define QUEUE_END 160
 #define ESC 127
 
@@ -38,16 +38,18 @@ QueueHandle_t g_uart4_queue;
 
 /*******************************************************************************
  * Code
-******************************************************************************/
+ ******************************************************************************/
 /* UART user callback */
 
 void BT_UART_UserCallback( UART_Type *base, uart_handle_t *handle,
 		status_t status, void *userData ) {
 
+    BaseType_t pxHigherPriorityTaskWoken;
 	if (kStatus_UART_TxIdle == status)
 	{
 		txBuffer_Full = false;
 		tx_OnGoing = false;
+//		xEventGroupSetBitsFromISR(xEventGroup, TX_FINISHED, pxHigherPriorityTaskWoken);
 	}
 
 	if (kStatus_UART_RxIdle == status)
@@ -57,11 +59,9 @@ void BT_UART_UserCallback( UART_Type *base, uart_handle_t *handle,
 	}
 }
 
-void PORTA_IRQHandler() {
-
-	PORT_ClearPinsInterruptFlags(PORTA, 1 << 4);
-}
-
+/*Inicializamos UART4
+ * Creamos su Handle y la Queue
+*/
 void uart_BT_init() {
 
 	uart_config_t config;
@@ -73,8 +73,10 @@ void uart_BT_init() {
 	UART_Init(UART4, &config, CLOCK_GetFreq(UART4_CLK_SRC));
 	UART_TransferCreateHandle(UART4, &g_UartHandle, BT_UART_UserCallback, NULL);
 	g_uart4_queue = xQueueCreate(32, sizeof(UART_MailBoxType));
+
 }
 
+/*Funcion que envia por la terminal un string que recibe como parametro*/
 void uart_BT_send( UART_Type *base, uint8_t* string ) {
 
 	while (*string)    //se transmiten los datos hasta llegar al caracter nulo
@@ -90,15 +92,18 @@ void uart_BT_send( UART_Type *base, uint8_t* string ) {
 		}
 		string++;
 	}
-
 }
 
+/*Funcion que recibe los datos de la terminal Bluetooth
+ * Al final se guardan uno por uno los datos introduciods a una Queue esto
+ * simulando un push() para una FIFO
+ */
 void uart_BT_receive() {
 	uart_BT_init();
 
-	uint8_t receiveData[32] = {0};
+	uint8_t receiveData[32] = { 0 };
 
-    uint8_t i = 0;
+	uint8_t i = 0;
 	uart_transfer_t xfer;
 	xfer.data = (uint8_t*) receiveData;
 	xfer.dataSize = sizeof(receiveData) / sizeof(receiveData[0]);
@@ -108,74 +113,72 @@ void uart_BT_receive() {
 
 	while (rx_OnGoing)
 	{
-		if (ENTER == receiveData[i])
-		    rx_OnGoing = 0;
-		if(getShowTime())
-            escribirP(UART0, "\033[11;10H", (sint8 *) generateTimeString());
-        else if(getShowDate())
-            escribirP(UART0, "\033[11;10H", (sint8 *) generateDateString());
+		if (getShowTimeBT())
+			escribirP(UART4, "\033[11;10H", (sint8 *) generateTimeString());
+		else if (getShowDateBT())
+			escribirP(UART4, "\033[11;10H", (sint8 *) generateDateString());
+
+        if (ENTER == receiveData[i]) rx_OnGoing = 0;
 		i == 31 ? i = 0 : i++;
-		vTaskDelay(pdMS_TO_TICKS(20));
+		vTaskDelay(pdMS_TO_TICKS(10));
 	}
 
 	i = 0;
 	while (ENTER != receiveData[i] && i < 32)
-    {
-        UART_MailBoxType msg;
-        msg.mailBox = receiveData[i];
-        msg.flagEnter = TRUE;
-        xQueueSend(g_uart4_queue, &msg, portMAX_DELAY);
-        i++;
-    }
+	{
+		UART_MailBoxType msg;
+		msg.mailBox = receiveData[i];
+		msg.flagEnter = TRUE;
+		xQueueSend(g_uart4_queue, &msg, portMAX_DELAY);
+		i++;
+	}
 }
 
-void uart_BT_echo(){
-    uart_BT_init();
+/*Funcion que imprime en el LCD cualquier valor introducido a la UART */
+void uart_BT_echo() {
+	uart_BT_init();
 
-    uint8_t receiveData[32];
-        uint8_t i = 0;
-        uart_transfer_t xfer;
-        limpiar_lcd();
-        xfer.data = receiveData;
-        xfer.dataSize = sizeof(receiveData) / sizeof(receiveData[0]);
-        rx_OnGoing = true;
-        UART_TransferReceiveNonBlocking(UART4, &g_UartHandle, &xfer,
-                &xfer.dataSize);
+	uint8_t receiveData[32];
+	uint8_t i = 0;
+	uart_transfer_t xfer;
+	limpiar_lcd();
+	xfer.data = receiveData;
+	xfer.dataSize = sizeof(receiveData) / sizeof(receiveData[0]);
+	rx_OnGoing = true;
+	UART_TransferReceiveNonBlocking(UART4, &g_UartHandle, &xfer,
+			&xfer.dataSize);
 
-        while (rx_OnGoing)
-        {
+	while (rx_OnGoing)
+	{
 
-            if (ESC == receiveData[i])
-                rx_OnGoing = 0;
+		if (ESC == receiveData[i]) rx_OnGoing = 0;
 
-            imprimir_lcd(xfer.data, 2, 0);
-            i == 31 ? i = 0 : i++;
-        }
+		imprimir_lcd(xfer.data, 2, 0);
+		i == 31 ? i = 0 : i++;
+	}
 }
 
-
+/*Obtenemos un valor de la Queue, simula una funcion pop() para una FIFO */
 uint8_t leerQueue_BT() {
-    UART_MailBoxType msgRead;
-    msgRead.mailBox = 0;
-    uint8_t mensaje;
+	UART_MailBoxType msg;
+	msg.mailBox = 0;
+	uint8_t mensaje;
 
-    xQueueReceive(g_uart4_queue, &msgRead, pdMS_TO_TICKS(100));
-//    xQueueGenericReceive(g_uart4_queue, &msgRead, pdMS_TO_TICKS(100), pdFALSE);
-    mensaje = msgRead.mailBox;
-    msgRead.flagEnter = false;
+	xQueueGenericReceive(g_uart4_queue, &msg, pdMS_TO_TICKS(10), pdFALSE);
+	mensaje = msg.mailBox;
+	msg.flagEnter = false;
 
-    if (0 == mensaje)
-    {
-        return QUEUE_END;
+	if (0 == mensaje)
+	{
+		return QUEUE_END;
+	}
 
-    }
-
-    else
-        return mensaje;
+	else
+		return mensaje;
 }
 
-uint8_t longitud_Queue_BT()
-{
-    uint8_t valor = uxQueueMessagesWaiting(g_uart4_queue);
-        return valor;
+/*Obtenemos el valor de la longitud de nuestra Queue */
+uint8_t longitud_Queue_BT() {
+	uint8_t valor = uxQueueMessagesWaiting(g_uart4_queue);
+	return valor;
 }
