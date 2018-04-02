@@ -27,6 +27,15 @@
 //PCF8563 date variables adress
 #define PCF8563_DATE_ADDRESS 0x05
 
+typedef struct
+{
+    uint8_t day;
+    uint8_t month;
+    uint8_t year;
+    uint8_t hour;
+    uint8_t minute;
+    uint8_t second;
+}Epoc;
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
@@ -100,5 +109,13 @@ uint8_t setTime (uint8_t hours, uint8_t minutes, uint8_t seconds);
  \return the data from the memory address we give as a param.
  */
 uint8_t setDate (uint8_t day, uint8_t month, uint8_t year);
+/********************************************************************************************/
+/********************************************************************************************/
+/********************************************************************************************/
+/*!
+ \brief This function updates the date variables
+ \return a string of the date.
+ */
+Epoc getEpoc();
 
 #endif /* PCF8563_H_ */

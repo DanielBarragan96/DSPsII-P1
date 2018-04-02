@@ -20,9 +20,9 @@
 #define BOTON_B0_MASK (1)
 #define BOTON_B1_MASK (2)
 #define BOTON_B2_MASK (4)
-#define BOTON_B3_MASK (8)
-#define BOTON_B4_MASK (16)
-#define BOTON_B5_MASK (32)
+
+#define HOUR_LIMIT 24
+#define MINUTE_LIMIT 60
 
 typedef enum
 {

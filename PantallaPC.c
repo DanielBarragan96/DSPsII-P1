@@ -28,6 +28,7 @@
 
 #include "MEM24LC256.h"
 #include "PCF8563.h"
+#include "Botones.h"
 
 #define EVENT_UART0 (1<<0)
 #define EVENT_UART4 (1<<1)
@@ -437,13 +438,54 @@ void Fecha_Hora()
 {
     uint8 string1[] = "  Hora"; /*! String to be printed in the LCD*/
     uint8 string3[] = "  Fecha";
+    Epoc epoc;
+    Butons buton = NO_BUTTON;
+    bool running = true;
     while (1)
     {
-        limpiar_lcd();
-        imprimir_lcd(string1, 2, 0);
-        imprimir_lcd(generateTimeString(), 2, 1);
-        imprimir_lcd(string3, 2, 2);
-        imprimir_lcd(generateDateString(), 2, 3);
+        if(getflagB())
+        {
+             running = false;
+             buton = obtenerBoton();
+             switch(buton)
+             {
+                 case BUTTON_2:
+                 {
+                     epoc.hour++;
+                     if(HOUR_LIMIT <= epoc.hour)
+                         epoc.hour = 0;
+                     break;
+                 }
+                 case BUTTON_1:
+                  {
+                      epoc.minute++;
+                      if(MINUTE_LIMIT <= epoc.minute)
+                          epoc.minute = 0;
+                      break;
+                  }
+                 case BUTTON_0:
+                  {
+
+                      setTime(epoc.hour, epoc.minute, epoc.second);
+                      running = true;
+                      break;
+                  }
+                 case NO_BUTTON:
+                 default:
+                 {
+                     break;
+                 }
+             }
+        }
+        else if(running)
+        {
+            epoc = getEpoc();
+            limpiar_lcd();
+            imprimir_lcd(string1, 2, 0);
+            imprimir_lcd(generateTimeString(), 2, 1);
+            imprimir_lcd(string3, 2, 2);
+            imprimir_lcd(generateDateString(), 2, 3);
+        }
         vTaskDelay(pdMS_TO_TICKS(800));
     }
 }

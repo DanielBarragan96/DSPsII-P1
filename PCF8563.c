@@ -23,6 +23,7 @@ uint8_t g_date_s[8];
 //format en 0 es 24, en 1 es am/pm
 volatile static uint8_t format;
 SemaphoreHandle_t mutex_time;
+SemaphoreHandle_t mutex_date;
 
 //this function changes the variable val from decimal format to hexadecimal
 uint16_t decToHex(uint8_t val)
@@ -43,6 +44,7 @@ void init_clk ()
     i2c_writes (PCF8563_SLAVE_ADDRESS, CLK_REGISTER_ADRESS, ONE_BYTE, &buffer,
             PCF_SUBADRESS_SIZE);
     mutex_time = xSemaphoreCreateMutex();
+    mutex_date = xSemaphoreCreateMutex();
     return;
 }
 
@@ -140,6 +142,7 @@ uint8_t* getDate ()
 
 uint8_t* generateDateString()
 {
+    xSemaphoreTake(mutex_date, portMAX_DELAY);
     //update date variables
     getDate();
     //cast array of date to a string
@@ -151,6 +154,7 @@ uint8_t* generateDateString()
     g_date_s[5] = '/';
     g_date_s[6] = (date[2]/10) +48;
     g_date_s[7] = (date[2]%10) +48;
+    xSemaphoreGive(mutex_date);
     //indicate end of the string
     g_date_s[8] = '\0';
     //return direction of the first element of the string
@@ -174,6 +178,7 @@ uint8_t setTime (uint8_t hours, uint8_t minutes, uint8_t seconds)
 
 uint8_t setDate (uint8_t day, uint8_t month, uint8_t year)
 {
+    xSemaphoreTake(mutex_date, portMAX_DELAY);
     uint8_t buffer[2];
     //change date variables according to data sheet directions
     uint8_t y = ((0x03 & year)<<6);
@@ -187,6 +192,30 @@ uint8_t setDate (uint8_t day, uint8_t month, uint8_t year)
     //combine all variables
     buffer[1] = mt | mu;
     //update date using I2C
-    return i2c_writes (PCF8563_SLAVE_ADDRESS, PCF8563_DATE_ADDRESS, TWO_BYTE,
+    uint8_t val = i2c_writes (PCF8563_SLAVE_ADDRESS, PCF8563_DATE_ADDRESS, TWO_BYTE,
             &buffer[0], PCF_SUBADRESS_SIZE);
+    xSemaphoreGive(mutex_date);
+    return val;
+}
+
+Epoc getEpoc()
+{
+    getTime();
+    getDate();
+
+    Epoc epoc;
+    epoc.day = date[0];
+    epoc.month = date[1];
+    epoc.year = date[2];
+    uint8_t hd =((0xF0 & time[2])>>4);
+    uint8_t hu = (0x0F & time[2]);
+    epoc.hour = (hd*10) + hu;
+    hd =((0xF0 & time[1])>>4);
+    hu = (0x0F & time[1]);
+    epoc.minute = (hd*10) + hu;
+    hd =((0xF0 & time[0])>>4);
+    hu = (0x0F & time[0]);
+    epoc.second = (hd*10) + hu;;
+
+    return epoc;
 }
