@@ -43,6 +43,9 @@ void DSPI_MasterUserCallback(SPI_Type *base, dspi_master_handle_t *handle, statu
     isTransferCompleted = true;
 }
 
+/* Inicializamos SPI
+ * Creamos su handle
+*/
 void SPI_init(){
 	dspi_master_config_t masterConfig;
 	DSPI_MasterGetDefaultConfig(&masterConfig);
@@ -51,6 +54,7 @@ void SPI_init(){
     DSPI_MasterTransferCreateHandle(SPI0, &g_m_handleSPI, DSPI_MasterUserCallback, NULL);
 }
 
+/*Funcion para enviar datos*/
 void SPI_send(uint8_t* string){
 	 dspi_transfer_t masterXfer;
   /* Start master transfer, send data to slave */
@@ -67,6 +71,7 @@ void SPI_send(uint8_t* string){
 	 }
 }
 
+/*Funcion para enviar de byte en byte */
 void SPI_sendOneByte (uint8_t Data){
 	 uint8_t sendData[1];
 	 sendData[0] = Data;

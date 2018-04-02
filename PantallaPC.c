@@ -48,6 +48,9 @@ EventGroupHandle_t g_chat_events;
 static bool show_time = false;
 static bool show_date = false;
 
+static bool show_time_BT = false;
+static bool show_date_BT = false;
+
 /*
  * Realiza las dos operaciones para enviar escribir en el serial, primero la posicion y despues los valores
  */
@@ -63,6 +66,7 @@ void escribirP( UART_Type *base, sint8* Posicion, sint8* string ) {
 	}
 }
 
+/* Escribimos lo mismo en las dos terminales al mismo tiempo*/
 void escribirchat(sint8* Posicion, sint8* string ){
     uart_BT_send(UART4, (uint8_t*) Posicion);
     uart_BT_send(UART4, (uint8_t*) string);
@@ -101,8 +105,8 @@ void MenuInicial( UART_Type *uart ) {
 
 /*
  * Escribe las intrucciones del menu, ingresamos el valor del address, obtenemos lo ingresado
- * con la funcion pop, para guardar en su valor en un integer, les hacemos un desplazamiento
- * con un OR. Después obtenemos el valor contenido en esa direccion y utlilizando la funcion
+ * con la funcion que lee la queue en la UART, para guardar en su valor en un integer.
+ * Después obtenemos el valor contenido en esa direccion y utlilizando la funcion
  * valorMem convertimos ese dato en un string para poder imprimirlo en pantalla
  */
 void LeerM( UART_Type *uart ) {
@@ -122,10 +126,10 @@ void LeerM( UART_Type *uart ) {
 	escribirP(uart, "\033[10;10H", "Direccion de lectura:   ");
 	ingresoDatos(uart);
 
-	h_decimales = valMemoria();
-	h_unidades = valMemoria();
-	l_decimales = valMemoria();
-	l_unidades = valMemoria();
+	h_decimales = valMemoria(uart);
+	h_unidades = valMemoria(uart);
+	l_decimales = valMemoria(uart);
+	l_unidades = valMemoria(uart);
 	address = (h_decimales << 12) | (h_unidades << 8) | (l_decimales << 4)
 			| l_unidades;
 
@@ -137,7 +141,7 @@ void LeerM( UART_Type *uart ) {
 	{
 	    dataSize *= 10;
 	    dataSize += x;
-        x = valMemoria();
+        x = valMemoria(uart);
 	}while(QUEUE_END != x);
 
 	escribirP(uart, "\033[12;10H", "Contenido: ");
@@ -152,7 +156,6 @@ void LeerM( UART_Type *uart ) {
 
 	ingresoDatos(uart);
 	xSemaphoreGive(mutexLeerM);
-
 }
 
 /*
@@ -178,10 +181,10 @@ void EscribirM( UART_Type *uart ) {
 
 	ingresoDatos(uart);
 
-    h_decimales = valMemoria();
-    h_unidades = valMemoria();
-    l_decimales = valMemoria();
-    l_unidades = valMemoria();
+    h_decimales = valMemoria(uart);
+    h_unidades = valMemoria(uart);
+    l_decimales = valMemoria(uart);
+    l_unidades = valMemoria(uart);
 	address = (h_decimales << 12) | (h_unidades << 8) | (l_decimales << 4)
 			| l_unidades;
 
@@ -193,10 +196,10 @@ void EscribirM( UART_Type *uart ) {
 	uint8_t i = 0;
 	do
 	{
-	    x = leerQueue_TeraTerm();
+	    x = valMemoria(uart);
 	    string[i++] = x;
 	}while((QUEUE_END != x));
-	string[i] = '\0';
+	string[--i] = '\0';
 
 	MEM24LC256_setData(address, &string[0]);
 	escribirP(uart, "\033[13;10H", "Su texto ha sido guardado...");
@@ -219,24 +222,22 @@ void Ehora( UART_Type *uart ) {
 	escribirP(uart, "\033[10;10H", "Escribir hora en hh:mm:ss \n");
 	ingresoDatos(uart);
 
-	uint8_t hours = valMemoria()*10;
-	hours += valMemoria();
-	valMemoria();
-	uint8_t minutes = valMemoria()*10;
-	minutes += valMemoria();
-	valMemoria();
-	uint8_t seconds = valMemoria()*10;
-	seconds += valMemoria();
+	uint8_t hours = valMemoria(uart)*10;
+	hours += valMemoria(uart);
+	valMemoria(uart);
+	uint8_t minutes = valMemoria(uart)*10;
+	minutes += valMemoria(uart);
+	valMemoria(uart);
+	uint8_t seconds = valMemoria(uart)*10;
+	seconds += valMemoria(uart);
 
 	if(0 == setTime(hours, minutes, seconds))
 	    escribirP(uart, "\033[13;10H", "La hora ha sido cambiada...\n");
 	else
 	    escribirP(uart, "\033[13;10H", "Error, no se estableció la hora\n");
 
-	show_time = true;
-
 	ingresoDatos(uart);
-	show_time = false;
+
 	xSemaphoreGive(mutexEhora);
 }
 
@@ -254,24 +255,22 @@ void Efecha( UART_Type *uart ) {
 	escribirP(uart, "\033[10;10H", "Escribir fecha en dd/mm/aa");
 	ingresoDatos(uart);
 
-    uint8_t day = valMemoria()*10;
-    day += valMemoria();
-    valMemoria();
-    uint8_t month = valMemoria()*10;
-    month += valMemoria();
-    valMemoria();
-    uint8_t year = valMemoria()*10;
-    year += valMemoria();
+    uint8_t day = valMemoria(uart)*10;
+    day += valMemoria(uart);
+    valMemoria(uart);
+    uint8_t month = valMemoria(uart)*10;
+    month += valMemoria(uart);
+    valMemoria(uart);
+    uint8_t year = valMemoria(uart)*10;
+    year += valMemoria(uart);
 
     if(0 == setDate(day, month, year))
             escribirP(uart, "\033[12;10H", "La fecha ha sido cambiada...");
     else
             escribirP(uart, "\033[12;10H", "Error. La fecha no ha sido cambiada...");
 
-    show_date = true;
-
     ingresoDatos(uart);
-    show_date = false;
+
 	xSemaphoreGive(mutexEfecha);
 }
 
@@ -291,7 +290,7 @@ void Fhora( UART_Type *uart ) {
 	escribirP(uart, "\033[11;10H", "Desea cambiar el formato a 12h si(1)/no(0)? \n");
 	ingresoDatos(uart);
 
-	uint8_t format = (valMemoria());
+	uint8_t format = (valMemoria(uart));
 
 	if(0 == setTimeFormat(format))
 	    escribirP(uart, "\033[13;10H", "El formato ha sido cambiado... ");
@@ -316,10 +315,16 @@ void Lhora( UART_Type *uart ) {
 	escribirP(uart, "\033[10;10H", "\033[2J");
 	escribirP(uart, "\033[10;10H", "La hora actual es: \n");
 
-	show_time = true;
+    if(UART0 == uart)
+        show_time = true;
+    else
+        show_time_BT = true;
 
 	ingresoDatos(uart);
-	show_time = false;
+    if(UART0 == uart)
+        show_time = false;
+    else
+        show_time_BT = false;
 	xSemaphoreGive(mutexLhora);
 }
 
@@ -339,13 +344,22 @@ void Lfecha( UART_Type *uart ) {
 	escribirP(uart, "\033[10;10H", "La fecha actual es:\n");
 
 
-    show_date = true;
+    if(UART0 == uart)
+        show_date= true;
+    else
+        show_date_BT = true;
 
 	ingresoDatos(uart);
-	show_date = false;
+    if(UART0 == uart)
+        show_date= false;
+    else
+        show_date_BT = false;
 	xSemaphoreGive(mutexLfecha);
 }
 
+/* Funcion que prende los bits utilzados para el
+ * evento del chat
+ */
 void Comunicacion( UART_Type *uart ) {
 	if (UART0 == uart)
 		xEventGroupSetBits(g_chat_events, EVENT_UART0);
@@ -355,6 +369,12 @@ void Comunicacion( UART_Type *uart ) {
 	chat(uart);
 }
 
+/*
+ * Realizamos la tarea si los eventos se cumplen
+ * limpiamos las dos terminales obtenemos el valor introducido
+ * en una terminal para imprimirlo en la otra terminal
+ * Si presionamos esc en las terminales salimos de la tarea
+ */
 void chat(UART_Type *uart) {
     xEventGroupWaitBits(g_chat_events,
                         EVENT_UART0 | EVENT_UART4,
@@ -374,6 +394,7 @@ void chat(UART_Type *uart) {
                         g_tipStringT[i] = (leerQueue_TeraTerm() );
                         bandera = (ESC == g_tipStringT[i])? false:bandera;
                     }
+                    g_tipStringT[longitud] = '\0';
                     escribirP(UART4,"\033[11;10H", "Usuario2: ");
                     escribirP(UART4,"\033[11;20H", (sint8*)g_tipStringT);
                 }
@@ -384,6 +405,7 @@ void chat(UART_Type *uart) {
                         g_tipStringB[i] = (leerQueue_BT() );
                         bandera = (escBT == g_tipStringB[i])? false:bandera;
                     }
+                    g_tipStringB[longitud] = '\0';
                     escribirP(UART0,"\033[11;10H", "Usuario1: ");
                     escribirP(UART0,"\033[11;20H", (sint8*)g_tipStringB);
                 }
@@ -391,6 +413,10 @@ void chat(UART_Type *uart) {
             }
 }
 
+/*
+ * Utilizando la funcion echo de la UART imprimimos los valores
+ * en el LCD
+ */
 void Eco( UART_Type *uart ) {
 	escribirP(uart, "\033[9;10H", "Terminal Ocupada");
 	xSemaphoreTake(mutexEco, portMAX_DELAY);
@@ -404,21 +430,21 @@ void Eco( UART_Type *uart ) {
 	xSemaphoreGive(mutexEco);
 }
 
+/*
+ * Actualizamos cada segundo los valores de fecha y hora
+ */
 void Fecha_Hora()
 {
     uint8 string1[] = "  Hora"; /*! String to be printed in the LCD*/
     uint8 string3[] = "  Fecha";
-
-
-
     while (1)
     {
         limpiar_lcd();
         imprimir_lcd(string1, 2, 0);
-        imprimir_lcd(getTime(), 2, 1);
+        imprimir_lcd(generateTimeString(), 2, 1);
         imprimir_lcd(string3, 2, 2);
-        imprimir_lcd(getTime(), 2, 3);
-        vTaskDelay(pdMS_TO_TICKS(1000));
+        imprimir_lcd(generateDateString(), 2, 3);
+        vTaskDelay(pdMS_TO_TICKS(800));
     }
 }
 
@@ -427,8 +453,13 @@ void Fecha_Hora()
  *los numeros, simplemente restamos 48 pero si tenemos por ejemplo una A -48 no nos da 10, el valor de las letras
  *los empieza 7 espacios más arriba, ese es el proposito de la funcion
  */
-uint8 valMemoria() {
-	uint8 variable = leerQueue_TeraTerm();
+uint8 valMemoria(UART_Type *uart) {
+	uint8 variable;
+	if(UART0 == uart)
+		variable = leerQueue_TeraTerm();
+	else
+		variable = leerQueue_BT();
+
 	if(variable >= 17 && variable <= 22)
 		variable = variable -7;
 	else if (variable >= 48 && variable <= 57)
@@ -453,6 +484,7 @@ uint8_t escogerMenu( UART_Type *uart ) {
 
 }
 
+/* Mutex que controlan los recursos de cada menu */
 void initmutex() {
 	mutexLeerM = xSemaphoreCreateMutex();
 	mutexEscribirM = xSemaphoreCreateMutex();
@@ -473,4 +505,14 @@ bool getShowTime()
 bool getShowDate()
 {
     return show_date;
+}
+
+bool getShowTimeBT()
+{
+    return show_time_BT;
+}
+
+bool getShowDateBT()
+{
+    return show_date_BT;
 }
