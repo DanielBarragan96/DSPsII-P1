@@ -21,7 +21,7 @@ uint8_t g_time_s[11];
 //string for date
 uint8_t g_date_s[8];
 //format en 0 es 24, en 1 es am/pm
-volatile static uint8_t format;
+volatile static uint8_t format_h;
 SemaphoreHandle_t mutex_time;
 SemaphoreHandle_t mutex_date;
 
@@ -53,7 +53,7 @@ uint8_t setTimeFormat(uint8_t newFormat)
     if(1 == newFormat)
     {//toggle format value
         xSemaphoreTake(mutex_time, portMAX_DELAY);
-        format ^= 0x01;
+        format_h ^= 0x01;
         xSemaphoreGive(mutex_time);
         return 0;
     }//if other value than one was sent
@@ -72,12 +72,12 @@ uint8_t* generateTimeString()
     xSemaphoreTake(mutex_time, portMAX_DELAY);
     //update time variables
     getTime();
-    //change hours to decimal format
-    uint8_t hd =((0xF0 & time[2])>>4);
-    uint8_t hu = (0x0F & time[2]);
-    uint8_t hours = (hd*10) + hu;
     //if am/pm format is needed
-    if(format){
+    if(format_h){
+        //change hours to decimal format
+        uint8_t hd =((0xF0 & time[2])>>4);
+        uint8_t hu = (0x0F & time[2]);
+        uint8_t hours = (hd*10) + hu;
         //must change hours variables iun the array
         // also the am/pm sections
         if(12>=hours)

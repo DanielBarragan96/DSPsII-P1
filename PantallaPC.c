@@ -25,6 +25,7 @@
 #include "task.h"
 #include "semphr.h"
 #include "event_groups.h"
+#include "timers.h"
 
 #include "MEM24LC256.h"
 #include "PCF8563.h"
@@ -137,7 +138,6 @@ void LeerM( UART_Type *uart ) {
 	escribirP(uart, "\033[11;10H", "Longitud en bytes:  ");
 	ingresoDatos(uart);
 
-	uint8_t i = 0;
 	do
 	{
 	    dataSize *= 10;
@@ -284,8 +284,6 @@ void Fhora( UART_Type *uart ) {
 	escribirP(uart, "\033[9;10H", "Terminal Ocupada");
 	xSemaphoreTake(mutexFhora, portMAX_DELAY);
 
-	uint8 formato;
-	uint8 S = 35;
 	escribirP(uart, "\033[10;10H", "\033[2J");
 	escribirP(uart, "\033[10;10H", "El formato actual es 12h");
 	escribirP(uart, "\033[11;10H", "Desea cambiar el formato a 12h si(1)/no(0)? \n");
@@ -317,9 +315,13 @@ void Lhora( UART_Type *uart ) {
 	escribirP(uart, "\033[10;10H", "La hora actual es: \n");
 
     if(UART0 == uart)
+    {
         show_time = true;
+    }
     else
+    {
         show_time_BT = true;
+    }
 
 	ingresoDatos(uart);
     if(UART0 == uart)
@@ -340,15 +342,18 @@ void Lfecha( UART_Type *uart ) {
 	escribirP(uart, "\033[9;10H", "Terminal Ocupada");
 	xSemaphoreTake(mutexLfecha, portMAX_DELAY);
 
-	uint8 valor;
 	escribirP(uart, "\033[10;10H", "\033[2J");
 	escribirP(uart, "\033[10;10H", "La fecha actual es:\n");
 
 
     if(UART0 == uart)
+    {
         show_date= true;
+    }
     else
+    {
         show_date_BT = true;
+    }
 
 	ingresoDatos(uart);
     if(UART0 == uart)
@@ -445,6 +450,7 @@ void Fecha_Hora()
     {
         if(getflagB())
         {
+            clearflagB();
              running = false;
              buton = obtenerBoton();
              switch(buton)
@@ -465,7 +471,6 @@ void Fecha_Hora()
                   }
                  case BUTTON_0:
                   {
-
                       setTime(epoc.hour, epoc.minute, epoc.second);
                       running = true;
                       break;
@@ -476,6 +481,7 @@ void Fecha_Hora()
                      break;
                  }
              }
+             vTaskDelay(pdMS_TO_TICKS(100));
         }
         else if(running)
         {
@@ -485,8 +491,8 @@ void Fecha_Hora()
             imprimir_lcd(generateTimeString(), 2, 1);
             imprimir_lcd(string3, 2, 2);
             imprimir_lcd(generateDateString(), 2, 3);
+            vTaskDelay(pdMS_TO_TICKS(800));
         }
-        vTaskDelay(pdMS_TO_TICKS(800));
     }
 }
 
