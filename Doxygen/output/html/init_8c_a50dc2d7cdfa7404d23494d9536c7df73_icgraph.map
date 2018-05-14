@@ -1,0 +1,5 @@
+<map id="menus_task" name="menus_task">
+<area shape="rect" id="node2" href="$init_8c.html#a2faa8000121a9774eefa457960d96464" title="spi_butons" alt="" coords="147,5,232,32"/>
+<area shape="rect" id="node3" href="$init_8h.html#a7ddfa05f6251ebe96b87c760bee8f009" title="This function initializes the necesary componentes of the Kinetis to start the program. " alt="" coords="280,31,355,57"/>
+<area shape="rect" id="node4" href="$main_8c.html#a840291bc02cba5474a4cb46a9b9566fe" title="main" alt="" coords="403,31,453,57"/>
+</map>

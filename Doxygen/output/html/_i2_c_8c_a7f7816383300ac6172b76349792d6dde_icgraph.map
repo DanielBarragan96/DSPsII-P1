@@ -1,0 +1,4 @@
+<map id="i2c_release_bus_delay" name="i2c_release_bus_delay">
+<area shape="rect" id="node2" href="$_i2_c_8c.html#a3e6e88f7d5427e2cb0dd3f4cb4c021e6" title="i2c_ReleaseBus" alt="" coords="208,5,324,32"/>
+<area shape="rect" id="node3" href="$_i2_c_8h.html#a220e95e86ab8823758d7f93595addb42" title="Start the necessary peripherals to use the I2C. " alt="" coords="372,5,435,32"/>
+</map>

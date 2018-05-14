@@ -1,0 +1,13 @@
+<map id="i2c_writes" name="i2c_writes">
+<area shape="rect" id="node2" href="$_m_e_m24_l_c256_8h.html#a60e893d054fd5f658e293b37d15418d8" title="This function uses the I2C to send the write instruction to be able to write the address high and low..." alt="" coords="133,5,289,32"/>
+<area shape="rect" id="node8" href="$_p_c_f8563_8h.html#a819fb1ccff0cfa43efe6bbb0317deb5e" title="This function initialize the PCF8563 clock. " alt="" coords="345,56,407,83"/>
+<area shape="rect" id="node9" href="$_p_c_f8563_8h.html#ad13976ac4fde931463ac323ec53f618a" title="This function changes the time in the PCF8563 The variables sent, must be in decimal format..." alt="" coords="177,107,245,133"/>
+<area shape="rect" id="node11" href="$_p_c_f8563_8h.html#aedcfb270b8bd60f528327e7e0a6839f8" title="This function changes the date in the PCF8563 The variables sent, must be in decimal format..." alt="" coords="178,157,245,184"/>
+<area shape="rect" id="node3" href="$_pantalla_p_c_8c.html#adc570c4364dc057c016d056873c7d7cf" title="EscribirM" alt="" coords="337,5,415,32"/>
+<area shape="rect" id="node4" href="$main_8c.html#a50dc2d7cdfa7404d23494d9536c7df73" title="menus_task" alt="" coords="463,81,556,108"/>
+<area shape="rect" id="node5" href="$init_8c.html#a2faa8000121a9774eefa457960d96464" title="spi_butons" alt="" coords="604,56,689,83"/>
+<area shape="rect" id="node6" href="$init_8h.html#a7ddfa05f6251ebe96b87c760bee8f009" title="This function initializes the necesary componentes of the Kinetis to start the program. " alt="" coords="737,81,812,108"/>
+<area shape="rect" id="node7" href="$main_8c.html#a840291bc02cba5474a4cb46a9b9566fe" title="main" alt="" coords="860,81,911,108"/>
+<area shape="rect" id="node10" href="$_pantalla_p_c_8c.html#abc6fb6b9be6b3a093c81504cdb6b62ef" title="Ehora" alt="" coords="348,107,404,133"/>
+<area shape="rect" id="node12" href="$_pantalla_p_c_8c.html#ad82df1986282060fcfd6b70787cca69a" title="Efecha" alt="" coords="345,157,407,184"/>
+</map>

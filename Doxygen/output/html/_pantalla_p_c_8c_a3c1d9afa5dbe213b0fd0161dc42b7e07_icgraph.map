@@ -1,0 +1,6 @@
+<map id="LeerM" name="LeerM">
+<area shape="rect" id="node2" href="$main_8c.html#a50dc2d7cdfa7404d23494d9536c7df73" title="menus_task" alt="" coords="112,31,205,57"/>
+<area shape="rect" id="node3" href="$init_8c.html#a2faa8000121a9774eefa457960d96464" title="spi_butons" alt="" coords="253,5,339,32"/>
+<area shape="rect" id="node4" href="$init_8h.html#a7ddfa05f6251ebe96b87c760bee8f009" title="This function initializes the necesary componentes of the Kinetis to start the program. " alt="" coords="387,31,461,57"/>
+<area shape="rect" id="node5" href="$main_8c.html#a840291bc02cba5474a4cb46a9b9566fe" title="main" alt="" coords="509,31,560,57"/>
+</map>

@@ -1,0 +1,8 @@
+<map id="imprimir_lcd" name="imprimir_lcd">
+<area shape="rect" id="node2" href="$_l_c_d_nokia5110_8c.html#af085490833b1a94ed83e54437d345317" title="LCDNokia_gotoXY" alt="" coords="350,5,478,32"/>
+<area shape="rect" id="node5" href="$_l_c_d_nokia5110_8c.html#a534c0c8c4ff8293daac8a069f5c42b38" title="LCDNokia_sendString" alt="" coords="145,56,295,83"/>
+<area shape="rect" id="node7" href="$_global_functions_8c.html#aa7fa622ced5687f8351d589e9402b251" title="This function works as a delay according to the received value. " alt="" coords="193,107,247,133"/>
+<area shape="rect" id="node3" href="$_l_c_d_nokia5110_8c.html#ab9ec78e9bc7b791df3de6f1756ea1878" title="LCDNokia_writeByte" alt="" coords="533,31,675,57"/>
+<area shape="rect" id="node4" href="$_s_p_i_8c.html#aa39a86d78cf7a52c3669642002c7f06e" title="SPI_sendOneByte" alt="" coords="723,31,852,57"/>
+<area shape="rect" id="node6" href="$_l_c_d_nokia5110_8c.html#adeb3d7e72d16d8e07997e78d2607e4d6" title="LCDNokia_sendChar" alt="" coords="343,56,485,83"/>
+</map>

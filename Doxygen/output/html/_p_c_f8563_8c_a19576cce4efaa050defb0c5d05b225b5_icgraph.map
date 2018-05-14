@@ -1,0 +1,8 @@
+<map id="decToHex" name="decToHex">
+<area shape="rect" id="node2" href="$_p_c_f8563_8h.html#ad13976ac4fde931463ac323ec53f618a" title="This function changes the time in the PCF8563 The variables sent, must be in decimal format..." alt="" coords="133,31,201,57"/>
+<area shape="rect" id="node3" href="$_pantalla_p_c_8c.html#abc6fb6b9be6b3a093c81504cdb6b62ef" title="Ehora" alt="" coords="249,31,305,57"/>
+<area shape="rect" id="node4" href="$main_8c.html#a50dc2d7cdfa7404d23494d9536c7df73" title="menus_task" alt="" coords="353,31,447,57"/>
+<area shape="rect" id="node5" href="$init_8c.html#a2faa8000121a9774eefa457960d96464" title="spi_butons" alt="" coords="495,5,580,32"/>
+<area shape="rect" id="node6" href="$init_8h.html#a7ddfa05f6251ebe96b87c760bee8f009" title="This function initializes the necesary componentes of the Kinetis to start the program. " alt="" coords="628,31,703,57"/>
+<area shape="rect" id="node7" href="$main_8c.html#a840291bc02cba5474a4cb46a9b9566fe" title="main" alt="" coords="751,31,801,57"/>
+</map>

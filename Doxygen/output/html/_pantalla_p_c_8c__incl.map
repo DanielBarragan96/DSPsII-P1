@@ -1,0 +1,11 @@
+<map id="PantallaPC.c" name="PantallaPC.c">
+<area shape="rect" id="node5" href="$_global_functions_8h.html" title="GlobalFunctions.h" alt="" coords="306,80,433,107"/>
+<area shape="rect" id="node6" href="$_data_type_definitions_8h.html" title="DataTypeDefinitions.h" alt="" coords="364,155,512,181"/>
+<area shape="rect" id="node7" href="$_pantalla_p_c_8h.html" title="PantallaPC.h" alt="" coords="458,80,556,107"/>
+<area shape="rect" id="node9" href="$_u_a_r_t___b_t_8h.html" title="UART_BT.h" alt="" coords="191,80,282,107"/>
+<area shape="rect" id="node10" href="$_l_c_d_nokia5110_8h.html" title="LCDNokia5110.h" alt="" coords="581,80,700,107"/>
+<area shape="rect" id="node11" href="$_u_a_r_t___tera_term_8h.html" title="UART_TeraTerm.h" alt="" coords="39,80,167,107"/>
+<area shape="rect" id="node12" href="$_free_r_t_o_s_config_8h.html" title="FreeRTOSConfig.h" alt="" coords="940,80,1071,107"/>
+<area shape="rect" id="node17" href="$_m_e_m24_l_c256_8h.html" title="MEM24LC256.h" alt="" coords="1644,80,1759,107"/>
+<area shape="rect" id="node19" href="$_p_c_f8563_8h.html" title="PCF8563.h" alt="" coords="1533,80,1620,107"/>
+</map>

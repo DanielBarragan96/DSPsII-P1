@@ -1,0 +1,10 @@
+<map id="limpiar_lcd" name="limpiar_lcd">
+<area shape="rect" id="node2" href="$_pantalla_p_c_8h.html#a65e7894c8907f61b2c3c29665e0641ab" title="Pantalla para ver la hora. " alt="" coords="325,5,417,32"/>
+<area shape="rect" id="node5" href="$_u_a_r_t___b_t_8h.html#aea4f4eb8d02605b769f3e7946e78a6df" title="uart_BT_echo" alt="" coords="156,56,259,83"/>
+<area shape="rect" id="node9" href="$_u_a_r_t___tera_term_8h.html#a54cf2283a9d4cdc81a5da70ea400e110" title="uart_TeraTerm_echo" alt="" coords="137,107,277,133"/>
+<area shape="rect" id="node3" href="$init_8h.html#a7ddfa05f6251ebe96b87c760bee8f009" title="This function initializes the necesary componentes of the Kinetis to start the program. " alt="" coords="740,56,815,83"/>
+<area shape="rect" id="node4" href="$main_8c.html#a840291bc02cba5474a4cb46a9b9566fe" title="main" alt="" coords="863,56,913,83"/>
+<area shape="rect" id="node6" href="$_pantalla_p_c_8c.html#a15e61a2f0e798dff3a9bfde738bee2b6" title="Eco" alt="" coords="349,81,394,108"/>
+<area shape="rect" id="node7" href="$main_8c.html#a50dc2d7cdfa7404d23494d9536c7df73" title="menus_task" alt="" coords="465,81,559,108"/>
+<area shape="rect" id="node8" href="$init_8c.html#a2faa8000121a9774eefa457960d96464" title="spi_butons" alt="" coords="607,107,692,133"/>
+</map>

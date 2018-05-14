@@ -1,0 +1,13 @@
+<map id="LCDNokia_gotoXY" name="LCDNokia_gotoXY">
+<area shape="rect" id="node2" href="$_l_c_d_nokia5110_8h.html#adc1fba60e5f678b64c83928f2acfdd92" title="LCDNokia_clear" alt="" coords="181,31,296,57"/>
+<area shape="rect" id="node12" href="$_l_c_d_nokia5110_8h.html#aa03e6af9f447216023c4187aa65eb577" title="imprimir_lcd" alt="" coords="344,81,436,108"/>
+<area shape="rect" id="node3" href="$_l_c_d_nokia5110_8h.html#a97149bc433e9fb593252bf82ee2ed1b0" title="limpiar_lcd" alt="" coords="348,31,432,57"/>
+<area shape="rect" id="node4" href="$_pantalla_p_c_8h.html#a65e7894c8907f61b2c3c29665e0641ab" title="Pantalla para ver la hora. " alt="" coords="508,5,600,32"/>
+<area shape="rect" id="node7" href="$_u_a_r_t___b_t_8h.html#aea4f4eb8d02605b769f3e7946e78a6df" title="uart_BT_echo" alt="" coords="503,107,605,133"/>
+<area shape="rect" id="node11" href="$_u_a_r_t___tera_term_8h.html#a54cf2283a9d4cdc81a5da70ea400e110" title="uart_TeraTerm_echo" alt="" coords="484,56,624,83"/>
+<area shape="rect" id="node5" href="$init_8h.html#a7ddfa05f6251ebe96b87c760bee8f009" title="This function initializes the necesary componentes of the Kinetis to start the program. " alt="" coords="1040,56,1115,83"/>
+<area shape="rect" id="node6" href="$main_8c.html#a840291bc02cba5474a4cb46a9b9566fe" title="main" alt="" coords="1163,56,1213,83"/>
+<area shape="rect" id="node8" href="$_pantalla_p_c_8c.html#a15e61a2f0e798dff3a9bfde738bee2b6" title="Eco" alt="" coords="672,81,717,108"/>
+<area shape="rect" id="node9" href="$main_8c.html#a50dc2d7cdfa7404d23494d9536c7df73" title="menus_task" alt="" coords="765,81,859,108"/>
+<area shape="rect" id="node10" href="$init_8c.html#a2faa8000121a9774eefa457960d96464" title="spi_butons" alt="" coords="907,56,992,83"/>
+</map>
