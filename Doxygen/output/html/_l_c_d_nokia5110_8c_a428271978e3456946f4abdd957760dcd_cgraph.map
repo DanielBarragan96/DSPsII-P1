@@ -1,0 +1,5 @@
+<map id="LCDNokia_init" name="LCDNokia_init">
+<area shape="rect" id="node2" href="$_global_functions_8c.html#aa7fa622ced5687f8351d589e9402b251" title="This function works as a delay according to the received value. " alt="" coords="201,5,255,32"/>
+<area shape="rect" id="node3" href="$_l_c_d_nokia5110_8c.html#ab9ec78e9bc7b791df3de6f1756ea1878" title="LCDNokia_writeByte" alt="" coords="157,56,299,83"/>
+<area shape="rect" id="node4" href="$_s_p_i_8c.html#aa39a86d78cf7a52c3669642002c7f06e" title="SPI_sendOneByte" alt="" coords="347,56,476,83"/>
+</map>

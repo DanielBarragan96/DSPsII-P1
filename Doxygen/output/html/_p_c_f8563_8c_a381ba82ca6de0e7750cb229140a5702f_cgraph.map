@@ -1,0 +1,4 @@
+<map id="generateTimeString" name="generateTimeString">
+<area shape="rect" id="node2" href="$_p_c_f8563_8c.html#aa92e63a9a9aba888fc755e1e6351b076" title="This function updates the time variables. " alt="" coords="188,5,256,32"/>
+<area shape="rect" id="node3" href="$_i2_c_8c.html#a60f94b01e39a7c274aa31cb3021977e4" title="This function uses the I2C to read from a slave. " alt="" coords="304,5,375,32"/>
+</map>

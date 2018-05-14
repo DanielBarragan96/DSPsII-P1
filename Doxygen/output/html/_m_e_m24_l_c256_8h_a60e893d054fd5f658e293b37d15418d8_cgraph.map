@@ -1,0 +1,4 @@
+<map id="MEM24LC256_setData" name="MEM24LC256_setData">
+<area shape="rect" id="node2" href="$_m_e_m24_l_c256_8c.html#a71e141fd86a3183eca7403edc14472c1" title="checkStringSize" alt="" coords="209,5,327,32"/>
+<area shape="rect" id="node3" href="$_i2_c_8c.html#a3c079b83239e54059aa817364cbb39bb" title="This function uses the I2C to write to a slave. " alt="" coords="228,56,308,83"/>
+</map>

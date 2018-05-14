@@ -1,0 +1,16 @@
+<map id="DataTypeDefinitions.h" name="DataTypeDefinitions.h">
+<area shape="rect" id="node2" href="$_botones_8c.html" title="Botones.c" alt="" coords="5,155,87,181"/>
+<area shape="rect" id="node3" href="$_botones_8h.html" title="Botones.h" alt="" coords="45,80,127,107"/>
+<area shape="rect" id="node4" href="$init_8c.html" title="init.c" alt="" coords="298,155,349,181"/>
+<area shape="rect" id="node5" href="$_global_functions_8h.html" title="GlobalFunctions.h" alt="" coords="939,80,1065,107"/>
+<area shape="rect" id="node6" href="$_global_functions_8c.html" title="GlobalFunctions.c" alt="" coords="1033,155,1160,181"/>
+<area shape="rect" id="node8" href="$_pantalla_p_c_8c.html" title="PantallaPC.c" alt="" coords="483,155,582,181"/>
+<area shape="rect" id="node9" href="$_pantalla_p_c_8h.html" title="PantallaPC.h" alt="" coords="570,80,669,107"/>
+<area shape="rect" id="node10" href="$main_8c.html" title="main.c" alt="" coords="398,155,459,181"/>
+<area shape="rect" id="node11" href="$_u_a_r_t___b_t_8c.html" title="UART_BT.c" alt="" coords="606,155,697,181"/>
+<area shape="rect" id="node12" href="$_u_a_r_t___tera_term_8c.html" title="UART_TeraTerm.c" alt="" coords="721,155,849,181"/>
+<area shape="rect" id="node13" href="$_u_a_r_t___b_t_8h.html" title="UART_BT.h" alt="" coords="253,80,343,107"/>
+<area shape="rect" id="node14" href="$_u_a_r_t___tera_term_8h.html" title="UART_TeraTerm.h" alt="" coords="367,80,495,107"/>
+<area shape="rect" id="node15" href="$_l_c_d_nokia5110_8h.html" title="LCDNokia5110.h" alt="" coords="693,80,812,107"/>
+<area shape="rect" id="node7" href="$_l_c_d_nokia5110_8c.html" title="LCDNokia5110.c" alt="" coords="885,155,1004,181"/>
+</map>

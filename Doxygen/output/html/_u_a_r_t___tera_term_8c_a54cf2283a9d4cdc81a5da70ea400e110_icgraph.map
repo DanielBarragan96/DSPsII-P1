@@ -1,0 +1,7 @@
+<map id="uart_TeraTerm_echo" name="uart_TeraTerm_echo">
+<area shape="rect" id="node2" href="$_pantalla_p_c_8c.html#a15e61a2f0e798dff3a9bfde738bee2b6" title="Eco" alt="" coords="193,31,239,57"/>
+<area shape="rect" id="node3" href="$main_8c.html#a50dc2d7cdfa7404d23494d9536c7df73" title="menus_task" alt="" coords="287,31,380,57"/>
+<area shape="rect" id="node4" href="$init_8c.html#a2faa8000121a9774eefa457960d96464" title="spi_butons" alt="" coords="428,5,513,32"/>
+<area shape="rect" id="node5" href="$init_8h.html#a7ddfa05f6251ebe96b87c760bee8f009" title="This function initializes the necesary componentes of the Kinetis to start the program. " alt="" coords="561,31,636,57"/>
+<area shape="rect" id="node6" href="$main_8c.html#a840291bc02cba5474a4cb46a9b9566fe" title="main" alt="" coords="684,31,735,57"/>
+</map>

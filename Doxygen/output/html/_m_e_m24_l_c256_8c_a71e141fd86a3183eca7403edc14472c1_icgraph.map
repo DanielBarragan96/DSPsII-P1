@@ -1,0 +1,8 @@
+<map id="checkStringSize" name="checkStringSize">
+<area shape="rect" id="node2" href="$_m_e_m24_l_c256_8h.html#a60e893d054fd5f658e293b37d15418d8" title="This function uses the I2C to send the write instruction to be able to write the address high and low..." alt="" coords="171,31,327,57"/>
+<area shape="rect" id="node3" href="$_pantalla_p_c_8c.html#adc570c4364dc057c016d056873c7d7cf" title="EscribirM" alt="" coords="375,31,452,57"/>
+<area shape="rect" id="node4" href="$main_8c.html#a50dc2d7cdfa7404d23494d9536c7df73" title="menus_task" alt="" coords="500,31,593,57"/>
+<area shape="rect" id="node5" href="$init_8c.html#a2faa8000121a9774eefa457960d96464" title="spi_butons" alt="" coords="641,5,727,32"/>
+<area shape="rect" id="node6" href="$init_8h.html#a7ddfa05f6251ebe96b87c760bee8f009" title="This function initializes the necesary componentes of the Kinetis to start the program. " alt="" coords="775,31,849,57"/>
+<area shape="rect" id="node7" href="$main_8c.html#a840291bc02cba5474a4cb46a9b9566fe" title="main" alt="" coords="897,31,948,57"/>
+</map>
